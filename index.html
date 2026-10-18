@@ -847,7 +847,28 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 #play .gamepanel .wheel:not(.compact-letters) .tile{width:clamp(43px,12vw,58px)!important;height:clamp(43px,12vw,58px)!important}
 #play .gamepanel .wheel.compact-letters .tile{width:clamp(32px,9vw,43px)!important;height:clamp(32px,9vw,43px)!important}
 </style>
-<style>.bu383-sfx-preview{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:1px 0 15px}.bu383-sfx-preview button{border:1px solid #99814f;background:#173b43;color:#f3d48d;border-radius:9px;padding:9px 12px;font:inherit;font-size:12px;font-weight:700}.bu383-sfx-preview button:active{transform:scale(.98)}#bu383-sfx-status{font-size:11px;color:#bbd2d6;min-height:0}</style></head><body><main id="app" role="main">
+<style>.bu383-sfx-preview{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:1px 0 15px}.bu383-sfx-preview button{border:1px solid #99814f;background:#173b43;color:#f3d48d;border-radius:9px;padding:9px 12px;font:inherit;font-size:12px;font-weight:700}.bu383-sfx-preview button:active{transform:scale(.98)}#bu383-sfx-status{font-size:11px;color:#bbd2d6;min-height:0}</style>
+<style>
+/* v3.8.5 — Story Adventure fits mobile screens without covering photos or clipping the wheel. */
+#play .scene{height:clamp(122px,19dvh,168px)!important;min-height:122px!important;flex:0 0 auto!important;}
+#play .gamepanel{padding:6px 11px max(6px,env(safe-area-inset-bottom))!important;gap:3px!important;}
+#play .gamepanel .clue{font-size:clamp(19px,4.75vw,25px)!important;line-height:1.16!important;margin:3px auto 4px!important;max-width:480px!important;}
+#play .gamepanel .letter-answer,#play .gamepanel .letter-answer.empty{height:26px!important;min-height:26px!important;max-height:26px!important;flex:0 0 26px!important;line-height:26px!important;}
+#play .gamepanel .wheel:not(.compact-letters),#play .gamepanel .wheel.compact-letters{width:var(--bu385-wheel-size,212px)!important;height:var(--bu385-wheel-size,212px)!important;aspect-ratio:1!important;flex:0 0 auto!important;margin:3px auto 2px!important;transition:none!important;transform:none!important;}
+#play .gamepanel .note{min-height:20px!important;flex:0 0 20px!important;max-height:34px!important;overflow-y:auto;margin:1px auto 0!important;padding:1px 4px!important;}
+@media(max-height:710px){
+ #play .scene{height:clamp(112px,17.5dvh,130px)!important;min-height:112px!important;}
+ #play .gamepanel .clue{font-size:clamp(18px,4.6vw,22px)!important;line-height:1.13!important;}
+ #play .scene-label{min-height:39px!important;padding:3px 10px!important;}
+ #play .gamepanel{padding-top:4px!important;}
+}
+@media(max-height:610px){
+ #play .scene{height:108px!important;min-height:108px!important;}
+ #play .gamepanel .clue{font-size:18px!important;}
+ #play .gamepanel .letter-answer,#play .gamepanel .letter-answer.empty{height:22px!important;min-height:22px!important;max-height:22px!important;flex-basis:22px!important;line-height:22px!important;}
+}
+</style>
+</head><body><main id="app" role="main">
 <section id="home" class="screen cinematic-home-screen"><div class="cinematic-dashboard" id="home-hero">
 <div class="cinematic-vignette" aria-hidden="true"></div>
 <header class="cinematic-topbar">
@@ -871,7 +892,7 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 <button id="home-help"><span aria-hidden="true">?</span><b>Help</b><small>How to play</small></button>
 </nav>
 <button id="begin" class="cin-more-modes" hidden>PLAY BIBLE TRIVIA <span aria-hidden="true">›</span></button>
-<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.4 VOICE TEST · DEMO VOICES: elevenlabs.io</div>
+<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.5 VOICE TEST · DEMO VOICES: elevenlabs.io</div>
 </div></section>
 <section class="screen mode-screen" id="modes" hidden aria-hidden="true">
 <header class="hub-head"><button class="hub-icon" id="modes-back" aria-label="Back to cover">‹</button><div class="hub-headtitle"><small>BIBLE UNFOLDED</small><b>Choose Your Adventure</b></div><button class="hub-icon" id="modes-menu" aria-label="Menu">☰</button></header>
@@ -3738,6 +3759,102 @@ addLetter=function(i){
 // ===== End v3.8.4 =====
 
 
+
+
+// ===== v3.8.5 — balance real voice clips, preserve noncommercial test assets =====
+// Every allowed spoken phrase is in the supplied 20-clip package. Two independent
+// shuffled bags prevent repeats of the same line and distribute voices evenly.
+const bu385VoiceBalance={speakerBag:[],phraseBag:[],lastSpoken:'',lastUsedSpeaker:'',cycle:0};
+function bu385Shuffle(items){
+ const arr=items.slice();
+ for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+ return arr;
+}
+bu381SelectVoice=function(){
+ if(bu381Voice.mode!=='rotate')return bu381Voice.mode;
+ if(!bu385VoiceBalance.speakerBag.length){
+  bu385VoiceBalance.speakerBag=bu385Shuffle(bu381VoiceIds);
+  if(bu385VoiceBalance.speakerBag[0]===bu385VoiceBalance.lastUsedSpeaker&&bu385VoiceBalance.speakerBag.length>1){
+   [bu385VoiceBalance.speakerBag[0],bu385VoiceBalance.speakerBag[1]]=[bu385VoiceBalance.speakerBag[1],bu385VoiceBalance.speakerBag[0]];
+  }
+ }
+ const speaker=bu385VoiceBalance.speakerBag.shift();
+ bu385VoiceBalance.lastUsedSpeaker=speaker;
+ return speaker;
+};
+const bu385PlayRecorded=bu381Play;
+function bu385NextPhrase(){
+ const pool=['excellent_thinking','another_discovery','beautifully_done','youre_on_a_roll'];
+ if(!bu385VoiceBalance.phraseBag.length){
+  bu385VoiceBalance.phraseBag=bu385Shuffle(pool);
+  if(bu385VoiceBalance.phraseBag[0]===bu385VoiceBalance.lastSpoken){
+   [bu385VoiceBalance.phraseBag[0],bu385VoiceBalance.phraseBag[1]]=[bu385VoiceBalance.phraseBag[1],bu385VoiceBalance.phraseBag[0]];
+  }
+ }
+ // Avoid claiming a player is "on a roll" on their very first success.
+ if(bu385VoiceBalance.cycle<2 && bu385VoiceBalance.phraseBag[0]==='youre_on_a_roll'){
+  const alternative=bu385VoiceBalance.phraseBag.findIndex(v=>v!=='youre_on_a_roll');
+  if(alternative>0)[bu385VoiceBalance.phraseBag[0],bu385VoiceBalance.phraseBag[alternative]]=[bu385VoiceBalance.phraseBag[alternative],bu385VoiceBalance.phraseBag[0]];
+ }
+ const phrase=bu385VoiceBalance.phraseBag.shift();
+ bu385VoiceBalance.lastSpoken=phrase;bu385VoiceBalance.cycle++;
+ return phrase;
+}
+bu381Play=function(phrase,opts={}){
+ if(opts.preview||phrase==='chapter_complete')return bu385PlayRecorded(phrase,opts);
+ // Preserve the original cooldown/overlap semantics; don't consume a phrase
+ // if the engine cannot actually attempt playback at this moment.
+ if(!bu382VoiceAllowed||document.hidden||bu381Voice.volume<=0||bu381Voice.mode==='off'||bu381Voice.now)return false;
+ const watch=document.getElementById('watch-player');if(watch&&!watch.hidden)return false;
+ const now=Date.now();if(now-bu381Voice.lastPlayAt<(opts.milestone?12000:45000))return false;
+ const varied=bu385NextPhrase();
+ return bu385PlayRecorded(varied,opts);
+};
+// v3.8.5 — calculate a comfortable, stable wheel diameter from visible room
+// after the current story question renders. Never resize during letter tracing.
+function bu385FitStory(){
+ const play=document.getElementById('play');
+ if(!play||play.hidden||mode!=='clue')return;
+ const panel=document.getElementById('gamepanel'), wheel=document.getElementById('wheel');
+ if(!panel||!wheel)return;
+ const clue=panel.querySelector('.clue'),answer=panel.querySelector('.letter-answer'),note=panel.querySelector('.note');
+ if(!clue||!answer||!note)return;
+ const cs=getComputedStyle(panel),gap=parseFloat(cs.rowGap||cs.gap)||3;
+ const pad=(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingBottom)||0);
+ const reserve=clue.getBoundingClientRect().height+answer.getBoundingClientRect().height+note.getBoundingClientRect().height+pad+gap*4+18;
+ const free=panel.clientHeight-reserve;
+ const diameter=Math.max(154,Math.floor(Math.min(242,innerWidth*.69,free)));
+ wheel.style.setProperty('--bu385-wheel-size',diameter+'px');
+}
+const bu385OriginalStoryRender=render;
+render=function(){bu385OriginalStoryRender.apply(this,arguments);requestAnimationFrame(bu385FitStory);};
+const bu385StoryPanel=document.getElementById('gamepanel');
+if(bu385StoryPanel)new MutationObserver(()=>requestAnimationFrame(bu385FitStory)).observe(bu385StoryPanel,{childList:true});
+window.addEventListener('resize',()=>{if(fingerPointer===null)requestAnimationFrame(bu385FitStory)},{passive:true});
+// ===== v3.8.5 — meaningful Word Builder progress: consistent verified Bible names =====
+// Source references: JW.org NWT Genesis 17, Ruth 1–2, 1 Samuel 17, Acts 16.
+const BU385_BIBLE_NAMES={
+ ABRAM:['Abraham was originally named Abram.','Genesis 17:5','genesis/17'],
+ ABRAHAM:['Jehovah changed Abram’s name to Abraham.','Genesis 17:5','genesis/17'],
+ SARAI:['Sarah was formerly called Sarai.','Genesis 17:15','genesis/17'],
+ SARAH:['Jehovah promised Sarah a son.','Genesis 17:15–19','genesis/17'],
+ ISAAC:['Jehovah told Abraham to name Sarah’s son Isaac.','Genesis 17:19','genesis/17'],
+ ISHMAEL:['Abraham asked God about Ishmael.','Genesis 17:18–20','genesis/17'],
+ RUTH:['Ruth loyally accompanied Naomi.','Ruth 1:16–17','ruth/1'],
+ NAOMI:['Ruth’s mother-in-law returned to Bethlehem.','Ruth 1:22','ruth/1'],
+ BOAZ:['Ruth gleaned in the field of Boaz.','Ruth 2:3','ruth/2'],
+ DAVID:['David faced Goliath while trusting in Jehovah.','1 Samuel 17:45','1-samuel/17'],
+ GOLIATH:['Goliath was a Philistine warrior from Gath.','1 Samuel 17:4','1-samuel/17'],
+ SAUL:['Saul led the army of Israel against the Philistines.','1 Samuel 17:2','1-samuel/17'],
+ TIMOTHY:['Paul selected Timothy to accompany him.','Acts 16:1–3','acts/16'],
+ LYDIA:['Lydia was a seller of purple who listened to Paul.','Acts 16:14','acts/16'],
+ PAUL:['Paul and Silas were imprisoned at Philippi.','Acts 16:19–25','acts/16'],
+ SILAS:['Silas was in prison with Paul.','Acts 16:25','acts/16']
+};
+for(const [name,details] of Object.entries(BU385_BIBLE_NAMES)){
+ WB36_DICT.add(name);WB36_BIBLE.add(name);WB362_BIBLE_INFO[name] ||= details;
+}
+// ===== End v3.8.5 =====
 
 </script>
 </body></html>
