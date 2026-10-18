@@ -650,6 +650,19 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 #bu34-fx{position:fixed;inset:0;pointer-events:none;z-index:230;overflow:hidden}.bu34-confetti{position:absolute;top:-25px;width:8px;height:15px;opacity:0;animation:bu34Fall 2.7s ease-in forwards}@keyframes bu34Fall{0%{transform:translateY(-20px) rotate(0deg);opacity:0}8%{opacity:1}100%{transform:translateY(110vh) rotate(850deg);opacity:0}}
 .bu34-burst-text{position:absolute;top:34%;left:50%;transform:translate(-50%,-50%);font:900 clamp(32px,9vw,62px) Georgia,serif;color:#ffe6ad;text-shadow:0 6px 30px #000,0 0 30px #bf9e47;animation:bu34Text 2.3s both;text-align:center;width:95%}@keyframes bu34Text{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-65%) scale(1)}}
 @media(prefers-reduced-motion:reduce){.bu34-confetti,.bu34-burst-text{animation:none!important;display:none!important}}
+ 
+/* v3.5 — Family Worship and local Pass & Play. Scoped to family screen. */
+.bu35-screen{position:fixed;inset:0;z-index:95;background:radial-gradient(ellipse at 5% 0%,#245663,#061923 60%);color:#f8efdc;display:flex;flex-direction:column;overflow:hidden}
+.bu35-screen[hidden]{display:none!important}.bu35-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none;padding:max(10px,env(safe-area-inset-top)) 12px 10px;border-bottom:1px solid #d4b46b65;background:#061f2b}
+.bu35-back,.bu35-menu{border:1px solid #9a9275;border-radius:12px;background:#133c49;color:#ffdf96;width:42px;height:42px;font-size:24px;flex:none}.bu35-top h1{margin:0;font:700 clamp(20px,5vw,27px) Georgia,serif;color:#ffe1a0;text-align:center}
+.bu35-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 14px max(40px,env(safe-area-inset-bottom));width:100%;max-width:600px;margin:auto;scrollbar-width:thin}
+.bu35-hero{background:linear-gradient(145deg,#265561a6,#0a2a39ed),radial-gradient(circle at 80% 10%,#a7803e88,transparent 55%);border:1px solid #c49d65;border-radius:22px;padding:22px 17px;box-shadow:0 10px 38px #0008;text-align:center;margin-bottom:14px}.bu35-hero h2{font:700 clamp(27px,7vw,39px) Georgia,serif;color:#ffe5b4;line-height:1.13;margin:5px 0 10px}.bu35-hero p{color:#d1e1dc;font-size:14px;line-height:1.5;margin:5px 0}.bu35-kicker{font-size:10px;font-weight:850;color:#f6d18b;letter-spacing:2px;text-transform:uppercase}.bu35-card{background:linear-gradient(145deg,#123c4b,#0b2734);border:1px solid #7b9b987e;border-radius:18px;padding:16px;margin:11px 0;box-shadow:0 6px 18px #0003}.bu35-card h3{margin:0 0 10px;font:700 22px Georgia,serif;color:#ffe3a9}.bu35-card p{font-size:14px;line-height:1.45;color:#e2e9e3;margin:5px 0 12px}
+.bu35-btn{background:linear-gradient(#ffe6a7,#cdaa66);color:#152832;border:1px solid #ffedc3;font-weight:900;min-height:50px;border-radius:14px;padding:10px 15px;font-size:15px;width:100%;margin-top:11px;cursor:pointer}.bu35-btn:disabled{opacity:.45}.bu35-outline{background:#153d48;border:1px solid #bcaa7a;border-radius:13px;min-height:45px;padding:10px 12px;color:#f9e3b2;font-weight:750;font-size:14px;cursor:pointer}.bu35-soft{background:transparent;border:0;color:#e6d5aa;font-weight:700;text-decoration:underline;padding:13px;cursor:pointer}.bu35-button-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.bu35-button-row>*{flex:1;min-width:110px}.bu35-muted{color:#bbd0cb;font-size:12px;line-height:1.48}.bu35-label{display:block;font-size:12px;font-weight:800;letter-spacing:.4px;color:#dfcfaa;margin:15px 0 7px}
+.bu35-people{display:grid;grid-template-columns:1fr 1fr;gap:8px}.bu35-people input{width:100%;min-width:0;border-radius:12px;background:#092a35;border:1px solid #80a5a0;color:#fff3d7;padding:12px 10px;font-size:15px}.bu35-select{width:100%;background:#0c303d;color:#fff4d9;border:1px solid #9b9b7b;border-radius:13px;font-size:15px;padding:12px}.bu35-pills{display:flex;gap:8px;flex-wrap:wrap}.bu35-pills button{flex:1;background:#123946;color:#f4ead1;border:1px solid #779795;border-radius:12px;padding:12px 8px;min-width:80px;font-weight:750}.bu35-pills button.active{color:#203038;background:#f2d68f;border-color:#ffe9b5}.bu35-countbox{display:flex;align-items:center;justify-content:center;gap:24px;margin:10px 0}.bu35-countbox strong{font:700 30px Georgia,serif;color:#ffe6a9}.bu35-countbox button{width:42px;height:42px;border-radius:12px;background:#214953;border:1px solid #bfab80;color:#ffe4a3;font-size:25px}
+.bu35-headline{display:flex;align-items:center;justify-content:space-between;gap:8px}.bu35-progress{height:7px;background:#2a5159;border-radius:12px;overflow:hidden;margin:11px 0}.bu35-progress i{display:block;height:100%;background:linear-gradient(90deg,#5ca3a0,#f0d182);border-radius:12px}.bu35-statrow{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#bcd4ce;flex-wrap:wrap}.bu35-stage{font-size:11px;letter-spacing:1.3px;color:#f9d08e;font-weight:800;margin:10px 0}.bu35-turn{border:1px solid #e0bd76;border-radius:20px;text-align:center;background:linear-gradient(145deg,#1d5160,#092a36);padding:26px 16px;margin:16px 0}.bu35-turn .bu35-name{font:700 clamp(29px,8vw,42px) Georgia,serif;color:#ffe09d;margin:9px 0}.bu35-turn p{font-size:14px;color:#dfebe6;margin:8px 0}.bu35-avatar{margin:auto;width:57px;height:57px;display:grid;place-items:center;border-radius:50%;background:#e2be75;color:#15313c;font-size:30px;font-weight:900}.bu35-inline-score{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:15px 0}.bu35-inline-score span{padding:7px 9px;border:1px solid #729b9a6f;border-radius:10px;color:#e5ece5;font-size:11px;background:#143744}.bu35-inline-score span.active{border-color:#f4d18c;background:#3a4e4a;color:#ffefc3}
+.bu35-question{font:700 clamp(23px,5.7vw,32px)/1.25 Georgia,serif;text-align:center;color:#fff0bf;margin:16px 0 22px}.bu35-answers{display:grid;gap:9px}.bu35-answer{background:#0b303d;color:#f8eedb;min-height:56px;border:1px solid #729e9b;border-radius:14px;font:650 15px system-ui;text-align:left;padding:12px 14px}.bu35-answer:disabled{opacity:.85}.bu35-answer.correct{background:#1b5b4c;border-color:#b5ead0}.bu35-answer.wrong{background:#613a41;border-color:#edafa6}.bu35-feedback{background:#153e4a;border:1px solid #779f95;border-radius:13px;padding:14px;margin:12px 0;font-size:14px;line-height:1.48}.bu35-feedback a,.bu35-scripture{color:#ffe4a1;font-weight:800}.bu35-feedback b{display:block;margin-bottom:7px;color:#ffe5a2}.bu35-tiles{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:17px 0}.bu35-tile{background:linear-gradient(#f7dfad,#d5b476);color:#142b34;border:2px solid #fae8be;border-radius:10px;min-width:36px;height:45px;padding:0 8px;font:850 21px Georgia,serif;box-shadow:0 3px 0 #71532b}.bu35-tile:disabled{opacity:.22;box-shadow:none}.bu35-word-preview{text-align:center;letter-spacing:6px;min-height:45px;color:#ffe2a6;font:800 26px Georgia,serif;margin:14px 0;border-bottom:1px dashed #d6b67875}.bu35-scene{display:block;width:100%;height:auto;max-height:240px;object-fit:cover;border-radius:15px;border:1px solid #dec183;box-shadow:0 7px 20px #0009;margin:6px auto 14px}.bu35-wheel-frame{position:relative;max-width:320px;margin:4px auto 15px;aspect-ratio:1}.bu35-wheel{width:100%;height:100%;filter:drop-shadow(0 8px 17px #000c);transform:rotate(0deg);transition:transform 2.9s cubic-bezier(.14,.65,.12,1)}.bu35-pointer{position:absolute;top:-7px;left:50%;transform:translateX(-50%);z-index:2;width:0;height:0;border:16px solid transparent;border-top:25px solid #ffecad;filter:drop-shadow(0 2px 2px #000)}.bu35-wheel{pointer-events:none}.bu35-pointer{pointer-events:none}.bu35-wheel text{font:700 12px system-ui;fill:#fff9dd;paint-order:stroke;stroke:#14353b;stroke-width:2px}.bu35-result{background:linear-gradient(135deg,#3a524a,#1b4250);border:1px solid #e1c27d;border-radius:16px;text-align:center;padding:18px;margin:13px 0}.bu35-result h3{font:700 27px Georgia,serif;color:#ffdf9b;margin:3px 0 9px}.bu35-result p{font:17px/1.45 Georgia,serif;color:#fff3da}.bu35-rank{display:flex;justify-content:space-between;gap:8px;padding:11px 7px;border-bottom:1px solid #62827c55;font-size:14px}.bu35-rank strong{color:#ffe3a0}.bu35-note{font-size:12px;line-height:1.5;color:#adcdc7;text-align:center;margin:17px 0}.bu35-done{font-size:52px;text-align:center;color:#ffdda0;filter:drop-shadow(0 0 16px #ffd48177)}
+@media(max-width:360px){.bu35-body{padding:12px 10px 32px}.bu35-people{grid-template-columns:1fr 1fr}.bu35-hero{padding:15px 11px}.bu35-tile{min-width:32px;height:41px;font-size:17px}.bu35-answer{min-height:51px}.bu35-card{padding:12px}}@media(prefers-reduced-motion:reduce){.bu35-wheel{transition:none!important}}
+
 </style></head><body><main id="app" role="main">
 <section id="home" class="screen cinematic-home-screen"><div class="cinematic-dashboard" id="home-hero">
 <div class="cinematic-vignette" aria-hidden="true"></div>
@@ -673,7 +686,7 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 <button id="home-help"><span aria-hidden="true">?</span><b>Help</b><small>How to play</small></button>
 </nav>
 <button id="begin" class="cin-more-modes">PLAY BIBLE TRIVIA <span aria-hidden="true">›</span></button>
-<div class="cinematic-footnote">BIBLE UNFOLDED · v3.4</div>
+<div class="cinematic-footnote">BIBLE UNFOLDED · v3.5</div>
 </div></section>
 <section class="screen mode-screen" id="modes" hidden aria-hidden="true">
 <header class="hub-head"><button class="hub-icon" id="modes-back" aria-label="Back to cover">‹</button><div class="hub-headtitle"><small>BIBLE UNFOLDED</small><b>Choose Your Adventure</b></div><button class="hub-icon" id="modes-menu" aria-label="Menu">☰</button></header>
@@ -703,7 +716,7 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 <section id="levels" class="screen hub-screen" hidden><header class="hub-head"><button id="levels-back" class="hub-icon" aria-label="Back">‹</button><div class="hub-headtitle"><small>FIND YOUR PLACE</small><b>Bible Books</b></div><button id="levels-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll"><div class="book-intro"><h1>Explore the Bible</h1><p>Choose a book to see its stories. New episodes unlock as your journey grows.</p></div><div class="testament-label">HEBREW–ARAMAIC SCRIPTURES <span>39 books</span></div><div id="hebrew-books" class="book-grid"></div><div class="testament-label new-testament">CHRISTIAN GREEK SCRIPTURES <span>27 books</span></div><div id="greek-books" class="book-grid"></div><p class="collection-note">Genesis is playable now. An independent Moses preview can be opened through the Exodus tile or the menu.</p></div></section>
 <section id="episodes" class="screen hub-screen" hidden><header class="hub-head"><button id="episodes-back" class="hub-icon" aria-label="Back">‹</button><div class="hub-headtitle"><small>JOURNEY 1 · THE BEGINNING</small><b>Genesis</b></div><button id="episodes-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll"><div class="episodes-cover"><div class="overline">BOOK 01 · GENESIS</div><h1>The Beginning</h1><p>Every great story has a beginning.</p></div><div class="episode-headline"><b>Discover the episodes</b><small>2 episodes planned · unlock Eden after Creation</small></div><div id="episode-list" class="episode-list"></div></div></section>
 <section id="gallery" class="screen hub-screen" hidden><header class="hub-head"><button id="gallery-back" class="hub-icon" aria-label="Go back">‹</button><div class="hub-headtitle"><small>GENESIS · EPISODE 1</small><b>Discovery Gallery</b></div><button id="gallery-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll gallery-scroll"><div class="overline">YOUR STORY IN PICTURES</div><h1>Moments Uncovered</h1><p>Revisit the original scenes you have revealed. More moments unlock as you play.</p><div id="gallery-grid" class="gallery-grid"></div><button id="gallery-resume" class="gold-button gallery-resume">Return to the Adventure →</button></div></section><dialog id="gallery-viewer" class="gallery-viewer"><button id="viewer-close" class="viewer-close" aria-label="Close image">×</button><img id="viewer-image" alt="A revealed moment from the Genesis account"><div id="viewer-caption"></div></dialog><div id="menu-mask" class="overlay-mask" hidden></div><aside id="game-menu" class="game-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden><div class="drawer-top"><div><small>THE ADVENTURE CONTINUES</small><h2 id="menu-title">Bible Unfolded</h2></div><button id="menu-close" class="hub-icon" aria-label="Close menu">×</button></div><nav class="drawer-links"><button data-nav="continue"><span>▶</span> Continue Playing <small>Resume your current chapter</small></button><button data-nav="journey"><span>✧</span> Journey Path <small>See your progress</small></button><button data-nav="levels"><span>▦</span> Levels <small>Browse Bible books</small></button><button data-nav="gallery"><span>✧</span> Discovery Gallery <small>Revisit your unlocked scenes</small></button><button data-nav="rewards"><span>★</span> Rewards <small>Coins, Points, and prizes</small></button><button data-nav="settings"><span>♫</span> Settings <small>Music and controls</small></button><button data-nav="help"><span>?</span> How to Play <small>Learn the controls</small></button><button data-nav="home"><span>⌂</span> Cover Screen <small>Return to the beginning</small></button></nav><button id="moses" class="drawer-prototype">Exodus — The River’s Secret <span>↗</span></button><button id="menu-crossword" class="drawer-prototype">▦ Bible Word Trails <span>↗</span></button><button id="menu-watch" class="drawer-prototype">▶ Watch Stories <span>↗</span></button><p class="drawer-foot">Story Adventure and Bible Word Trails use shared Settings.</p></aside>
-<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.4 · Trivia & Immersion</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="setting-volume"><b>Original Bible Unfolded Soundtracks</b><small class="music-note">Three original, four-minute instrumental themes: Navigation, Story Adventure and Word Trails. Music is off by default. Watch Stories retains its earlier score until you approve a change.</small><small class="music-note" id="soundtrack-status" role="status" aria-live="polite">Music off</small></div><label class="setting-row"><span><b>Reduced motion</b><small>Limit decorative animation</small></span><input type="checkbox" id="setting-motion"></label><div class="save-transfer"><b>Move your progress to another device</b><p>Back up your saved chapters, Coins, crossword progress, and preferences before installing an app or changing browsers.</p><div class="save-transfer-actions"><button type="button" id="save-export">Export Progress</button><button type="button" id="save-import">Import Backup</button></div><input type="file" id="save-file" accept=".json,application/json" hidden><small>Import replaces this device’s game progress. Keep your downloaded backup safe.</small></div><button id="settings-done" class="gold-button">Done</button></section>
+<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.5 · Family Worship</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="setting-volume"><b>Original Bible Unfolded Soundtracks</b><small class="music-note">Three original, four-minute instrumental themes: Navigation, Story Adventure and Word Trails. Music is off by default. Watch Stories retains its earlier score until you approve a change.</small><small class="music-note" id="soundtrack-status" role="status" aria-live="polite">Music off</small></div><label class="setting-row"><span><b>Reduced motion</b><small>Limit decorative animation</small></span><input type="checkbox" id="setting-motion"></label><div class="save-transfer"><b>Move your progress to another device</b><p>Back up your saved chapters, Coins, crossword progress, and preferences before installing an app or changing browsers.</p><div class="save-transfer-actions"><button type="button" id="save-export">Export Progress</button><button type="button" id="save-import">Import Backup</button></div><input type="file" id="save-file" accept=".json,application/json" hidden><small>Import replaces this device’s game progress. Keep your downloaded backup safe.</small></div><button id="settings-done" class="gold-button">Done</button></section>
 <section id="help-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden><button id="help-close" class="dialog-x" aria-label="Close help">×</button><div class="overline">YOUR ADVENTURE GUIDE</div><h2 id="help-title">How to Play</h2><p>Start in Genesis and follow the journey through Bible history. Each solved word reveals an original scene from the account.</p><p><b>Make words:</b> Glide across the circular letters or tap them in order. Use Hint when you need a nudge.</p><p><b>Explore:</b> Journey shows the animated timeline. Levels lists Bible books and the episodes you've unlocked.</p><p>Creation is complete and the first Eden scenes are playable after you finish Creation. Coins buy optional hints and collectibles; Points track achievement. Check Rewards for your seven-day journey.</p><button id="help-done" class="gold-button">Let's Explore</button></section>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <section id="chapter-guide" class="chapter-guide" role="dialog" aria-modal="true" aria-labelledby="chapter-guide-title" hidden>
@@ -721,6 +734,12 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 </section>
 <section id="play" class="screen" hidden><header class="play-head"><button id="to-home" class="back" aria-label="Back to episodes">‹</button><div class="head-title"><small>GENESIS · EPISODE 1</small><b>A World Awakens</b></div><button id="play-menu" class="head-btn" aria-label="Open game menu" title="Menu">☰</button></header><div class="wallet-banner wallet-story" data-wallet="true" role="status"></div><div class="scene" id="scene"><div id="initial-world" class="initial-world"></div><div id="frame-a" class="scene-img"></div><div id="frame-b" class="scene-img"></div><div class="scene-shade"></div><div id="scene-sub" class="scene-sub"></div></div><div class="scene-label"><div><span id="world-phase">THE BEGINNING</span><strong id="world-title">A world waiting to awaken</strong></div><div id="stepdots" class="stepdots"><i></i><i></i></div></div><div id="gamepanel" class="gamepanel"><div class="eyebrow">DISCOVER · <span id="step-label">1 OF 3</span></div><h2 id="clue" class="clue">What was created along with the heavens?</h2><div id="answer" class="letter-answer empty">Trace or tap the letters</div><div id="wheel" class="wheel"><svg class="wheel-line" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline id="trace" points=""></polyline></svg></div><p id="note" class="note" aria-live="polite"></p><div class="panel-foot"><button id="clear" class="utility-btn">↶ Clear</button><button id="hint" class="utility-btn">✦ Hint</button><button id="restart" class="utility-btn">⟲ Restart</button></div></div></section>
 </main>
+
+<section class="bu35-screen" id="bu35-family" aria-label="Family Worship and Play Together" hidden>
+<header class="bu35-top"><button class="bu35-back" id="bu35-back" aria-label="Back to Bible Unfolded">‹</button><h1 id="bu35-title">Family Worship</h1><button class="bu35-menu" id="bu35-menu" aria-label="Game settings">☰</button></header>
+<div class="bu35-body" id="bu35-body" aria-live="polite"></div>
+</section>
+
 <section class="bu34-screen" id="bu34-trivia" aria-label="Bible Trivia" hidden><header class="bu34-top"><button class="bu34-icon" id="bu34-back" aria-label="Back">‹</button><h1 class="bu34-title">Bible Trivia</h1><button class="bu34-icon" id="bu34-menu" aria-label="Open menu">☰</button></header><div class="bu34-body" id="bu34-body"></div></section>
 <div id="bu34-onboard" class="bu34-onboard" role="dialog" aria-label="Quick tip" hidden><b id="bu34-onboard-title"></b><p id="bu34-onboard-desc"></p><button id="bu34-onboard-ok">Got it ✓</button></div>
 <div id="bu34-fx" aria-hidden="true" hidden></div>
@@ -1941,6 +1960,230 @@ bu25Target=function(){if(bu34Visible())return 'navigation';return bu34OldMusicTa
 const bu34OldAwardChapter=awardChapter;
 awardChapter=function(book){bu34OldAwardChapter(book)};
 // Always return to safe known screen on reload and let persisted status remain untouched.
+
+
+/* Bible Unfolded v3.5 — Family Worship: pass-and-play, wheel, guided reading, group games.
+   Deliberately independent of single-player progression; main content and saves retained. */
+const BU35_SAVE='bible-unfolded-family-v35';
+const BU35_TOPICS={
+ genesis:{name:'Creation',reading:'Genesis 1:1–31',ref:'Genesis 1',thought:'Which part of creation are you especially thankful for, and why?'},
+ eden:{name:'Eden',reading:'Genesis 2:7–25; 3:1–24',ref:'Genesis 2',thought:'What part of life in Paradise are you most looking forward to?'},
+ cain:{name:'Cain and Abel',reading:'Genesis 4:1–16',ref:'Genesis 4',thought:'What helps us choose kindness when we feel upset?'},
+ noah:{name:'Noah and the Ark',reading:'Genesis 6:9–22',ref:'Genesis 6',thought:'What do you admire most about Noah and his family?'},
+ babel:{name:'The Tower of Babel',reading:'Genesis 11:1–9',ref:'Genesis 11',thought:'What does this account teach you about the importance of listening to Jehovah?'},
+ abraham:{name:'Abram’s Journey',reading:'Genesis 12:1–9',ref:'Genesis 12',thought:'When have you found it helpful to show faith like Abram?'},
+ moses:{name:'Baby Moses',reading:'Exodus 2:1–10',ref:'Exodus 2',thought:'What do you appreciate about the courage and care shown in this account?'}
+};
+const BU35_PROMPTS=[
+ {type:'From the Heart',q:'What Bible passage means the most to you, and why?'},
+ {type:'Looking Forward',q:'What are you especially looking forward to in the new system?'},
+ {type:'Bible Favorites',q:'Which faithful Bible character would you like to meet?'},
+ {type:'Imagine That!',q:'If you could watch one Bible account unfold, which would it be?'},
+ {type:'Paradise Dreams',q:'What animal would you be excited to spend time with in Paradise?'},
+ {type:'Act It Out',q:'Act out a Bible character or account without talking. Can everyone guess?'},
+ {type:'Family Fun',q:'Describe a Bible account without saying any names. Let the family guess.'},
+ {type:'Encouragement',q:'What scripture or Bible thought helps you feel calm when you are worried?'},
+ {type:'Imagine That!',q:'What skill would you love to learn in Paradise?'},
+ {type:'From the Heart',q:'What quality do you especially admire in a faithful Bible character?'},
+ {type:'Family Choice',q:'Pick a family member and ask them to share their favorite Bible account.'},
+ {type:'Everybody Answers!',q:'Everyone name one thing about Jehovah’s creation that makes you smile.'},
+ {type:'Bible Favorites',q:'What Bible account have you enjoyed studying recently?'},
+ {type:'Encouragement',q:'What would you like to thank a family member for today?'},
+ {type:'Everybody Answers!',q:'Everyone say one kind thing they appreciated about another person this week.'},
+ {type:'Act It Out',q:'Silently act out an animal mentioned in a Bible account. Can others guess?'},
+ {type:'From the Heart',q:'What is something you have learned from a family member?'},
+ {type:'Imagine That!',q:'Which place mentioned in the Bible would you most like to visit?'},
+ {type:'Family Fun',q:'Make up a three-clue Bible-character guessing game for the family.'},
+ {type:'Everybody Answers!',q:'Everyone share one favorite Bible story and what makes it memorable.'}
+];
+const BU35_STORY={genesis:GENESIS_BEATS,eden:EDEN_BEATS,cain:CAIN_BEATS,noah:NOAH_BEATS,babel:BABEL_BEATS,abraham:ABRAHAM_BEATS,moses:MOSES_BEATS};
+let bu35Setup={people:['Player 1','Player 2','Player 3'],minutes:20,style:'team',topic:'babel'};
+let bu35Game=null,bu35View='hub',bu35WheelAngle=0,bu35SpinTimer=0;
+try{const saved=JSON.parse(localStorage.getItem(BU35_SAVE)||'{}');if(saved&&typeof saved==='object'){
+ if(saved.setup?.people?.length>=2)bu35Setup={...bu35Setup,...saved.setup};
+ if(saved.game?.people?.length>=2&&Array.isArray(saved.game.phases)&&!saved.game.complete)bu35Game=saved.game;
+}}catch(_){}
+const bu35El=()=>document.getElementById('bu35-body');
+const bu35Escape=bu34Esc;
+const bu35Random=n=>Math.floor(Math.random()*n);
+function bu35Save(){try{localStorage.setItem(BU35_SAVE,JSON.stringify({setup:bu35Setup,game:bu35Game}))}catch(_){}}
+function bu35Visible(){return !document.getElementById('bu35-family').hidden}
+function bu35Open(view='hub'){
+ startAudio();hideAll();closeMenu();closeDialog();stopWatch();document.getElementById('bu35-family').hidden=false;
+ bu35View=view;document.title='Bible Unfolded · Family Worship';bu35Render();updateMusicState();
+}
+function bu35Exit(){clearTimeout(bu35SpinTimer);bu35Save();focusHome();updateMusicState()}
+function bu35Hub(){bu35View='hub';bu35Render()}
+function bu35Render(){
+ if(!bu35Visible())return;
+ document.getElementById('bu35-title').textContent=bu35Game&&bu35View==='game'?'Family Worship':bu35View==='setup'?'Set Up Players':'Play Together';
+ const b=bu35El(),previousScroll=b.scrollTop;
+ if(bu35View==='hub')bu35RenderHub(b);
+ else if(bu35View==='setup')bu35RenderSetup(b);
+ else if(bu35View==='game')bu35RenderGame(b);
+ b.scrollTop=(bu35View==='game'&&bu35Game&&!bu35Game.handOff&&['story','words','trivia','lightning'].includes(bu35Phase())?previousScroll:0);
+}
+function bu35RenderHub(b){
+ b.innerHTML=`<div class="bu35-hero"><span class="bu35-kicker">NEW • v3.5</span><h2>Family Worship</h2><p>A shared Bible game night—Scripture, challenges, the spinning wheel, and a family finale.</p><button class="bu35-btn" id="bu35-new">✦ Start Family Worship</button></div>
+ ${bu35Game?`<div class="bu35-card"><h3>Continue where you stopped</h3><p>${bu35Escape(BU35_TOPICS[bu35Game.topic]?.name||'Bible challenge')} · ${bu35Game.people.length} players · ${bu35Game.minutes} minutes</p><button class="bu35-btn" id="bu35-resume">▶ Resume Session</button><button class="bu35-soft" id="bu35-discard">Discard saved session</button></div>`:''}
+ <div class="bu35-card"><h3>Quick Play Together</h3><p>No full session required. Pass one phone around and take turns.</p>
+ <div class="bu35-button-row"><button class="bu35-outline" data-quick="wheel">◉ Spin & Share</button><button class="bu35-outline" data-quick="trivia">? Trivia</button><button class="bu35-outline" data-quick="words">▦ Word Relay</button><button class="bu35-outline" data-quick="story">▤ Story Relay</button></div></div>
+ <p class="bu35-note">Local Pass & Play · 2–6 people · No accounts or online multiplayer. Session rewards are limited to once per themed challenge. Personal sharing is never scored.</p>`;
+ document.getElementById('bu35-new').onclick=()=>{bu35Setup.quick='session';bu35View='setup';bu35Render()};
+ if(bu35Game){document.getElementById('bu35-resume').onclick=()=>{bu35View='game';bu35Render()};document.getElementById('bu35-discard').onclick=()=>{if(confirm('Discard the unfinished Family Worship session?')){bu35Game=null;bu35Save();bu35Render()}}}
+ b.querySelectorAll('[data-quick]').forEach(x=>x.onclick=()=>{bu35Setup.quick=x.dataset.quick;bu35View='setup';bu35Render()});
+}
+function bu35RenderSetup(b){const s=bu35Setup;
+ b.innerHTML=`<div class="bu35-hero"><span class="bu35-kicker">${s.quick&&s.quick!=='session'?'QUICK PASS & PLAY':'FAMILY WORSHIP'}</span><h2>${s.quick==='wheel'?'Spin & Share':s.quick==='trivia'?'Trivia Together':s.quick==='words'?'Word Relay':s.quick==='story'?'Story Relay':'Gather the Family'}</h2><p>Choose your players. Everyone gets a turn.</p></div>
+ <div class="bu35-card"><label class="bu35-label">PLAYERS</label><div class="bu35-countbox"><button id="bu35-minus" aria-label="Remove player">−</button><strong>${s.people.length}</strong><button id="bu35-plus" aria-label="Add player">+</button></div><div class="bu35-people">${s.people.map((name,i)=>`<input data-person="${i}" aria-label="Player ${i+1} name" maxlength="22" value="${bu35Escape(name)}" placeholder="Player ${i+1}">`).join('')}</div>
+ <label class="bu35-label">BIBLE ACCOUNT</label><select id="bu35-topic" class="bu35-select">${Object.entries(BU35_TOPICS).map(([k,v])=>`<option value="${k}" ${k===s.topic?'selected':''}>${bu35Escape(v.name)}</option>`).join('')}</select>
+ ${s.quick==='session'||!s.quick?`<label class="bu35-label">SESSION LENGTH</label><div class="bu35-pills" id="bu35-time">${[10,20,30].map(n=>`<button data-time="${n}" class="${s.minutes===n?'active':''}">${n} min</button>`).join('')}</div><label class="bu35-label">PLAY STYLE</label><div class="bu35-pills" id="bu35-style"><button data-style="team" class="${s.style==='team'?'active':''}">♡ Team Adventure</button><button data-style="friendly" class="${s.style==='friendly'?'active':''}">★ Friendly Challenge</button></div>`:`<p class="bu35-muted">Quick activity · Scores stay inside this session. No extra Coins are needed.</p>`}
+ <button class="bu35-btn" id="bu35-start">▶ ${s.quick==='session'||!s.quick?'Begin Family Worship':'Start Playing'}</button><button class="bu35-soft" id="bu35-cancel">Back to Play Together</button></div>`;
+ const takeInputs=()=>{b.querySelectorAll('[data-person]').forEach(x=>s.people[+x.dataset.person]=x.value.slice(0,22));bu35Save()};
+ b.querySelectorAll('[data-person]').forEach(x=>x.oninput=takeInputs);
+ b.querySelector('#bu35-minus').onclick=()=>{takeInputs();if(s.people.length>2){s.people.pop();bu35Save();bu35Render()}};
+ b.querySelector('#bu35-plus').onclick=()=>{takeInputs();if(s.people.length<6){s.people.push('Player '+(s.people.length+1));bu35Save();bu35Render()}};
+ b.querySelector('#bu35-topic').onchange=e=>{s.topic=e.target.value;bu35Save()};
+ b.querySelectorAll('[data-time]').forEach(x=>x.onclick=()=>{takeInputs();s.minutes=+x.dataset.time;bu35Save();bu35Render()});
+ b.querySelectorAll('[data-style]').forEach(x=>x.onclick=()=>{takeInputs();s.style=x.dataset.style;bu35Save();bu35Render()});
+ b.querySelector('#bu35-cancel').onclick=bu35Hub;
+ b.querySelector('#bu35-start').onclick=()=>{takeInputs();bu35Begin()};
+}
+function bu35Begin(){
+ if(bu35Game&&!bu35Game.complete&&!confirm('Starting a new activity will replace the unfinished saved session. Continue?'))return;
+ const s=bu35Setup,people=s.people.map((v,i)=>v.trim()||'Player '+(i+1));
+ const quick=s.quick||'session';let phases=[];
+ if(quick==='session'){
+ phases=['read','trivia','wheel','words'];if(s.minutes>=20)phases.push('story');if(s.minutes>=30)phases.push('lightning');phases.push('think','finish');
+ }else if(quick==='wheel')phases=['wheel','finish'];else phases=[quick==='trivia'?'trivia':quick==='words'?'words':'story','finish'];
+ bu35Game={people,minutes:s.minutes,style:s.style,topic:s.topic,quick,phases,phase:0,turn:0,handOff:true,answered:false,choice:null,hinted:false,scores:people.map(()=>0),corrects:people.map(()=>0),attempts:people.map(()=>0),wheelSpins:0,wheelChoice:null,wheelPrompt:null,usedPrompts:[],wordSelection:[],wordTiles:[],questionOrders:{},completedTurns:0,complete:false,started:Date.now()};
+ bu35WheelAngle=0;bu35Save();bu35View='game';bu35Render();
+}
+function bu35Phase(){return bu35Game.phases[bu35Game.phase]||'finish'}
+function bu35NextPhase(){const g=bu35Game;g.phase++;g.turn=0;g.handOff=true;g.answered=false;g.choice=null;g.hinted=false;g.wordSelection=[];g.wordTiles=[];g.wheelChoice=null;g.wheelPrompt=null;bu35Save();bu35Render();if(bu35Phase()==='finish')bu34Celebrate('FAMILY NIGHT COMPLETE!',true)}
+function bu35AfterTurn(){const g=bu35Game;g.completedTurns++;g.turn++;g.handOff=true;g.answered=false;g.choice=null;g.hinted=false;g.wordSelection=[];g.wordTiles=[];bu35Save();if(g.turn>=g.people.length)bu35NextPhase();else bu35Render()}
+function bu35ProgressHeader(){const g=bu35Game,phase=bu35Phase(),labels={read:'READ TOGETHER',trivia:'BIBLE TRIVIA',wheel:'FAMILY WHEEL',words:'WORD RELAY',story:'STORY DISCOVERIES',lightning:'LIGHTNING TRIVIA',think:'THINK ABOUT IT',finish:'CELEBRATE'};
+ const percent=Math.floor(g.phase/Math.max(1,g.phases.length-1)*100);
+ return `<div class="bu35-statrow"><span>${bu35Escape(BU35_TOPICS[g.topic].name)}</span><span>${g.quick==='session'?g.minutes+' min guide':'Quick Play'} · ${g.people.length} players</span></div><div class="bu35-progress"><i style="width:${percent}%"></i></div><div class="bu35-stage">${labels[phase]} · ${g.phase+1}/${g.phases.length}</div>`
+}
+function bu35ScoreStrip(){const g=bu35Game;return `<div class="bu35-inline-score">${g.people.map((n,i)=>`<span class="${i===g.turn?'active':''}">${bu35Escape(n)} · ${g.scores[i]}</span>`).join('')}</div>`}
+function bu35RenderGame(b){const g=bu35Game;if(!g){bu35Hub();return}const phase=bu35Phase();
+ let inner=bu35ProgressHeader();
+ if(phase==='read')inner+=bu35Reading();
+ else if(phase==='wheel')inner+=bu35Wheel();
+ else if(phase==='think')inner+=bu35Think();
+ else if(phase==='finish')inner+=bu35Finish();
+ else if(g.handOff)inner+=bu35Handoff();
+ else if(phase==='trivia'||phase==='lightning')inner+=bu35Trivia();
+ else inner+=bu35Words(phase==='story');
+ inner+=`<div class="bu35-note"><button class="bu35-soft" id="bu35-leave">Save & leave</button></div>`;
+ b.innerHTML=inner;
+ b.querySelector('#bu35-leave').onclick=()=>{bu35Save();bu35Hub()};
+ if(phase==='read')b.querySelector('#bu35-read-done').onclick=bu35NextPhase;
+ else if(phase==='wheel')bu35BindWheel();
+ else if(phase==='think'){b.querySelector('#bu35-reflect-done').onclick=bu35NextPhase;b.querySelector('#bu35-reflect-again').onclick=()=>{g.reflection=(g.reflection||0)+1;bu35Save();bu35Render()}}
+ else if(phase==='finish')bu35BindFinish();
+ else if(g.handOff)b.querySelector('#bu35-ready').onclick=()=>{g.handOff=false;bu35PrepareTurn();bu35Save();bu35Render()};
+ else if(phase==='trivia'||phase==='lightning')bu35BindTrivia();
+ else bu35BindWords();
+ if(phase==='story'&&!g.handOff){const beat=bu35Beat();const img=document.getElementById('bu35-story-image');if(img&&beat&&ART[beat.scene])img.src=ART[beat.scene]}
+}
+function bu35Reading(){const t=BU35_TOPICS[bu35Game.topic];return `<div class="bu35-hero"><span class="bu35-kicker">GATHER ROUND</span><h2>Read Together</h2><p>Open the account, take turns reading, and discuss anything that catches your attention. There's no timer for reading.</p></div><div class="bu35-card"><h3>${bu35Escape(t.name)}</h3><p><strong>${bu35Escape(t.reading)}</strong></p><a class="bu35-scripture" target="_blank" rel="noopener noreferrer" href="${scriptureUrl(t.ref)}">▤ Open the Bible on JW.org ↗</a><p class="bu35-muted">The link opens the first chapter. Navigate to further chapters as needed. Return here when ready.</p><button class="bu35-btn" id="bu35-read-done">We've Finished Reading →</button></div>`}
+function bu35Handoff(){const g=bu35Game,phase=bu35Phase(),label=phase==='trivia'||phase==='lightning'?'Bible question':phase==='story'?'Bible story discovery':'Word challenge';return `<div class="bu35-turn"><div class="bu35-avatar">${g.turn+1}</div><span class="bu35-kicker">PASS THE PHONE</span><div class="bu35-name">${bu35Escape(g.people[g.turn])}</div><p>Your ${label} stays hidden until you're ready.</p><button class="bu35-btn" id="bu35-ready">I'm Ready →</button></div>${bu35ScoreStrip()}`}
+function bu35Questions(){const g=bu35Game;return bu35Phase()==='lightning'?BU34_KEYS.flatMap(k=>BU34_BANK[k]):BU34_BANK[g.topic]}
+function bu35Question(){const g=bu35Game,bank=bu35Questions(),id=String(g.phase);if(!g.questionOrders[id]){g.questionOrders[id]=bu34Shuffle(bank.map((_,i)=>i));bu35Save()}
+ return bank[g.questionOrders[id][g.turn%bank.length]]||bank[0]
+}
+function bu35Beat(){const g=bu35Game,beats=BU35_STORY[g.topic]||GENESIS_BEATS;return beats[(g.turn+2)%beats.length]}
+function bu35Word(){const g=bu35Game; if(bu35Phase()==='story')return bu35Beat().word;
+ const boardMap={genesis:0,eden:1,cain:5,moses:3};
+ if(Object.prototype.hasOwnProperty.call(boardMap,g.topic)){const p=TRAIL_PACKS[boardMap[g.topic]];return p.words[(g.turn+2)%p.words.length].word;}
+ const beats=BU35_STORY[g.topic]||GENESIS_BEATS;return beats[(g.turn+2)%beats.length].word;
+}
+function bu35PrepareTurn(){const g=bu35Game;if(['story','words'].includes(bu35Phase())){const word=bu35Word();g.wordTiles=bu34Shuffle(word.split(''));g.wordSelection=[]}}
+function bu35Trivia(){const g=bu35Game,q=bu35Question(),correct=g.choice===q.correct;
+ return `<div class="bu35-card"><span class="bu35-kicker">${bu35Escape(g.people[g.turn])} · QUESTION ${g.turn+1}/${g.people.length}</span><div class="bu35-question">${bu35Escape(q.q)}</div><div class="bu35-answers">${q.choices.map((opt,i)=>`<button class="bu35-answer ${g.answered&&i===q.correct?'correct':g.answered&&i===g.choice?'wrong':''}" data-answer="${i}" ${g.answered?'disabled':''}>${String.fromCharCode(65+i)} · ${bu35Escape(opt)}</button>`).join('')}</div>
+ ${g.answered?`<div class="bu35-feedback"><b>${correct?'✓ Correct!':'Answer: '+bu35Escape(q.choices[q.correct])}</b>${bu35Escape(q.explanation)}<p><a class="bu35-scripture" target="_blank" rel="noopener noreferrer" href="${scriptureUrl(q.ref)}">Read ${bu35Escape(q.ref)} ↗</a></p></div><button class="bu35-btn" id="bu35-nextturn">${g.turn===g.people.length-1?'Finish Round':'Pass to Next Player'} →</button>`:`<p class="bu35-muted">${g.hinted?'Family assistance enabled · correct answers earn half points.':'Ask a family member for help whenever you need it.'}</p><button class="bu35-outline" id="bu35-help">♡ Ask Family for Help</button><button class="bu35-soft" id="bu35-skip">Skip Question</button>`}</div>${bu35ScoreStrip()}`;
+}
+function bu35BindTrivia(){const g=bu35Game;if(g.answered){bu35El().querySelector('#bu35-nextturn').onclick=bu35AfterTurn;return}
+ bu35El().querySelectorAll('[data-answer]').forEach(x=>x.onclick=()=>{if(g.answered)return;g.choice=+x.dataset.answer;g.answered=true;g.attempts[g.turn]++;if(g.choice===bu35Question().correct){g.scores[g.turn]+=g.hinted?50:100;g.corrects[g.turn]++;playChime()}else tick();bu35Save();bu35Render()});
+ bu35El().querySelector('#bu35-help').onclick=()=>{g.hinted=true;bu35Save();bu35Render()};
+ bu35El().querySelector('#bu35-skip').onclick=()=>{g.answered=true;g.choice=-1;g.attempts[g.turn]++;bu35Save();bu35Render()};
+}
+function bu35Words(story){const g=bu35Game,beat=story?bu35Beat():null,word=bu35Word(),preview=g.wordSelection.map(i=>g.wordTiles[i]).join(''),success=g.answered&&g.choice==='correct';
+ return `<div class="bu35-card"><span class="bu35-kicker">${bu35Escape(g.people[g.turn])} · ${story?'STORY DISCOVERY':'WORD TRAIL RELAY'} ${g.turn+1}/${g.people.length}</span>
+ ${story?'<img id="bu35-story-image" class="bu35-scene" alt="Bible story scene" loading="lazy">':''}
+ <div class="bu35-question">${story?bu35Escape(beat.clue):'Arrange the letters to discover the hidden word.'}</div>
+ <div class="bu35-word-preview">${preview?bu35Escape(preview):Array.from(word).map(()=>'_').join(' ')}</div>
+ <div class="bu35-tiles">${g.wordTiles.map((letter,i)=>`<button class="bu35-tile" data-letter="${i}" ${g.wordSelection.includes(i)||g.answered?'disabled':''}>${bu35Escape(letter)}</button>`).join('')}</div>
+ ${g.answered?`<div class="bu35-feedback"><b>${success?'✓ Discovered!':'Word: '+bu35Escape(word)}</b>${story?bu35Escape(beat.fact):'These words come from Bible Unfolded’s existing story and word puzzles.'}${story?`<p><a class="bu35-scripture" href="${scriptureUrl(beat.reference)}" target="_blank" rel="noopener">Read ${bu35Escape(beat.reference)} ↗</a></p>`:''}</div><button class="bu35-btn" id="bu35-nextturn">${g.turn===g.people.length-1?'Finish Round':'Pass to Next Player'} →</button>`:`<p class="bu35-muted">${g.hinted?'First letter: '+bu35Escape(word[0])+' · Assisted answer: 50 points':'Earn 100 match points, or 50 with a hint.'}</p><div class="bu35-button-row"><button class="bu35-outline" id="bu35-clear">↶ Clear</button><button class="bu35-outline" id="bu35-hint">✦ Hint</button></div><button class="bu35-btn" id="bu35-check" ${preview.length!==word.length?'disabled':''}>Check Word ✓</button><button class="bu35-soft" id="bu35-skip">Skip Word</button>`}</div>${bu35ScoreStrip()}`;
+}
+function bu35BindWords(){const g=bu35Game;if(g.answered){bu35El().querySelector('#bu35-nextturn').onclick=bu35AfterTurn;return}
+ bu35El().querySelectorAll('[data-letter]').forEach(x=>x.onclick=()=>{g.wordSelection.push(+x.dataset.letter);tick();bu35Save();bu35Render()});
+ bu35El().querySelector('#bu35-clear').onclick=()=>{g.wordSelection=[];bu35Save();bu35Render()};
+ bu35El().querySelector('#bu35-hint').onclick=()=>{g.hinted=true;bu35Save();bu35Render()};
+ bu35El().querySelector('#bu35-skip').onclick=()=>{g.answered=true;g.choice='skip';g.attempts[g.turn]++;bu35Save();bu35Render()};
+ bu35El().querySelector('#bu35-check').onclick=()=>{const w=g.wordSelection.map(i=>g.wordTiles[i]).join('');if(w!==bu35Word()){g.wordSelection=[];bu35Save();bu35Render();notify('Try another letter order. You can do it!');return}g.answered=true;g.choice='correct';g.attempts[g.turn]++;g.corrects[g.turn]++;g.scores[g.turn]+=g.hinted?50:100;playChime();bu35Save();bu35Render()};
+}
+function bu35WheelLimit(){const g=bu35Game;return g.quick==='wheel'?999:g.minutes<=10?2:g.minutes===20?3:4}
+function bu35WheelSvg(){const names=bu35Game.people,n=names.length,colors=['#98743b','#257e81','#5171aa','#8d609d','#b16b4d','#49886e'];const cx=150,cy=150,r=136;
+ let wedges='';for(let i=0;i<n;i++){
+ const a=(i*360/n-90)*Math.PI/180,b=((i+1)*360/n-90)*Math.PI/180,m=((i+.5)*360/n-90)*Math.PI/180;
+ const sx=cx+r*Math.cos(a),sy=cy+r*Math.sin(a),ex=cx+r*Math.cos(b),ey=cy+r*Math.sin(b);
+ const x=cx+87*Math.cos(m),y=cy+87*Math.sin(m);
+ const name=bu35Game.people[i].length>11?bu35Game.people[i].slice(0,10)+'…':bu35Game.people[i];
+ wedges+=`<path d="M150 150L${sx.toFixed(2)} ${sy.toFixed(2)}A136 136 0 ${360/n>180?1:0} 1 ${ex.toFixed(2)} ${ey.toFixed(2)}Z" fill="${colors[i%6]}" stroke="#eeddb0" stroke-width="2"/><text x="${x.toFixed(2)}" y="${y.toFixed(2)}" text-anchor="middle" dominant-baseline="middle">${bu35Escape(name)}</text>`;
+ }
+ return `<div class="bu35-wheel-frame"><div class="bu35-pointer" aria-hidden="true"></div><svg class="bu35-wheel" id="bu35-wheel-svg" viewBox="0 0 300 300" role="img" aria-label="Spinning wheel with family player names" style="transform:rotate(${bu35WheelAngle}deg)">${wedges}<circle cx="150" cy="150" r="34" fill="#f0d291" stroke="#8e6b37" stroke-width="3"/><text x="150" y="150" text-anchor="middle" dominant-baseline="middle" style="fill:#1d3e44;stroke:none;font-size:12px;font-weight:900">FAMILY</text></svg></div>`;
+}
+function bu35Wheel(){const g=bu35Game,limit=bu35WheelLimit(),shown=!!g.wheelPrompt;
+ return `<div class="bu35-hero"><span class="bu35-kicker">SPIN & SHARE</span><h2>The Family Wheel</h2><p>${g.quick==='wheel'?'Spin as many times as you like.':`Spin ${limit} times. Everyone can share, pass, or choose another prompt.`}</p></div>${bu35WheelSvg()}
+ ${shown?`<div class="bu35-result"><span class="bu35-kicker">${bu35Escape(g.wheelPrompt.type)}</span><h3>${bu35Escape(g.people[g.wheelChoice])}'s Turn!</h3><p>${bu35Escape(g.wheelPrompt.q)}</p><div class="bu35-button-row"><button id="bu35-newprompt" class="bu35-outline">↻ New Prompt</button><button id="bu35-shared" class="bu35-btn">${g.quick==='wheel'?'Spin Again':g.wheelSpins+1>=limit?'Continue':'Next Spin'} →</button></div><p class="bu35-muted">Share as much or as little as you like. You can always pass—no score or pressure.</p></div>`:
+ `<button class="bu35-btn" id="bu35-spin">◉ SPIN THE WHEEL!</button>${g.quick==='wheel'?'<button class="bu35-soft" id="bu35-wheel-end">Finish Spinning</button>':''}`}
+ <p class="bu35-note">The wheel chooses a player at random. Personal answers never earn or lose match points.</p>`;
+}
+function bu35PickPrompt(){const g=bu35Game,unused=BU35_PROMPTS.map((_,i)=>i).filter(i=>!g.usedPrompts.includes(i));const pick=(unused.length?unused:BU35_PROMPTS.map((_,i)=>i))[bu35Random(unused.length||BU35_PROMPTS.length)];g.usedPrompts.push(pick);return BU35_PROMPTS[pick]}
+function bu35BindWheel(){const g=bu35Game,b=bu35El();if(g.wheelPrompt){b.querySelector('#bu35-newprompt').onclick=()=>{g.wheelPrompt=bu35PickPrompt();bu35Save();bu35Render()};b.querySelector('#bu35-shared').onclick=()=>{g.wheelSpins++;g.wheelPrompt=null;g.wheelChoice=null;bu35Save();if(g.quick!=='wheel'&&g.wheelSpins>=bu35WheelLimit())bu35NextPhase();else bu35Render()};return}
+ const spin=b.querySelector('#bu35-spin');spin.onclick=()=>{
+ if(spin.disabled)return;spin.disabled=true;startAudio();const chosen=bu35Random(g.people.length),n=g.people.length;
+ const raw=(-((chosen+.5)*360/n)%360+360)%360;
+ const last=bu35WheelAngle;bu35WheelAngle=Math.ceil(last/360)*360+1800+raw;
+ if(bu35WheelAngle<=last)bu35WheelAngle+=360;
+ const svg=b.querySelector('#bu35-wheel-svg');if(svg){svg.style.transform=`rotate(${bu35WheelAngle}deg)`;if(reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches)svg.style.transition='none'}
+ if(sfxOn&&sfxVolume>0){playChime();if(!(reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches)){for(const ms of [110,230,365,515,680,860,1060,1290,1560,1870,2240,2670])setTimeout(()=>{if(bu35Visible()&&bu35Game===g&&bu35Phase()==='wheel'&&sfxOn)tick()},ms)}}
+ const end=()=>{if(!bu35Visible()||bu35Game!==g)return;g.wheelChoice=chosen;g.wheelPrompt=bu35PickPrompt();bu35Save();bu35Render();bu35El().querySelector('.bu35-result')?.scrollIntoView({block:'center',behavior:'instant'});if(sfxOn&&sfxVolume>0)playChime()};
+ clearTimeout(bu35SpinTimer);bu35SpinTimer=setTimeout(end,(reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches)?20:2900);
+ };
+ const done=b.querySelector('#bu35-wheel-end');if(done)done.onclick=bu35NextPhase;
+}
+function bu35Think(){const g=bu35Game,t=BU35_TOPICS[g.topic],prompts=[t.thought,'What would you like to remember from what we read and played today?','Is there a kind action you would like to try this week?'];const prompt=prompts[(g.reflection||0)%prompts.length];return `<div class="bu35-hero"><span class="bu35-kicker">NO POINTS. NO RUSH.</span><h2>Think About It</h2><p>One last opportunity to talk together before celebrating.</p></div><div class="bu35-card"><h3>${bu35Escape(t.name)}</h3><div class="bu35-question">${bu35Escape(prompt)}</div><p>Let everybody participate if they'd like. Passing is always okay.</p><a href="${scriptureUrl(t.ref)}" target="_blank" rel="noopener noreferrer" class="bu35-scripture">▤ Revisit ${bu35Escape(t.reading)} on JW.org ↗</a><div class="bu35-button-row"><button class="bu35-outline" id="bu35-reflect-again">Another Question</button><button class="bu35-btn" id="bu35-reflect-done">Celebrate Together →</button></div></div>`}
+function bu35Finish(){const g=bu35Game,total=g.scores.reduce((a,n)=>a+n,0),max=g.people.length*(g.phases.filter(p=>['trivia','lightning','words','story'].includes(p)).length)*100,passed=max===0||total>=max*.55;
+ const ranking=g.people.map((name,i)=>({name,points:g.scores[i],correct:g.corrects[i],id:i})).sort((a,b)=>b.points-a.points),winner=ranking[0]?.points||0;
+ return `<div class="bu35-hero"><div class="bu35-done">✦</div><span class="bu35-kicker">SESSION COMPLETE</span><h2>${g.style==='team'?'Family Challenge Complete!':'Well Played, Everyone!'}</h2><p>${g.style==='team'?(passed?'You reached the team goal together!':'You explored the Bible together. Every bit counts!'):'Congratulations on a fun round of friendly competition.'}</p></div>
+ <div class="bu35-card"><h3>${g.style==='team'?'Shared Team Score':'Final Leaderboard'}</h3><div class="bu35-rank"><span>${g.style==='team'?'Family total':'Top score'}</span><strong>${g.style==='team'?total:winner} pts</strong></div>${ranking.map((p,i)=>`<div class="bu35-rank"><span>${g.style==='friendly'&&p.points===winner&&winner>0?'★ ':''}${bu35Escape(p.name)}</span><strong>${p.points} · ${p.correct} ✓</strong></div>`).join('')}</div>
+ <div class="bu35-card"><h3>Family Celebration</h3><p>Everyone participated. Personal thoughts and discussion were never graded.</p>${g.quick==='session'?`<p>First-time completion of this themed session may earn <strong>140 Points and 35 Coins</strong> for the device's shared wallet. Replays never repeat the reward.</p>`:'<p>Quick activities are for fun and do not generate repeatable Coins.</p>'}<button class="bu35-btn" id="bu35-finish">✦ Complete & Return</button><button class="bu35-outline" id="bu35-replay" style="width:100%;margin-top:10px">↻ Play Again</button></div>`;
+}
+function bu35BindFinish(){const g=bu35Game;const complete=()=>{
+ if(g.quick==='session'&&!g.complete&&g.completedTurns>=g.people.length*2){const id='family-v35-'+g.topic+'-'+g.minutes+'-'+g.style;awardOnce(id,140,35,true)}
+ g.complete=true;bu35Game=null;bu35Save();bu35Hub();
+ };
+ bu35El().querySelector('#bu35-finish').onclick=complete;
+ bu35El().querySelector('#bu35-replay').onclick=()=>{complete();bu35Begin()};
+}
+const bu35OriginalHide=hideAll;
+hideAll=function(){clearTimeout(bu35SpinTimer);bu35OriginalHide();document.getElementById('bu35-family').hidden=true};
+const bu35PreviousTarget=bu25Target;
+bu25Target=function(){if(bu35Visible()&&bu35Game){const p=bu35Phase();if(p==='story')return 'story';if(p==='words')return 'trails'}return bu35PreviousTarget()};
+const bu35HomeCards=document.querySelector('.cinematic-cards');if(bu35HomeCards){const newCard=document.createElement('button');newCard.id='home-family';newCard.className='cinematic-card';newCard.setAttribute('aria-label','Play Family Worship and multiplayer games');newCard.innerHTML='<span class="cinematic-poster art-family" style="background:radial-gradient(circle at 75% 20%,#d6a96388,transparent 55%),linear-gradient(140deg,#0a4853,#16404c)"><span class="poster-symbol" aria-hidden="true" style="font-size:57px">✦</span></span><span class="cinematic-card-body"><span class="cinematic-card-title">Family Worship</span><span class="cinematic-card-desc">Spin & Share, team challenges and local multiplayer.</span><span class="cinematic-card-cta">PLAY TOGETHER <span aria-hidden="true">›</span></span></span>';bu35HomeCards.appendChild(newCard);newCard.onclick=()=>bu35Open()}
+const bu35Drawer=document.querySelector('.drawer-links');if(bu35Drawer){const item=document.createElement('button');item.type='button';item.innerHTML='<span>♡</span> Family Worship <small>Spin, share & play together</small>';item.onclick=()=>bu35Open();bu35Drawer.insertBefore(item,bu35Drawer.children[2]||null)}
+// Quick multiplayer entry points beside existing single-player launchers.
+const bu35TriviaBody=bu34RenderHome;
+bu34RenderHome=function(){bu35TriviaBody();if(!bu34Visible())return;const b=document.getElementById('bu34-body');const top=document.createElement('div');top.className='bu35-card';top.innerHTML='<h3>Playing with family?</h3><p>Try a pass-the-phone Trivia round—no accounts needed.</p><button class="bu35-outline" style="width:100%" id="bu35-from-trivia">♡ Trivia Together</button>';b.insertBefore(top,b.firstChild);top.querySelector('button').onclick=()=>{bu35Setup.quick='trivia';bu35Open('setup')}};
+const bu35OldCrossPicker=renderCrossPicker;
+renderCrossPicker=function(){bu35OldCrossPicker();const list=document.getElementById('cross-pack-list');if(!list)return;const bar=document.createElement('div');bar.className='bu35-card';bar.innerHTML='<h3>Word Trails Together</h3><p>Take turns finding words in a separate Pass & Play relay without changing solo progress.</p><button class="bu35-outline" style="width:100%" id="bu35-from-word">♡ Word Relay</button>';list.prepend(bar);bar.querySelector('button').onclick=()=>{bu35Setup.quick='words';bu35Open('setup')}};
+document.getElementById('bu35-back').onclick=()=>{if(bu35View==='hub')bu35Exit();else if(bu35View==='setup')bu35Hub();else{bu35Save();bu35Hub()}};
+document.getElementById('bu35-menu').onclick=()=>{bu35Save();openMenu()};
+// Preserve existing progress and soundtrack setup while changing only our local multiplayer UI.
 
 </script>
 </body></html>
