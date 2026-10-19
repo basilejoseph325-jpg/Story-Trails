@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.8.4 — Noncommercial Voice Test (elevenlabs.io)</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.8.6 — Noncommercial Voice Test (elevenlabs.io)</title>
 <style>
 :root{--navy:#082530;--deep:#061b26;--teal:#0b3b44;--gold:#f4d48b;--gold2:#cba966;--cream:#fff5d8;--soft:#cbdfdf}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--deep);color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}button{font-family:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #e9c879;outline-offset:3px}button:disabled{opacity:.6;cursor:default}a{color:var(--gold)}.hide,[hidden]{display:none!important}
 #app{width:100%;min-height:100dvh;overflow:hidden;background:var(--deep)}.screen{width:100%;height:100dvh;display:flex;flex-direction:column;overflow:hidden}.home-hero{min-height:0;flex:1;position:relative;background-size:cover;background-position:center 58%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 20px 18px}.home-hero:before{content:"";inset:0;position:absolute;background:linear-gradient(180deg,#061c27ce,#061d2848 38%,#071924ca 100%)}.hero-copy{z-index:1;max-width:600px}.chapter-label,.overline{font-size:11px;letter-spacing:2.5px;color:var(--gold);font-weight:800}.brand{font-family:Georgia,serif;font-size:clamp(44px,10vw,70px);font-weight:700;line-height:.93;letter-spacing:-1.6px;text-shadow:0 3px 30px #000c;color:#ffe5a2;margin:12px auto 13px}.brand small{display:block;font:700 12px/1.8 system-ui;letter-spacing:4px;color:#fff3d2}.home-hero h1{font-family:Georgia,serif;font-size:clamp(28px,6vw,39px);font-weight:700;line-height:1.08;margin:18px 0 9px;text-shadow:0 3px 10px #0008}.hero-description{font-size:15px;color:#e7f3ed;line-height:1.5;margin:0 auto 18px;max-width:420px}.gold-button,.secondary-button{border-radius:15px;padding:15px 22px;font-size:15px;font-weight:800;border:1px solid #fce3a3;transition:transform .15s}.gold-button{background:linear-gradient(#f6d990,#c89e46);color:#1c2727;box-shadow:0 5px 28px #ffcb6c33;min-height:50px}.gold-button:active,.secondary-button:active{transform:scale(.97)}.secondary-button{color:#f0e8ce;background:#133a46;min-height:45px;border-color:#75949a}.home-actions{display:grid;gap:9px;margin:0 auto;max-width:300px}.route-panel{background:linear-gradient(180deg,#123c49,#082630);padding:13px 15px max(14px,env(safe-area-inset-bottom));border-top:1px solid #d8be7c55;box-shadow:0 -10px 30px #0006;max-height:43dvh;overflow-y:auto}.route-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.route-header h2{font-family:Georgia,serif;font-size:20px;margin:0}.route-sub{font-size:11px;color:#b1cacb}.path-list{display:flex;gap:9px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:thin;scrollbar-color:#bda16c66 transparent}.episode{flex:0 0 146px;border:1px solid #58767a77;border-radius:12px;min-height:87px;padding:9px 10px;background:#143d47;color:#d9e7e4;text-align:left}.episode.available{background:linear-gradient(135deg,#315a59,#12383e);border:1px solid #e0c580;color:#fff}.episode .n{font-family:Georgia,serif;font-size:19px;color:#fbe0a3}.episode strong{display:block;font-size:13px;margin:2px 0 3px}.episode span{display:block;font-size:10px;color:#b6d0cb}.route-foot{font-size:11px;margin:8px 0 0;color:#b6cfcb}
@@ -868,6 +868,51 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
  #play .gamepanel .letter-answer,#play .gamepanel .letter-answer.empty{height:22px!important;min-height:22px!important;max-height:22px!important;flex-basis:22px!important;line-height:22px!important;}
 }
 </style>
+<style>
+/* v3.8.6 • clearer paths through trivia, daily discovery visual priority */
+#bu375-home-cta.bu375-home-banner{position:relative;isolation:isolate;border:1.5px solid #65cadd!important;background:linear-gradient(112deg,#123d51,#0c323f 56%,#163d43)!important;box-shadow:0 0 0 1px rgba(246,211,143,.55),0 0 16px rgba(51,181,225,.35),inset 0 0 24px rgba(44,144,181,.20);overflow:hidden;transition:box-shadow .28s ease,filter .28s ease}
+#bu375-home-cta.bu375-home-banner:not(.bu386-daily-done):before{content:'';pointer-events:none;position:absolute;inset:-45%;background:linear-gradient(105deg,transparent 43%,rgba(121,215,243,.22) 51%,transparent 59%);transform:translateX(-70%);animation:bu386-sweep 7.5s ease-in-out infinite}
+#bu375-home-cta.bu375-home-banner:not(.bu386-daily-done) .bu375-sun{filter:drop-shadow(0 0 7px #b8f3ff) drop-shadow(0 0 11px #edcc78)}
+#bu375-home-cta.bu386-daily-done{box-shadow:0 0 0 1px rgba(223,193,128,.37),0 0 9px rgba(42,134,164,.12);border-color:#668c90!important}
+@keyframes bu386-sweep{0%,52%,100%{transform:translateX(-70%)}70%{transform:translateX(70%)}}
+#bu34-body .bu386-page{display:grid;gap:13px;max-width:620px;margin:0 auto;padding:5px 0 24px}
+#bu34-body .bu386-heading{font:700 clamp(24px,6.3vw,33px) Georgia,serif;color:#ffe7b3;text-align:center;margin:8px 4px 1px}
+#bu34-body .bu386-note{text-align:center;font-size:13px;color:#bfd3d2;margin:0 0 10px;line-height:1.5}
+#bu34-body .bu386-major{width:100%;min-height:83px;display:flex;align-items:center;gap:15px;padding:15px 18px;text-align:left;border-radius:20px;border:1px solid #69989e;background:linear-gradient(120deg,#164550,#092f3d);color:#fff0cc;cursor:pointer;box-shadow:0 4px 10px #061b2566}
+#bu34-body .bu386-major .bu386-ico{flex:0 0 49px;width:49px;height:49px;display:grid;place-items:center;border:1px solid #edcb83;border-radius:13px;font-size:26px;color:#f3d38b;background:#12343d}
+#bu34-body .bu386-major .bu386-action-copy{display:grid;gap:4px;flex:1;min-width:0}
+#bu34-body .bu386-major strong{font:700 clamp(19px,4.8vw,24px) Georgia,serif}
+#bu34-body .bu386-major small{font:400 12px/1.4 system-ui,sans-serif;color:#b6cfd0}
+#bu34-body .bu386-major .bu386-chevron{font:32px Georgia,serif;color:#edcb83}
+#bu34-body .bu386-major.primary{background:linear-gradient(110deg,#f3d997,#e5b96c);border:1px solid #fff1cb;color:#122f39}
+#bu34-body .bu386-major.primary .bu386-ico{color:#153745;border-color:#8b743a;background:rgba(255,255,255,.21)}
+#bu34-body .bu386-major.primary small,#bu34-body .bu386-major.primary .bu386-chevron{color:#40515b}
+#bu34-body .bu386-major.master{background:linear-gradient(120deg,#302a4d,#18283e);border-color:#a58ac5}
+#bu34-body .bu386-major.master .bu386-ico{color:#dac8f7;border-color:#a58ac5;background:#302d49}
+#bu34-body .bu386-subhead{font:700 22px Georgia,serif;color:#e8cd95;margin:6px 0 1px}
+#bu34-body .bu386-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#bu34-body .bu386-select{min-height:55px;border:1px solid #7a999b;border-radius:13px;background:#123843;color:#f9e1ad;font-weight:750;font-size:15px;padding:10px 7px}
+#bu34-body .bu386-select[aria-pressed="true"]{background:#ebcb88;color:#15343c;border-color:#fff4d9}
+#bu34-body .bu386-select:disabled{opacity:.38;filter:grayscale(1)}
+#bu34-body .bu386-picker{min-height:70px;text-align:left;padding:14px;border:1px solid #557f86;border-radius:15px;background:#0d3441;color:#fbe7b6;display:flex;align-items:center;gap:12px}
+#bu34-body .bu386-picker .bu386-glyph{font-size:25px;min-width:27px;color:#80d4db;text-align:center}
+#bu34-body .bu386-picker strong{display:block;font:700 16px Georgia,serif}
+#bu34-body .bu386-picker small{font-size:11px;color:#b4cfd0}
+#bu34-body .bu386-backlink{justify-self:start;border:0;background:transparent;color:#bad1d1;font-weight:650;padding:9px 1px;text-align:left}
+#bu34-body .bu386-start{width:100%;padding:16px;border:1px solid #fff0c5;border-radius:15px;background:linear-gradient(#f4de9c,#dbb16f);color:#092d3a;font-weight:850;font-size:16px;margin-top:8px}
+#bu34-body .bu386-options{margin-top:3px;border:1px solid #4f7580;border-radius:15px;padding:10px 14px;color:#dbd1ae;background:#11343d}
+#bu34-body .bu386-options summary{cursor:pointer;font-size:13px;font-weight:700;color:#e4d5a9;padding:3px 0}
+#bu34-body .bu386-options label{display:flex;align-items:center;gap:12px;font-size:13px;color:#bfd3d4;line-height:1.5;padding:12px 0 3px}
+#bu34-body .bu386-options input{width:22px;height:22px;flex:0 0 22px;accent-color:#e7c780}
+#bu34-body .bu386-bottom{font-size:11px;color:#a9c0c2;text-align:center;line-height:1.5;margin-top:9px}
+#bu34-body .bu386-family{justify-self:center;border:1px solid #67858c;background:transparent;border-radius:12px;color:#ebdaab;min-height:42px;padding:9px 14px;font-weight:700}
+#wb36 .bu386-pause-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}
+#wb36 .bu386-pause-nav button{min-height:72px;border:1px solid #c4a775;border-radius:14px;background:#123e49;color:#f2d393;display:grid;place-items:center;gap:2px;padding:8px 3px}
+#wb36 .bu386-pause-nav .glyph{font-size:28px;line-height:1.1}
+#wb36 .bu386-pause-nav small{font-size:11px;font-weight:750;line-height:1.2}
+@media(max-width:360px){#bu34-body .bu386-major{padding:11px 12px;min-height:76px}#bu34-body .bu386-major .bu386-ico{width:42px;height:42px;flex-basis:42px}#bu34-body .bu386-picker{padding:11px 9px}}
+@media(prefers-reduced-motion:reduce){#bu375-home-cta.bu375-home-banner:before{animation:none!important}}
+</style>
 </head><body><main id="app" role="main">
 <section id="home" class="screen cinematic-home-screen"><div class="cinematic-dashboard" id="home-hero">
 <div class="cinematic-vignette" aria-hidden="true"></div>
@@ -892,7 +937,7 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 <button id="home-help"><span aria-hidden="true">?</span><b>Help</b><small>How to play</small></button>
 </nav>
 <button id="begin" class="cin-more-modes" hidden>PLAY BIBLE TRIVIA <span aria-hidden="true">›</span></button>
-<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.5 VOICE TEST · DEMO VOICES: elevenlabs.io</div>
+<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.6 VOICE TEST · DEMO VOICES: elevenlabs.io</div>
 </div></section>
 <section class="screen mode-screen" id="modes" hidden aria-hidden="true">
 <header class="hub-head"><button class="hub-icon" id="modes-back" aria-label="Back to cover">‹</button><div class="hub-headtitle"><small>BIBLE UNFOLDED</small><b>Choose Your Adventure</b></div><button class="hub-icon" id="modes-menu" aria-label="Menu">☰</button></header>
@@ -922,7 +967,7 @@ button{transition:border-color .2s ease,box-shadow .22s ease,background-color .2
 <section id="levels" class="screen hub-screen" hidden><header class="hub-head"><button id="levels-back" class="hub-icon" aria-label="Back">‹</button><div class="hub-headtitle"><small>FIND YOUR PLACE</small><b>Bible Books</b></div><button id="levels-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll"><div class="book-intro"><h1>Explore the Bible</h1><p>Choose a book to see its stories. New episodes unlock as your journey grows.</p></div><div class="testament-label">HEBREW–ARAMAIC SCRIPTURES <span>39 books</span></div><div id="hebrew-books" class="book-grid"></div><div class="testament-label new-testament">CHRISTIAN GREEK SCRIPTURES <span>27 books</span></div><div id="greek-books" class="book-grid"></div><p class="collection-note">Genesis is playable now. An independent Moses preview can be opened through the Exodus tile or the menu.</p></div></section>
 <section id="episodes" class="screen hub-screen" hidden><header class="hub-head"><button id="episodes-back" class="hub-icon" aria-label="Back">‹</button><div class="hub-headtitle"><small>JOURNEY 1 · THE BEGINNING</small><b>Genesis</b></div><button id="episodes-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll"><div class="episodes-cover"><div class="overline">BOOK 01 · GENESIS</div><h1>The Beginning</h1><p>Every great story has a beginning.</p></div><div class="episode-headline"><b>Discover the episodes</b><small>2 episodes planned · unlock Eden after Creation</small></div><div id="episode-list" class="episode-list"></div></div></section>
 <section id="gallery" class="screen hub-screen" hidden><header class="hub-head"><button id="gallery-back" class="hub-icon" aria-label="Go back">‹</button><div class="hub-headtitle"><small>GENESIS · EPISODE 1</small><b>Discovery Gallery</b></div><button id="gallery-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll gallery-scroll"><div class="overline">YOUR STORY IN PICTURES</div><h1>Moments Uncovered</h1><p>Revisit the original scenes you have revealed. More moments unlock as you play.</p><div id="gallery-grid" class="gallery-grid"></div><button id="gallery-resume" class="gold-button gallery-resume">Return to the Adventure →</button></div></section><dialog id="gallery-viewer" class="gallery-viewer"><button id="viewer-close" class="viewer-close" aria-label="Close image">×</button><img id="viewer-image" alt="A revealed moment from the Genesis account"><div id="viewer-caption"></div></dialog><div id="menu-mask" class="overlay-mask" hidden></div><aside id="game-menu" class="game-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden><div class="drawer-top"><div><small>THE ADVENTURE CONTINUES</small><h2 id="menu-title">Bible Unfolded</h2></div><button id="menu-close" class="hub-icon" aria-label="Close menu">×</button></div><nav class="drawer-links"><button data-nav="continue"><span>▶</span> Continue Playing <small>Resume your current chapter</small></button><button data-nav="journey"><span>✧</span> Journey Path <small>See your progress</small></button><button data-nav="levels"><span>▦</span> Levels <small>Browse Bible books</small></button><button data-nav="gallery"><span>✧</span> Discovery Gallery <small>Revisit your unlocked scenes</small></button><button data-nav="rewards"><span>★</span> Rewards <small>Coins, Points, and prizes</small></button><button data-nav="settings"><span>♫</span> Settings <small>Music and controls</small></button><button data-nav="help"><span>?</span> How to Play <small>Learn the controls</small></button><button data-nav="home"><span>⌂</span> Cover Screen <small>Return to the beginning</small></button></nav><button id="moses" class="drawer-prototype">Exodus — The River’s Secret <span>↗</span></button><button id="menu-crossword" class="drawer-prototype">▦ Bible Word Trails <span>↗</span></button><button id="menu-watch" class="drawer-prototype">▶ Watch Stories <span>↗</span></button><p class="drawer-foot">Story Adventure and Bible Word Trails use shared Settings.</p></aside>
-<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.8.1 · Private Voice QA Test</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="bu383-sfx-preview"><button type="button" id="bu383-test-chime">▶ Hear word-complete sound</button><small id="bu383-sfx-status" role="status"></small></div><div class="bu381-voice-controls" id="bu381-voice-controls">
+<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.8.6 · Noncommercial Voice Test</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="bu383-sfx-preview"><button type="button" id="bu383-test-chime">▶ Hear word-complete sound</button><small id="bu383-sfx-status" role="status"></small></div><div class="bu381-voice-controls" id="bu381-voice-controls">
 <div class="bu381-voice-label">VOICE ANNOUNCEMENTS <span class="bu381-private">NONCOMMERCIAL TEST</span></div>
 <label class="setting-row"><span><b>Announcer</b><small>Off, rotating voices, or one favorite speaker</small></span>
 <select id="bu381-voice-mode" aria-label="Voice announcer"><option value="off">Off (default)</option><option value="rotate">Rotate voices</option><option value="charlie">Charlie</option><option value="paul">Paul</option><option value="toby">Toby</option><option value="julian">Julian</option></select></label>
@@ -3855,6 +3900,145 @@ for(const [name,details] of Object.entries(BU385_BIBLE_NAMES)){
  WB36_DICT.add(name);WB36_BIBLE.add(name);WB362_BIBLE_INFO[name] ||= details;
 }
 // ===== End v3.8.5 =====
+
+
+
+// v3.8.6 — progress-focused navigation and feedback. Existing state keys unchanged.
+const bu386Trivia={page:'main',topic:null,section:null,from:'main',round:'quick'};
+const BU386_SECTIONS=[
+ {id:'people',name:'People & Events',icon:'♛',keys:['genesis','eden','cain','noah','babel','abraham','moses','joshua','gideon','ruth','david','solomon','elijah','elisha','esther','daniel','samuel','jonah','nehemiah','job']},
+ {id:'jesus',name:'Jesus & Teachings',icon:'✦',keys:['jesusbirth','jesusministry','parables','miracles','sermon','prayer','resurrection']},
+ {id:'faith',name:'Christian Life',icon:'❀',keys:['acts','paul','pentecost','christianliving']},
+ {id:'wisdom',name:'Wisdom & Worship',icon:'♫',keys:['psalms','proverbs','jehovah']},
+ {id:'future',name:'Prophecy & Kingdom',icon:'✧',keys:['promise','kingdom','prophecy']}
+];
+function bu386Esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function bu386TriviaFrame(heading,subtitle,html,back=true){
+ const body=document.getElementById('bu34-body');
+ body.innerHTML=`<div class="bu386-page">${back?'<button type="button" class="bu386-backlink" id="bu386-back">‹ Back</button>':''}<h2 class="bu386-heading">${heading}</h2>${subtitle?`<p class="bu386-note">${subtitle}</p>`:''}${html}</div>`;
+ const b=document.getElementById('bu386-back');if(b)b.onclick=bu386TriviaBack;
+ body.scrollTop=0;
+}
+function bu386OpenSetup(topic=null){
+ bu386Trivia.from=topic?'topics':'main';bu386Trivia.page='setup';bu386Trivia.topic=topic;bu386TriviaRender();
+}
+function bu386Available(topic,level){
+ const current=bu37Pref.difficulty;bu37Pref.difficulty=level;
+ let n=0;try{n=bu37Pool(topic?'topic':'quick',topic||'mixed').length}finally{bu37Pref.difficulty=current}
+ return n;
+}
+function bu386TriviaRender(){
+ const page=bu386Trivia.page,topic=bu386Trivia.topic;
+ if(page==='main'){
+  bu386TriviaFrame('Test Your Knowledge',`${bu37Count()} questions · ${BU34_KEYS.length} topics`,`
+   <button class="bu386-major primary" id="bu386-mixed"><span class="bu386-ico">⤨</span><span class="bu386-action-copy"><strong>Play Mixed Trivia</strong><small>Questions from across the Bible</small></span><span class="bu386-chevron">›</span></button>
+   <button class="bu386-major" id="bu386-browse"><span class="bu386-ico">▤</span><span class="bu386-action-copy"><strong>Choose a Topic</strong><small>People, teachings, prophecy and more</small></span><span class="bu386-chevron">›</span></button>
+   <button class="bu386-major master" id="bu386-master"><span class="bu386-ico">♛</span><span class="bu386-action-copy"><strong>Bible Master</strong><small>20 questions · Increasing difficulty</small></span><span class="bu386-chevron">›</span></button>
+   <button class="bu386-family" id="bu386-family">♧ Play Trivia Together</button>
+   <div class="bu386-bottom">Each answer includes a JW.org scripture link.<br>Unofficial independently developed game.</div>`,false);
+  document.getElementById('bu386-mixed').onclick=()=>bu386OpenSetup();
+  document.getElementById('bu386-browse').onclick=()=>{bu386Trivia.page='browse';bu386TriviaRender()};
+  document.getElementById('bu386-master').onclick=()=>bu34Start('master');
+  document.getElementById('bu386-family').onclick=()=>{bu35Setup.quick='trivia';bu35Open('setup')};
+ }else if(page==='browse'){
+  const parts=BU386_SECTIONS.map(g=>{
+   const keys=g.keys.filter(k=>BU34_KEYS.includes(k)),count=keys.reduce((n,k)=>n+BU34_BANK[k].length,0);
+   return `<button class="bu386-picker" data-section="${g.id}"><span class="bu386-glyph">${g.icon}</span><span><strong>${bu386Esc(g.name)}</strong><small>${keys.length} topics · ${count} questions</small></span></button>`
+  }).join('');
+  const unused=BU34_KEYS.filter(k=>!BU386_SECTIONS.some(g=>g.keys.includes(k)));
+  const other=unused.length?`<button class="bu386-picker" data-section="other"><span class="bu386-glyph">✧</span><span><strong>More Bible Topics</strong><small>${unused.length} topics</small></span></button>`:'';
+  bu386TriviaFrame('Choose a Topic','Browse by subject, or play a mixed round for variety.',parts+other);
+  document.querySelectorAll('#bu34-body [data-section]').forEach(b=>b.onclick=()=>{bu386Trivia.section=b.dataset.section;bu386Trivia.page='topics';bu386TriviaRender()});
+ }else if(page==='topics'){
+  const section=BU386_SECTIONS.find(s=>s.id===bu386Trivia.section);
+  const keys=(section?section.keys:BU34_KEYS.filter(k=>!BU386_SECTIONS.some(g=>g.keys.includes(k)))).filter(k=>BU34_KEYS.includes(k));
+  bu386TriviaFrame(bu386Esc(section?.name||'More Bible Topics'),`${keys.length} subjects · Choose one to begin`,
+   `<div class="bu386-grid">${keys.map(k=>`<button class="bu386-picker" data-topic="${k}"><span class="bu386-glyph">${BU34_NAMES[k][1]||'✧'}</span><span><strong>${bu386Esc(BU34_NAMES[k][0])}</strong><small>${BU34_BANK[k].length} questions</small></span></button>`).join('')}</div>`);
+  document.querySelectorAll('#bu34-body [data-topic]').forEach(b=>b.onclick=()=>bu386OpenSetup(b.dataset.topic));
+ }else if(page==='setup'){
+  const selected=topic?BU34_NAMES[topic][0]:'Mixed Trivia';
+  const diffs=BU37_DIFFICULTIES.map(d=>({name:BU37_LEVEL_NAMES[d],value:d,count:bu386Available(topic,d)}));
+  if(!diffs.some(x=>x.value===bu37Pref.difficulty&&x.count>0)){
+   const first=diffs.find(x=>x.count>0);if(first){bu37Pref.difficulty=first.value;bu37SavePref()}
+  }
+  bu386TriviaFrame(bu386Esc(selected),topic?'A focused round on this Bible subject.':'A fresh mix of Bible questions every round.',`
+   <h3 class="bu386-subhead">Difficulty</h3><div class="bu386-grid">${diffs.map(d=>`<button class="bu386-select" data-difficulty="${d.value}" aria-pressed="${bu37Pref.difficulty===d.value}" ${!d.count?'disabled title="No questions at this level yet"':''}>${d.name}</button>`).join('')}</div>
+   ${!topic?`<h3 class="bu386-subhead">Round Length</h3><div class="bu386-grid"><button class="bu386-select" data-length="quick" aria-pressed="${bu386Trivia.round==='quick'}">5 Questions</button><button class="bu386-select" data-length="challenge" aria-pressed="${bu386Trivia.round==='challenge'}">10 Questions</button></div>`:'<p class="bu386-note">Up to 10 questions in this topic</p>'}
+   <button class="bu386-start" id="bu386-go">▶ Start Trivia</button>
+   <details class="bu386-options"><summary>Optional: Recall First</summary><label><input type="checkbox" id="bu386-recall" ${bu374RecallFirst?'checked':''}><span>Try answering from memory before seeing multiple-choice answers.</span></label></details>`);
+  document.querySelectorAll('#bu34-body [data-difficulty]').forEach(b=>b.onclick=()=>{bu37Pref.difficulty=b.dataset.difficulty;bu37SavePref();bu386TriviaRender()});
+  document.querySelectorAll('#bu34-body [data-length]').forEach(b=>b.onclick=()=>{bu386Trivia.round=b.dataset.length;bu386TriviaRender()});
+  const recall=document.getElementById('bu386-recall');if(recall)recall.onchange=()=>{bu374RecallFirst=recall.checked;try{localStorage.setItem(BU374_RECALL_KEY,String(bu374RecallFirst))}catch(_){}};
+  document.getElementById('bu386-go').onclick=()=>bu34Start(topic?'topic':bu386Trivia.round,topic||'mixed');
+ }
+}
+bu34RenderHome=function(){bu386TriviaRender()};
+const bu386OriginalHome=bu34Home;
+bu34Home=function(){bu386Trivia.page='main';bu386Trivia.topic=null;bu386OriginalHome()};
+function bu386TriviaBack(){
+ const p=bu386Trivia.page;
+ if(p==='topics'){bu386Trivia.page='browse'}
+ else if(p==='setup'){bu386Trivia.page=bu386Trivia.from==='topics'?'topics':'main'}
+ else bu386Trivia.page='main';
+ bu386TriviaRender();
+}
+const bu386OriginalBack=bu34Back;
+bu34Back=function(){if(bu34Visible()&&!bu34Quiz&&bu386Trivia.page!=='main')bu386TriviaBack();else bu386OriginalBack()};
+document.getElementById('bu34-back').onclick=bu34Back;
+// Distinct soundtrack: Bible Trivia temporarily borrows the Word Builder track.
+// Daily Discovery deliberately keeps the Navigation music.
+const bu386OldMusicTarget=bu25Target;
+bu25Target=function(){if(bu34Visible())return 'trails';return bu386OldMusicTarget()};
+// Daily Discovery stands out until completed, with no flashing distractions.
+const bu386OldDailyRefresh=bu375RefreshHome;
+bu375RefreshHome=function(){bu386OldDailyRefresh();const el=document.getElementById('bu375-home-cta');if(el){const done=!!bu375Data.completions[bu375Day()];el.classList.toggle('bu386-daily-done',done);el.setAttribute('aria-label',done?'Daily Discovery complete; replay today':'Open today’s Daily Discovery challenge')}};
+bu375RefreshHome();
+// Clean, localized navigation: icons stay intelligible via visible short captions.
+const bu386OldPauseUI=wb36PauseUI;
+wb36PauseUI=function(b){bu386OldPauseUI(b);const buttons=[['wb36-continue','▶','Resume','Resume current turn'],['wb36-home','▦','Word Builder','Word Builder home'],['wb36-mainhome','⌂','Home','Bible Unfolded home']];
+ const nav=document.createElement('div');nav.className='bu386-pause-nav';
+ const first=b.querySelector('#wb36-continue');if(first){first.before(nav);for(const [id,glyph,short,long] of buttons){const btn=b.querySelector('#'+id);if(btn){btn.textContent='';btn.innerHTML=`<span class="glyph" aria-hidden="true">${glyph}</span><small>${short}</small>`;btn.title=long;btn.setAttribute('aria-label',long);nav.appendChild(btn)}}}
+};
+// Special Bible-word feedback should feel different from every normal completion.
+// We only fire for confirmed successes, using the recently used tile location.
+let bu386LastTouch=null;
+document.addEventListener('pointerup',e=>{if(e.isPrimary)bu386LastTouch={x:e.clientX,y:e.clientY,at:Date.now()}},{capture:true,passive:true});
+function bu386BonusFx(pos){
+ const p=pos||((bu386LastTouch&&Date.now()-bu386LastTouch.at<6000)?bu386LastTouch:null);
+ const x=p?.x??innerWidth/2,y=p?.y??Math.min(innerHeight*.64,440);
+ v37Spark(x,y,15);
+ if(!sfxOn||sfxVolume<=0)return;
+ try{
+  const c=v37SfxContext||(v37SfxContext=new (window.AudioContext||window.webkitAudioContext)());
+  if(c.state==='suspended')c.resume().catch(()=>{});
+  const t=c.currentTime,gain=Math.min(.055,.07*sfxVolume/100);
+  [0,.075,.165,.27].forEach((delay,i)=>{const o=c.createOscillator(),g=c.createGain(),when=t+delay;
+   o.type='sine';o.frequency.setValueAtTime([880,1174.66,1396.91,1760][i],when);
+   o.frequency.exponentialRampToValueAtTime([1174.66,1396.91,1760,2093][i],when+.14);
+   g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(gain,when+.018);g.gain.exponentialRampToValueAtTime(.0001,when+.32);
+   o.connect(g);g.connect(c.destination);o.start(when);o.stop(when+.34);
+  });
+ }catch(_){}
+}
+const bu386OldBuilderSubmit=wb36Submit;
+wb36Submit=function(){
+ const g=wb36Game;let spot=null,bonus=false,turn=g?.turn;
+ if(g){try{const result=wb36Check(g);bonus=!!(result.ok&&result.bonus?.length);if(bonus){const keys=Object.keys(g.draft);const cell=document.querySelector(`[data-wb-cell="${keys.at(-1)}"]`);if(cell){const r=cell.getBoundingClientRect();spot={x:r.left+r.width/2,y:r.top+r.height/2}}}}catch(_){}}
+ bu386OldBuilderSubmit();
+ if(g&&bonus&&g.turn>turn)bu386BonusFx(spot);
+};
+// Crossword, Word Trails and discovered Bible bonus words use the same elegant reward.
+const bu386OldTrailTry=trailTry;
+trailTry=function(){
+ const r=trailRecord(),beforeSolved=r.solved.length,beforeBonus=r.bonus.length;
+ const intended=trailSelected.map(i=>trailLetters[i]).join('');
+ bu386OldTrailTry();
+ if(r.bonus.length>beforeBonus||(r.solved.length>beforeSolved&&WB36_BIBLE.has(intended)))bu386BonusFx();
+};
+const bu386OldCrossSubmit=crossSubmitAnswer;
+crossSubmitAnswer=function(w){const count=crossSolved().length;bu386OldCrossSubmit(w);if(crossSolved().length>count&&WB36_BIBLE.has(w.word))bu386BonusFx()};
+// Version label is intentionally visible to support tester screenshots.
+document.title=document.title.replace(/3\.8\.5|3\.8\.4/g,'3.8.6');
 
 </script>
 </body></html>
