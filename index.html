@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.8.23 — Glitter Mist & Touch Comfort</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.8.26 — Family Worship Variety</title>
 <style>
 :root{--navy:#082530;--deep:#061b26;--teal:#0b3b44;--gold:#f4d48b;--gold2:#cba966;--cream:#fff5d8;--soft:#cbdfdf}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--deep);color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}button{font-family:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #e9c879;outline-offset:3px}button:disabled{opacity:.6;cursor:default}a{color:var(--gold)}.hide,[hidden]{display:none!important}
 #app{width:100%;min-height:100dvh;overflow:hidden;background:var(--deep)}.screen{width:100%;height:100dvh;display:flex;flex-direction:column;overflow:hidden}.home-hero{min-height:0;flex:1;position:relative;background-size:cover;background-position:center 58%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 20px 18px}.home-hero:before{content:"";inset:0;position:absolute;background:linear-gradient(180deg,#061c27ce,#061d2848 38%,#071924ca 100%)}.hero-copy{z-index:1;max-width:600px}.chapter-label,.overline{font-size:11px;letter-spacing:2.5px;color:var(--gold);font-weight:800}.brand{font-family:Georgia,serif;font-size:clamp(44px,10vw,70px);font-weight:700;line-height:.93;letter-spacing:-1.6px;text-shadow:0 3px 30px #000c;color:#ffe5a2;margin:12px auto 13px}.brand small{display:block;font:700 12px/1.8 system-ui;letter-spacing:4px;color:#fff3d2}.home-hero h1{font-family:Georgia,serif;font-size:clamp(28px,6vw,39px);font-weight:700;line-height:1.08;margin:18px 0 9px;text-shadow:0 3px 10px #0008}.hero-description{font-size:15px;color:#e7f3ed;line-height:1.5;margin:0 auto 18px;max-width:420px}.gold-button,.secondary-button{border-radius:15px;padding:15px 22px;font-size:15px;font-weight:800;border:1px solid #fce3a3;transition:transform .15s}.gold-button{background:linear-gradient(#f6d990,#c89e46);color:#1c2727;box-shadow:0 5px 28px #ffcb6c33;min-height:50px}.gold-button:active,.secondary-button:active{transform:scale(.97)}.secondary-button{color:#f0e8ce;background:#133a46;min-height:45px;border-color:#75949a}.home-actions{display:grid;gap:9px;margin:0 auto;max-width:300px}.route-panel{background:linear-gradient(180deg,#123c49,#082630);padding:13px 15px max(14px,env(safe-area-inset-bottom));border-top:1px solid #d8be7c55;box-shadow:0 -10px 30px #0006;max-height:43dvh;overflow-y:auto}.route-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.route-header h2{font-family:Georgia,serif;font-size:20px;margin:0}.route-sub{font-size:11px;color:#b1cacb}.path-list{display:flex;gap:9px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:thin;scrollbar-color:#bda16c66 transparent}.episode{flex:0 0 146px;border:1px solid #58767a77;border-radius:12px;min-height:87px;padding:9px 10px;background:#143d47;color:#d9e7e4;text-align:left}.episode.available{background:linear-gradient(135deg,#315a59,#12383e);border:1px solid #e0c580;color:#fff}.episode .n{font-family:Georgia,serif;font-size:19px;color:#fbe0a3}.episode strong{display:block;font-size:13px;margin:2px 0 3px}.episode span{display:block;font-size:10px;color:#b6d0cb}.route-foot{font-size:11px;margin:8px 0 0;color:#b6cfcb}
@@ -412,6 +412,12 @@
 #bu381-preview:disabled{opacity:.5}
 #bu381-voice-status{font-size:11px;line-height:1.4;color:#d3ddd5}
 
+
+/* v3.8.26 Family Worship depth UI */
+#bu35-family .bu3826-level-wrap{margin:14px 0 16px;}
+#bu35-family .bu3826-level-wrap .bu35-muted{font-size:12px;line-height:1.45;margin:8px 0 0;color:#c3d6d4;}
+#bu35-family .bu35-level-meta{color:#e2c783;font-size:12px;margin:2px 0 12px;letter-spacing:.04em;}
+#bu35-family .bu3826-story-label{border:1px solid #8b9d9a;border-radius:14px;background:#0b3a43;padding:12px;color:#efd59b;margin:4px 0 14px;text-align:center;}
 </style>
 <style>
 @supports(padding:env(safe-area-inset-bottom)){.xword-actions,.watch-controls{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
@@ -1150,7 +1156,7 @@ html.sea-wheel { --bu3822-ribbon:#99ffe9; --bu3822-halo:#50e7d6; }
 <button id="home-help"><span aria-hidden="true">?</span><b>Help</b><small>How to play</small></button>
 </nav>
 <button id="begin" class="cin-more-modes" hidden>PLAY BIBLE TRIVIA <span aria-hidden="true">›</span></button>
-<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.23 GLITTER MIST TEST · DEMO VOICES: elevenlabs.io</div>
+<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.26 FAMILY DEPTH TEST · DEMO VOICES: elevenlabs.io</div>
 </div></section>
 <section class="screen mode-screen" id="modes" hidden aria-hidden="true">
 <header class="hub-head"><button class="hub-icon" id="modes-back" aria-label="Back to cover">‹</button><div class="hub-headtitle"><small>BIBLE UNFOLDED</small><b>Choose Your Adventure</b></div><button class="hub-icon" id="modes-menu" aria-label="Menu">☰</button></header>
@@ -1181,7 +1187,7 @@ html.sea-wheel { --bu3822-ribbon:#99ffe9; --bu3822-halo:#50e7d6; }
 <section id="levels" class="screen hub-screen" hidden><header class="hub-head"><button id="levels-back" class="hub-icon" aria-label="Back">‹</button><div class="hub-headtitle"><small>FIND YOUR PLACE</small><b>Bible Books</b></div><button id="levels-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll"><div class="book-intro"><h1>Explore the Bible</h1><p>Choose a book to see its stories. New episodes unlock as your journey grows.</p></div><div class="testament-label">HEBREW–ARAMAIC SCRIPTURES <span>39 books</span></div><div id="hebrew-books" class="book-grid"></div><div class="testament-label new-testament">CHRISTIAN GREEK SCRIPTURES <span>27 books</span></div><div id="greek-books" class="book-grid"></div><p class="collection-note">Genesis is playable now. An independent Moses preview can be opened through the Exodus tile or the menu.</p></div></section>
 <section id="episodes" class="screen hub-screen" hidden><header class="hub-head"><div class="bu-side-score"><button id="episodes-back" class="hub-icon" aria-label="Back">‹</button><span class="bu-side-value" title="Coins"><span aria-hidden="true">◉</span><b id="episodes-coin-count">45</b></span></div><div class="hub-headtitle"><small>JOURNEY 1 · THE BEGINNING</small><b>Genesis</b></div><div class="bu-side-score"><button id="episodes-menu" class="hub-icon" aria-label="Open menu">☰</button><span class="bu-side-value" title="Points"><span aria-hidden="true">✦</span><b id="episodes-point-count">0</b></span></div></header><div class="hub-scroll"><div class="episodes-cover"><div class="overline">BOOK 01 · GENESIS</div><h1>The Beginning</h1><p>Every great story has a beginning.</p></div><div class="episode-headline"><b>Discover the episodes</b><small>2 episodes planned · unlock Eden after Creation</small></div><div id="episode-list" class="episode-list"></div></div></section>
 <section id="gallery" class="screen hub-screen" hidden><header class="hub-head"><button id="gallery-back" class="hub-icon" aria-label="Go back">‹</button><div class="hub-headtitle"><small>GENESIS · EPISODE 1</small><b>Discovery Gallery</b></div><button id="gallery-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll gallery-scroll"><div class="overline">YOUR STORY IN PICTURES</div><h1>Moments Uncovered</h1><p>Revisit the original scenes you have revealed. More moments unlock as you play.</p><div id="gallery-grid" class="gallery-grid"></div><button id="gallery-resume" class="gold-button gallery-resume">Return to the Adventure →</button></div></section><dialog id="gallery-viewer" class="gallery-viewer"><button id="viewer-close" class="viewer-close" aria-label="Close image">×</button><img id="viewer-image" alt="A revealed moment from the Genesis account"><div id="viewer-caption"></div></dialog><div id="menu-mask" class="overlay-mask" hidden></div><aside id="game-menu" class="game-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden><div class="drawer-top"><div><small>THE ADVENTURE CONTINUES</small><h2 id="menu-title">Bible Unfolded</h2></div><button id="menu-close" class="hub-icon" aria-label="Close menu">×</button></div><div id="bu-story-menu-summary" class="bu-menu-wallet" aria-label="Current Coins and Points"><span>◉ <b id="bu-menu-coins">45</b> Coins</span><span>✦ <b id="bu-menu-points">0</b> Points</span><small id="bu-menu-rank">Check Rewards for rank progress</small></div><nav class="drawer-links"><button data-nav="continue"><span>▶</span> Continue Playing <small>Resume your current chapter</small></button><button data-nav="journey"><span>✧</span> Journey Path <small>See your progress</small></button><button data-nav="levels"><span>▦</span> Levels <small>Browse Bible books</small></button><button data-nav="gallery"><span>✧</span> Discovery Gallery <small>Revisit your unlocked scenes</small></button><button data-nav="rewards"><span>★</span> Rewards <small>Coins, Points, and prizes</small></button><button data-nav="settings"><span>♫</span> Settings <small>Music and controls</small></button><button data-nav="help"><span>?</span> How to Play <small>Learn the controls</small></button><button data-nav="home"><span>⌂</span> Cover Screen <small>Return to the beginning</small></button></nav><button id="moses" class="drawer-prototype">Exodus — The River’s Secret <span>↗</span></button><button id="menu-crossword" class="drawer-prototype">▦ Bible Word Trails <span>↗</span></button><button id="menu-watch" class="drawer-prototype">▶ Watch Stories <span>↗</span></button><p class="drawer-foot">Story Adventure and Bible Word Trails use shared Settings.</p></aside>
-<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.8.23 · Noncommercial Test</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="bu383-sfx-preview"><button type="button" id="bu383-test-chime">▶ Hear word-complete sound</button><small id="bu383-sfx-status" role="status"></small></div><div class="bu381-voice-controls" id="bu381-voice-controls">
+<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.8.26 · Noncommercial Test</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="bu383-sfx-preview"><button type="button" id="bu383-test-chime">▶ Hear word-complete sound</button><small id="bu383-sfx-status" role="status"></small></div><div class="bu381-voice-controls" id="bu381-voice-controls">
 <div class="bu381-voice-label">VOICE ANNOUNCEMENTS <span class="bu381-private">NONCOMMERCIAL TEST</span></div>
 <label class="setting-row"><span><b>Announcer</b><small>Off, rotating voices, or one favorite speaker</small></span>
 <select id="bu381-voice-mode" aria-label="Voice announcer"><option value="rotate">Rotate voices (default)</option><option value="off">Off</option><option value="charlie">Charlie</option><option value="paul">Paul</option><option value="toby">Toby</option><option value="julian">Julian</option></select></label>
@@ -1657,7 +1663,7 @@ function iconSVG(id){return `<svg viewBox="0 0 44 44" aria-hidden="true">${ICONS
 function notify(msg){let e=$('toast');e.textContent=msg;e.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{e.hidden=true},3200)}
 function hideAll(){['home','modes','journey','levels','episodes','gallery','play','crossword-screen','cross-pick','watch-pick','watch-player','rewards'].forEach(id=>$(id).hidden=true);}
 function syncMusic(){updateMusicState();}
-function focusHome(){hideAll();closeMenu();closeDialog();$('home').hidden=false;document.title='Bible Unfolded v3.8.23 — Home';syncMusic()}
+function focusHome(){hideAll();closeMenu();closeDialog();$('home').hidden=false;document.title='Bible Unfolded v3.8.26 — Home';syncMusic()}
 function openJourney(celebrate=false){hideAll();closeMenu();closeDialog();$('journey').hidden=false;lastHub='journey';updateJourney(celebrate);$('journey-scroll').scrollTop=0;document.title='Bible Unfolded · The Journey';syncMusic()}
 function openLevels(){hideAll();closeMenu();closeDialog();$('levels').hidden=false;lastHub='levels';document.title='Bible Unfolded · Bible Books';syncMusic()}
 function openEpisodes(){let previous=['journey','levels'].find(id=>!$(id).hidden);if(previous)episodeOrigin=previous;hideAll();closeMenu();closeDialog();$('episodes').hidden=false;lastHub='episodes';document.title='Bible Unfolded · Genesis';syncMusic()}
@@ -2133,6 +2139,38 @@ $('menu-watch').onclick=openWatchPick;
 const REWARD_KEY='bible-unfolded-rewards-v17';
 // Mirrored economy record safeguards earned rewards and purchases against a malformed primary save.
 const REWARD_RECOVERY_KEY='bible-unfolded-rewards-v17-recovery-v3811';
+/* v3.8.25 — Wheel entitlements are permanent, separately mirrored, and are
+   recovered from BOTH wallet saves. A stale primary must not re-lock them. */
+const BU_WHEEL_IDS=['goldwheel','moonwheel','seawheel'];
+const BU_WHEEL_OWNERSHIP_KEY='bible-unfolded-wheel-ownership-v3825';
+const BU_WHEEL_OWNERSHIP_BACKUP_KEY='bible-unfolded-wheel-ownership-v3825-backup';
+function bu3824Json(key){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):null}catch(_){return null}}
+function bu3824OwnedWheels(){
+ const owned=new Set();
+ for(const key of [REWARD_KEY,REWARD_RECOVERY_KEY,BU_WHEEL_OWNERSHIP_KEY,BU_WHEEL_OWNERSHIP_BACKUP_KEY]){
+  const x=bu3824Json(key);if(!x||typeof x!=='object')continue;
+  const src=Array.isArray(x.purchases)?x.purchases:Array.isArray(x.owned)?x.owned:[];
+  for(const id of src)if(BU_WHEEL_IDS.includes(id))owned.add(id);
+ }
+ return owned;
+}
+function bu3824MergeEntitlements(){
+ const owned=bu3824OwnedWheels();
+ for(const id of (economy.purchases||[]))if(BU_WHEEL_IDS.includes(id))owned.add(id);
+ const list=Array.isArray(economy.purchases)?economy.purchases:[];
+ economy.purchases=[...new Set([...list,...owned])];
+ return owned;
+}
+function bu3824PersistEntitlements(){
+ const owned=bu3824MergeEntitlements();
+ const json=JSON.stringify({version:1,owned:[...owned].sort()});
+ let stored=false;
+ for(const k of [BU_WHEEL_OWNERSHIP_KEY,BU_WHEEL_OWNERSHIP_BACKUP_KEY]){
+  try{localStorage.setItem(k,json);stored=stored||localStorage.getItem(k)===json}catch(e){console.warn('Wheel ownership checkpoint failed',e)}
+ }
+ return stored;
+}
+
 let economy={points:0,coins:45,earned:[],spent:[],purchases:[],hints:{},streak:0,lastDay:'',lastPopup:'',rank:0,equippedWheel:'classic'};
 let bu3811EconomyRecovered=false;
 try{
@@ -2141,6 +2179,12 @@ try{
  if(x)economy={...economy,...x,earned:Array.isArray(x.earned)?[...new Set(x.earned.filter(v=>typeof v==='string'))]:[],purchases:Array.isArray(x.purchases)?[...new Set(x.purchases.filter(v=>typeof v==='string'))]:[],hints:x.hints&&typeof x.hints==='object'&&!Array.isArray(x.hints)?x.hints:{}};
  bu3811EconomyRecovered=!!fallback;
 }catch(e){}
+// Existing players may have a valid but stale primary save and a newer
+// backup containing wheel ownership. Union the durable entitlements only;
+// never rewrite their Coins based on a guess.
+const bu3824RecoveredWheels=bu3824MergeEntitlements();
+let bu3824LastWalletRaw=null;
+try{bu3824LastWalletRaw=localStorage.getItem(REWARD_KEY)}catch(_){}
 // Migrate the previous incorrect “EXILE” answer to the Bible place-name NOD without losing solved progress or earned rewards.
 if(crossProgress[5]&&crossProgress[5].includes('EXILE')){
  crossProgress[5]=[...new Set(crossProgress[5].map(v=>v==='EXILE'?'NOD':v))];crossSave();
@@ -2148,11 +2192,35 @@ if(crossProgress[5]&&crossProgress[5].includes('EXILE')){
  if(economy.hints['cross-5-EXILE']&&!economy.hints['cross-5-NOD'])economy.hints['cross-5-NOD']=economy.hints['cross-5-EXILE'];
 }
 function saveEconomy(){
+ bu3824MergeEntitlements();
  const json=JSON.stringify(economy);
- try{localStorage.setItem(REWARD_KEY,json)}catch(e){console.warn('Economy save failed',e)}
+ let saved=false;
+ try{localStorage.setItem(REWARD_KEY,json);saved=localStorage.getItem(REWARD_KEY)===json;if(saved)bu3824LastWalletRaw=json}catch(e){console.warn('Economy save failed',e)}
+ if(!saved)return false;
  try{localStorage.setItem(REWARD_RECOVERY_KEY,json)}catch(e){console.warn('Economy checkpoint failed',e)}
+ bu3824PersistEntitlements();
+ return saved;
 }
-if(bu3811EconomyRecovered)saveEconomy();
+if(bu3811EconomyRecovered || [...bu3824RecoveredWheels].some(id=>!((bu3824Json(REWARD_KEY)?.purchases)||[]).includes(id))){saveEconomy()}
+else bu3824PersistEntitlements();
+/* If a second tab changed the wallet, don't charge against an outdated
+   in-memory balance. Recheck the current browser record before each purchase. */
+function bu3824RefreshWallet(){
+ let raw;try{raw=localStorage.getItem(REWARD_KEY)}catch(_){return}
+ if(!raw||raw===bu3824LastWalletRaw)return;
+ let stored;try{stored=JSON.parse(raw)}catch(_){return}
+ if(!stored||!Number.isFinite(stored.coins)||!Number.isFinite(stored.points)||stored.coins<0||stored.points<0)return;
+ economy={...economy,...stored,earned:Array.isArray(stored.earned)?stored.earned:economy.earned,
+  purchases:[...new Set([...(economy.purchases||[]),...(Array.isArray(stored.purchases)?stored.purchases:[])])],
+  hints:stored.hints&&typeof stored.hints==='object'?stored.hints:economy.hints};
+ bu3824MergeEntitlements();bu3824LastWalletRaw=raw;updateWallet();
+}
+window.addEventListener('storage',event=>{
+ if([REWARD_KEY,REWARD_RECOVERY_KEY,BU_WHEEL_OWNERSHIP_KEY,BU_WHEEL_OWNERSHIP_BACKUP_KEY].includes(event.key)){
+  bu3824RefreshWallet();bu3824MergeEntitlements();
+  if(document.getElementById('rewards')&&!document.getElementById('rewards').hidden)openRewards();
+ }
+});
 function walletLabel(){return `★ ${economy.points.toLocaleString()} Points <span>● ${economy.coins.toLocaleString()} Coins</span>`}
 function updateWallet(){document.querySelectorAll('.reward-mini').forEach(el=>el.innerHTML=walletLabel());
  const e=$('rewards-wallet');if(e)e.innerHTML=walletLabel();
@@ -2229,10 +2297,47 @@ function rewardPopup(){const today=currentLocalDay();const claimed=claimDaily();
  $('daily-gift').textContent=economy.streak===7?'✓ You earned 130 Coins, 250 Points, and a special garden keepsake!':`Today: +15 Coins and +25 Points · Return tomorrow to grow your streak`;
 }
 function setWheelTheme(id){economy.equippedWheel=id;document.documentElement.classList.toggle('gold-wheel',id==='goldwheel');document.documentElement.classList.toggle('moon-wheel',id==='moonwheel');document.documentElement.classList.toggle('sea-wheel',id==='seawheel');saveEconomy();openRewards();}
-function purchase(id,cost){if(economy.purchases.includes(id)){if(['goldwheel','moonwheel','seawheel'].includes(id))setWheelTheme(id);else openRewards();return;}
- if(!canSpend(cost))return;
- economy.purchases.push(id);saveEconomy();if(['goldwheel','moonwheel','seawheel'].includes(id)){setWheelTheme(id);notify('✦ Wheel style unlocked and equipped!');return;}
- notify('✦ Reward unlocked!');openRewards();}
+function purchase(id,cost){
+ bu3824RefreshWallet();bu3824MergeEntitlements();
+ if(economy.purchases.includes(id)){
+  if(BU_WHEEL_IDS.includes(id))setWheelTheme(id);else openRewards();return;
+ }
+ if(!Number.isFinite(cost)||cost<0)return;
+ if(economy.coins<cost){notify('You need '+(cost-economy.coins)+' more Coins. Keep playing to earn them!');return;}
+ // One atomic wallet record: cost and permanent ownership are saved together.
+ // A failed save rolls back the transaction instead of taking someone's Coins.
+ const before=JSON.parse(JSON.stringify(economy));
+ economy.coins-=cost;
+ economy.purchases=[...new Set([...(economy.purchases||[]),id])];
+ if(BU_WHEEL_IDS.includes(id)){
+  economy.equippedWheel=id;
+  economy.wheelPurchaseHistory=[...(Array.isArray(economy.wheelPurchaseHistory)?economy.wheelPurchaseHistory:[]),{id,coinsSpent:cost,when:new Date().toISOString()}].slice(-40);
+ }
+ if(!saveEconomy()){
+  economy=before;bu3824MergeEntitlements();
+  notify('Purchase not saved. No Coins charged. Please check browser storage.');updateWallet();return;
+ }
+ updateWallet();playCoinFx('spend');
+ if(BU_WHEEL_IDS.includes(id)){
+  document.documentElement.classList.toggle('gold-wheel',id==='goldwheel');
+  document.documentElement.classList.toggle('moon-wheel',id==='moonwheel');
+  document.documentElement.classList.toggle('sea-wheel',id==='seawheel');
+  notify('✦ Wheel style unlocked and equipped!');openRewards();return;
+ }
+ notify('✦ Reward unlocked!');openRewards();
+}
+// Temporary private-beta safety net for testers whose previously paid-for
+// wheel styles disappeared. No further Coin charge and no fictitious refund.
+function bu3824RestoreLostWheels(){
+ if(!confirm('Restore Golden, Moonlit, and Ocean Glow wheels without spending Coins? Use this only if your earlier test purchases disappeared.'))return;
+ bu3824RefreshWallet();
+ const before=JSON.parse(JSON.stringify(economy));
+ economy.purchases=[...new Set([...(economy.purchases||[]),...BU_WHEEL_IDS])];
+ if(!saveEconomy()){
+  economy=before;notify('Restoration could not be saved. Please check browser storage.');return;
+ }
+ notify('✓ Previously purchased wheel styles restored. No Coins charged.');openRewards();
+}
 
 // v3.8.9 — display actual cross-mode accomplishments without changing reward rules.
 // Derived exclusively from existing save records; no new storage keys or repeating bonuses.
@@ -2267,7 +2372,8 @@ function openRewards(){hideAll();closeMenu();closeDialog();$('rewards').hidden=f
   {id:'goldwheel',cost:180,title:'Golden Puzzle Wheel',desc:'A softly glowing golden word wheel',art:null},
  {id:'moonwheel',cost:135,title:'Moonlit Puzzle Wheel',desc:'A cool silver-blue look for every word wheel',art:null},
  {id:'seawheel',cost:235,title:'Ocean Glow Wheel',desc:'A luminous turquoise and teal wheel finish',art:null}];
- $('reward-products').innerHTML=available.map(x=>`<div class="reward-product"><div class="reward-product-copy"><strong>${x.title}</strong><small>${x.desc}</small></div><button data-buy="${x.id}" ${economy.purchases.includes(x.id)&&!['goldwheel','moonwheel','seawheel'].includes(x.id)?'disabled':''}>${economy.purchases.includes(x.id)?(['goldwheel','moonwheel','seawheel'].includes(x.id)?economy.equippedWheel===x.id?'✓ Equipped':'Equip':'✓ Owned'):`◈ ${x.cost} Coins`}</button>${x.art&&economy.purchases.includes(x.id)?'<button class="view-art" data-art="'+x.id+'">View ↗</button>':''}</div>`).join('')+(economy.purchases.includes('week7')?`<div class="reward-product"><div class="reward-product-copy"><strong>✦ Seven-Day Garden Keepsake</strong><small>A permanent achievement for completing your first seven-day journey.</small></div><span style="font-size:12px;color:#f4d48b;font-weight:700">✓ Earned</span></div>`:'');
+ $('reward-products').innerHTML=available.map(x=>`<div class="reward-product"><div class="reward-product-copy"><strong>${x.title}</strong><small>${x.desc}</small></div><button data-buy="${x.id}" ${economy.purchases.includes(x.id)&&!['goldwheel','moonwheel','seawheel'].includes(x.id)?'disabled':''}>${economy.purchases.includes(x.id)?(['goldwheel','moonwheel','seawheel'].includes(x.id)?economy.equippedWheel===x.id?'✓ Equipped':'Equip':'✓ Owned'):`◈ ${x.cost} Coins`}</button>${x.art&&economy.purchases.includes(x.id)?'<button class="view-art" data-art="'+x.id+'">View ↗</button>':''}</div>`).join('')+(economy.purchases.includes('week7')?`<div class="reward-product"><div class="reward-product-copy"><strong>✦ Seven-Day Garden Keepsake</strong><small>A permanent achievement for completing your first seven-day journey.</small></div><span style="font-size:12px;color:#f4d48b;font-weight:700">✓ Earned</span></div>`:'')+(BU_WHEEL_IDS.every(id=>economy.purchases.includes(id))?'':`<div class="reward-product" style="display:block"><strong>Previously purchased wheels missing?</strong><small style="display:block;margin:7px 0 10px">Private beta recovery: restore wheel styles without spending Coins again. This does not adjust Coin balances.</small><button id="bu3824-wheel-restore" type="button" style="width:100%">↺ Restore missing wheels (beta)</button></div>`);
+ const repairWheelBtn=document.getElementById('bu3824-wheel-restore');if(repairWheelBtn)repairWheelBtn.onclick=bu3824RestoreLostWheels;
  $('reward-products').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>purchase(btn.dataset.buy,available.find(x=>x.id===btn.dataset.buy).cost));
  $('reward-products').querySelectorAll('[data-art]').forEach(btn=>btn.onclick=()=>{$('viewer-image').src=ART.eden_garden;$('viewer-caption').textContent='Eden Garden Portrait — Collectible';$('gallery-viewer').showModal()});
  syncMusic();
@@ -2782,6 +2888,40 @@ awardChapter=function(book){bu34OldAwardChapter(book)};
 /* Bible Unfolded v3.5 — Family Worship: pass-and-play, wheel, guided reading, group games.
    Deliberately independent of single-player progression; main content and saves retained. */
 const BU35_SAVE='bible-unfolded-family-v35';
+// v3.8.25 - Persist content rotation independently of unfinished family sessions.
+const BU3825_ROTATION_KEY='bible-unfolded-family-variety-v3825';
+const bu3825Variety=(()=>{try{const v=JSON.parse(localStorage.getItem(BU3825_ROTATION_KEY)||'{}');return v&&typeof v==='object'&&v.decks&&typeof v.decks==='object'?v:{decks:{},mixes:{}}}catch(_){return {decks:{},mixes:{}}}})();
+function bu3825Store(){try{localStorage.setItem(BU3825_ROTATION_KEY,JSON.stringify(bu3825Variety))}catch(_){}}
+function bu3825Shuffle(source){const a=source.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+// A persisted shuffle bag avoids repeats until the topic's available questions are used.
+// If the entire pool is exhausted, start a new shuffled cycle, avoiding an immediate repeat.
+function bu3825Draw(key,count){
+ if(!Number.isInteger(count)||count<1)return 0;
+ let d=bu3825Variety.decks[key];
+ if(!d||d.size!==count||!Array.isArray(d.queue))d={size:count,queue:[],last:-1};
+ if(!d.queue.length){
+  d.queue=bu3825Shuffle(Array.from({length:count},(_,i)=>i));
+  if(count>1&&d.queue[0]===d.last){const i=d.queue.findIndex(v=>v!==d.last);if(i>0)[d.queue[0],d.queue[i]]=[d.queue[i],d.queue[0]];}
+ }
+ const n=d.queue.shift();d.last=n;bu3825Variety.decks[key]=d;bu3825Store();return n;
+}
+const BU3825_ACTIVITIES=['trivia','wheel','words','story','lightning'];
+function bu3825Playlist(topic,minutes,style){
+ const count=minutes>=30?5:minutes>=20?4:3;
+ const key=topic+':'+minutes+':'+style;
+ const recent=Array.isArray(bu3825Variety.mixes?.[key])?bu3825Variety.mixes[key]:[];
+ let result=null,signature='';
+ for(let tries=0;tries<36;tries++){
+  const activities=bu3825Shuffle(BU3825_ACTIVITIES).slice(0,count);
+  const layout=Math.random()<.48?[activities[0],'read',...activities.slice(1)]:['read',...activities];
+  signature=layout.join('|');result=[...layout,'think','finish'];
+  if(!recent.includes(signature))break;
+ }
+ if(!bu3825Variety.mixes||typeof bu3825Variety.mixes!=='object')bu3825Variety.mixes={};
+ bu3825Variety.mixes[key]=[signature,...recent.filter(v=>v!==signature)].slice(0,7);
+ bu3825Store();return result;
+}
+
 const BU35_TOPICS={
  genesis:{name:'Creation',reading:'Genesis 1:1–31',ref:'Genesis 1',thought:'Which part of creation are you especially thankful for, and why?'},
  eden:{name:'Eden',reading:'Genesis 2:7–25; 3:1–24',ref:'Genesis 2',thought:'What part of life in Paradise are you most looking forward to?'},
@@ -2816,7 +2956,7 @@ const BU35_PROMPTS=[
  {type:'Everybody Answers!',q:'Everyone share one favorite Bible story and what makes it memorable.'}
 ];
 const BU35_STORY={genesis:GENESIS_BEATS,eden:EDEN_BEATS,cain:CAIN_BEATS,noah:NOAH_BEATS,babel:BABEL_BEATS,abraham:ABRAHAM_BEATS,moses:MOSES_BEATS};
-let bu35Setup={people:['Player 1','Player 2','Player 3'],minutes:20,style:'team',topic:'babel'};
+let bu35Setup={people:['Player 1','Player 2','Player 3'],minutes:20,style:'team',topic:'allbible',order:'surprise',difficulty:'intermediate'};
 let bu35Game=null,bu35View='hub',bu35WheelAngle=0,bu35SpinTimer=0;
 try{const saved=JSON.parse(localStorage.getItem(BU35_SAVE)||'{}');if(saved&&typeof saved==='object'){
  if(saved.setup?.people?.length>=2)bu35Setup={...bu35Setup,...saved.setup};
@@ -2843,7 +2983,7 @@ function bu35Render(){
  b.scrollTop=(bu35View==='game'&&bu35Game&&!bu35Game.handOff&&['story','words','trivia','lightning'].includes(bu35Phase())?previousScroll:0);
 }
 function bu35RenderHub(b){
- b.innerHTML=`<div class="bu35-hero"><span class="bu35-kicker">NEW • v3.5</span><h2>Family Worship</h2><p>A shared Bible game night—Scripture, challenges, the spinning wheel, and a family finale.</p><button class="bu35-btn" id="bu35-new">✦ Start Family Worship</button></div>
+ b.innerHTML=`<div class="bu35-hero"><span class="bu35-kicker">NEW • v3.5</span><h2>Family Worship</h2><p>A fresh mix of Scripture, questions, creative challenges and discussion each time you play.</p><button class="bu35-btn" id="bu35-new">✦ Start Family Worship</button></div>
  ${bu35Game?`<div class="bu35-card"><h3>Continue where you stopped</h3><p>${bu35Escape(BU35_TOPICS[bu35Game.topic]?.name||'Bible challenge')} · ${bu35Game.people.length} players · ${bu35Game.minutes} minutes</p><button class="bu35-btn" id="bu35-resume">▶ Resume Session</button><button class="bu35-soft" id="bu35-discard">Discard saved session</button></div>`:''}
  <div class="bu35-card"><h3>Quick Play Together</h3><p>No full session required. Pass one phone around and take turns.</p>
  <div class="bu35-button-row"><button class="bu35-outline" data-quick="wheel">◉ Spin & Share</button><button class="bu35-outline" data-quick="trivia">? Trivia</button><button class="bu35-outline" data-quick="words">▦ Word Relay</button><button class="bu35-outline" data-quick="story">▤ Story Relay</button></div></div>
@@ -2856,8 +2996,8 @@ function bu35RenderSetup(b){const s=bu35Setup;
  b.innerHTML=`<div class="bu35-hero"><span class="bu35-kicker">${s.quick&&s.quick!=='session'?'QUICK PASS & PLAY':'FAMILY WORSHIP'}</span><h2>${s.quick==='wheel'?'Spin & Share':s.quick==='trivia'?'Trivia Together':s.quick==='words'?'Word Relay':s.quick==='story'?'Story Relay':'Gather the Family'}</h2><p>Choose your players. Everyone gets a turn.</p></div>
  <div class="bu35-card"><label class="bu35-label">PLAYERS</label><div class="bu35-countbox"><button id="bu35-minus" aria-label="Remove player">−</button><strong>${s.people.length}</strong><button id="bu35-plus" aria-label="Add player">+</button></div><div class="bu35-people">${s.people.map((name,i)=>`<input data-person="${i}" aria-label="Player ${i+1} name" maxlength="22" value="${bu35Escape(name)}" placeholder="Player ${i+1}">`).join('')}</div>
  <label class="bu35-label">BIBLE ACCOUNT</label><select id="bu35-topic" class="bu35-select">${Object.entries(BU35_TOPICS).map(([k,v])=>`<option value="${k}" ${k===s.topic?'selected':''}>${bu35Escape(v.name)}</option>`).join('')}</select>
- ${s.quick==='session'||!s.quick?`<label class="bu35-label">SESSION LENGTH</label><div class="bu35-pills" id="bu35-time">${[10,20,30].map(n=>`<button data-time="${n}" class="${s.minutes===n?'active':''}">${n} min</button>`).join('')}</div><label class="bu35-label">PLAY STYLE</label><div class="bu35-pills" id="bu35-style"><button data-style="team" class="${s.style==='team'?'active':''}">♡ Team Adventure</button><button data-style="friendly" class="${s.style==='friendly'?'active':''}">★ Friendly Challenge</button></div>`:`<p class="bu35-muted">Quick activity · Everyone gets multiple turns (at least six challenges in total). Scores stay inside this session; no Coins required.</p>`}
- <button class="bu35-btn" id="bu35-start">▶ ${s.quick==='session'||!s.quick?'Begin Family Worship':'Start Playing'}</button><button class="bu35-soft" id="bu35-cancel">Back to Play Together</button></div>`;
+ ${s.quick==='session'||!s.quick?`<label class="bu35-label">SESSION LENGTH</label><div class="bu35-pills" id="bu35-time">${[10,20,30,45,60].map(n=>`<button data-time="${n}" class="${s.minutes===n?'active':''}">${n} min</button>`).join('')}</div><label class="bu35-label">PLAY STYLE</label><div class="bu35-pills" id="bu35-style"><button data-style="team" class="${s.style==='team'?'active':''}">♡ Team Adventure</button><button data-style="friendly" class="${s.style==='friendly'?'active':''}">★ Friendly Challenge</button></div>`:`<p class="bu35-muted">Quick activity · Everyone gets multiple turns (at least six challenges in total). Scores stay inside this session; no Coins required.</p>`}
+ ${s.quick==='session'||!s.quick?`<details class="bu35-note"><summary>Session options</summary><label class="bu35-label" for="bu3825-order">ACTIVITY ORDER</label><select id="bu3825-order" class="bu35-select"><option value="surprise" ${s.order!=='classic'?'selected':''}>Fresh Mix · changes each session</option><option value="classic" ${s.order==='classic'?'selected':''}>Classic Guided · familiar sequence</option></select></details>`:''}<button class="bu35-btn" id="bu35-start">▶ ${s.quick==='session'||!s.quick?'Begin Family Worship':'Start Playing'}</button><button class="bu35-soft" id="bu35-cancel">Back to Play Together</button></div>`;
  const takeInputs=()=>{b.querySelectorAll('[data-person]').forEach(x=>s.people[+x.dataset.person]=x.value.slice(0,22));bu35Save()};
  b.querySelectorAll('[data-person]').forEach(x=>x.oninput=takeInputs);
  b.querySelector('#bu35-minus').onclick=()=>{takeInputs();if(s.people.length>2){s.people.pop();bu35Save();bu35Render()}};
@@ -2865,6 +3005,7 @@ function bu35RenderSetup(b){const s=bu35Setup;
  b.querySelector('#bu35-topic').onchange=e=>{s.topic=e.target.value;bu35Save()};
  b.querySelectorAll('[data-time]').forEach(x=>x.onclick=()=>{takeInputs();s.minutes=+x.dataset.time;bu35Save();bu35Render()});
  b.querySelectorAll('[data-style]').forEach(x=>x.onclick=()=>{takeInputs();s.style=x.dataset.style;bu35Save();bu35Render()});
+ const orderChoice=b.querySelector('#bu3825-order');if(orderChoice)orderChoice.onchange=e=>{s.order=e.target.value==='classic'?'classic':'surprise';bu35Save()};
  b.querySelector('#bu35-cancel').onclick=bu35Hub;
  b.querySelector('#bu35-start').onclick=()=>{takeInputs();bu35Begin()};
 }
@@ -2873,13 +3014,13 @@ function bu35Begin(){
  const s=bu35Setup,people=s.people.map((v,i)=>v.trim()||'Player '+(i+1));
  const quick=s.quick||'session';let phases=[];
  if(quick==='session'){
- phases=['read','trivia','wheel','words'];if(s.minutes>=20)phases.push('story');if(s.minutes>=30)phases.push('lightning');phases.push('think','finish');
+ if(s.order==='classic'){phases=['read','trivia','wheel','words'];if(s.minutes>=20)phases.push('story');if(s.minutes>=30)phases.push('lightning');phases.push('think','finish')}else phases=bu3825Playlist(s.topic,s.minutes,s.style);
  }else if(quick==='wheel')phases=['wheel','finish'];else phases=[quick==='trivia'?'trivia':quick==='words'?'words':'story','think','finish'];
- bu35Game={people,minutes:s.minutes,style:s.style,topic:s.topic,quick,phases,phase:0,turn:0,round:0,handOff:true,answered:false,choice:null,hinted:false,scores:people.map(()=>0),corrects:people.map(()=>0),attempts:people.map(()=>0),wheelSpins:0,wheelChoice:null,wheelPrompt:null,usedPrompts:[],applicationOffset:bu35Random(3),wordSelection:[],wordTiles:[],questionOrders:{},completedTurns:0,complete:false,started:Date.now()};
+ bu35Game={people,minutes:s.minutes,style:s.style,topic:s.topic,quick,phases,phase:0,turn:0,round:0,handOff:true,answered:false,choice:null,hinted:false,scores:people.map(()=>0),corrects:people.map(()=>0),attempts:people.map(()=>0),wheelSpins:0,wheelChoice:null,wheelPrompt:null,usedPrompts:[],applicationOffset:bu3825Draw('applications:'+s.topic,(BU3817_APPLICATION[s.topic]||BU3817_APPLICATION.genesis).length),difficulty:s.difficulty||'intermediate',contentVersion:2,wordSelection:[],wordTiles:[],questionOrders:{},varietyVersion:1,questionPicks:{},storyPicks:{},completedTurns:0,complete:false,started:Date.now()};
  bu35WheelAngle=0;bu35Save();bu35View='game';bu35Render();
 }
 function bu35Phase(){return bu35Game.phases[bu35Game.phase]||'finish'}
-function bu35Rounds(){const g=bu35Game;if(!g||!g.quick||g.quick==='session'||g.quick==='wheel')return 1;return Math.max(2,Math.ceil(6/g.people.length))}
+function bu35Rounds(){const g=bu35Game;if(!g)return 1;if(g.quick==='session'&&g.contentVersion===2)return g.minutes>=60?3:g.minutes>=45?2:1;if(!g.quick||g.quick==='session'||g.quick==='wheel')return 1;return Math.max(2,Math.ceil(6/g.people.length))}
 function bu35TurnNumber(){const g=bu35Game;return (g.round||0)*g.people.length+g.turn}
 function bu35TotalTurns(){const g=bu35Game;return g.people.length*bu35Rounds()}
 function bu35LastTurn(){const g=bu35Game;return g.turn===g.people.length-1&&(g.round||0)>=bu35Rounds()-1}
@@ -2914,11 +3055,35 @@ function bu35RenderGame(b){const g=bu35Game;if(!g){bu35Hub();return}const phase=
 }
 function bu35Reading(){const t=BU35_TOPICS[bu35Game.topic];return `<div class="bu35-hero"><span class="bu35-kicker">GATHER ROUND</span><h2>Read Together</h2><p>Open the account, take turns reading, and discuss anything that catches your attention. There's no timer for reading.</p></div><div class="bu35-card"><h3>${bu35Escape(t.name)}</h3><p><strong>${bu35Escape(t.reading)}</strong></p><a class="bu35-scripture" target="_blank" rel="noopener noreferrer" href="${scriptureUrl(t.ref)}">▤ Open the Bible on JW.org ↗</a><p class="bu35-muted">The link opens the first chapter. Navigate to further chapters as needed. Return here when ready.</p><button class="bu35-btn" id="bu35-read-done">We've Finished Reading →</button></div>`}
 function bu35Handoff(){const g=bu35Game,phase=bu35Phase(),label=phase==='trivia'||phase==='lightning'?'Bible question':phase==='story'?'Bible story discovery':'Word challenge';return `<div class="bu35-turn"><div class="bu35-avatar">${g.turn+1}</div><span class="bu35-kicker">PASS THE PHONE</span><div class="bu35-name">${bu35Escape(g.people[g.turn])}</div><p>Your ${label} stays hidden until you're ready.</p><button class="bu35-btn" id="bu35-ready">I'm Ready →</button></div>${bu35ScoreStrip()}`}
-function bu35Questions(){const g=bu35Game;return bu35Phase()==='lightning'?BU34_KEYS.flatMap(k=>BU34_BANK[k]):BU34_BANK[g.topic]}
-function bu35Question(){const g=bu35Game,bank=bu35Questions(),id=String(g.phase);if(!g.questionOrders[id]){g.questionOrders[id]=bu34Shuffle(bank.map((_,i)=>i));bu35Save()}
- return bank[g.questionOrders[id][bu35TurnNumber()%bank.length]]||bank[0]
+function bu35Questions(){const g=bu35Game;if(g.contentVersion===2)return bu3826Questions(g);return bu35Phase()==='lightning'?BU34_KEYS.flatMap(k=>BU34_BANK[k]):BU34_BANK[g.topic]}
+function bu35Question(){
+ const g=bu35Game,bank=bu35Questions(),id=String(g.phase);
+ if(g.varietyVersion===1){
+  const key=id+':'+bu35TurnNumber();
+  if(!g.questionPicks)g.questionPicks={};
+  if(!Number.isInteger(g.questionPicks[key])||g.questionPicks[key]>=bank.length){
+   g.questionPicks[key]=bu3825Draw((g.contentVersion===2?'family-depth:'+g.topic+':'+(g.difficulty||'intermediate')+':'+bu35Phase():(bu35Phase()==='lightning'?'all-trivia':'trivia:'+g.topic)),bank.length);
+   bu35Save();
+  }
+  return bank[g.questionPicks[key]]||bank[0];
+ }
+ // Continue an older saved Family Worship game using its original question order.
+ if(!g.questionOrders[id]){g.questionOrders[id]=bu34Shuffle(bank.map((_,i)=>i));bu35Save()}
+ return bank[g.questionOrders[id][bu35TurnNumber()%bank.length]]||bank[0];
 }
-function bu35Beat(){const g=bu35Game,beats=BU35_STORY[g.topic]||GENESIS_BEATS;return beats[(bu35TurnNumber()+2)%beats.length]}
+function bu35Beat(){
+ const g=bu35Game,beats=BU35_STORY[g.topic]||GENESIS_BEATS;
+ if(g.varietyVersion===1){
+  const key=String(g.phase)+':'+bu35TurnNumber();
+  if(!g.storyPicks)g.storyPicks={};
+  if(!Number.isInteger(g.storyPicks[key])||g.storyPicks[key]>=beats.length){
+   g.storyPicks[key]=bu3825Draw('story:'+g.topic,beats.length);
+   bu35Save();
+  }
+  return beats[g.storyPicks[key]]||beats[0];
+ }
+ return beats[(bu35TurnNumber()+2)%beats.length];
+}
 function bu35Word(){
  // Use meaningful story-account vocabulary instead of generic crossword filler.
  const g=bu35Game,preferred=bu35Beat().word;
@@ -2936,7 +3101,7 @@ function bu35Word(){
 }
 function bu35PrepareTurn(){const g=bu35Game;if(['story','words'].includes(bu35Phase())){const word=bu35Word();g.wordTiles=bu34Shuffle(word.split(''));g.wordSelection=[]}}
 function bu35Trivia(){const g=bu35Game,q=bu35Question(),correct=g.choice===q.correct;
- return `<div class="bu35-card"><span class="bu35-kicker">${bu35Escape(g.people[g.turn])} · QUESTION ${bu35TurnNumber()+1}/${bu35TotalTurns()}</span><div class="bu35-question">${bu35Escape(q.q)}</div><div class="bu35-answers">${q.choices.map((opt,i)=>`<button class="bu35-answer ${g.answered&&i===q.correct?'correct':g.answered&&i===g.choice?'wrong':''}" data-answer="${i}" ${g.answered?'disabled':''}>${String.fromCharCode(65+i)} · ${bu35Escape(opt)}</button>`).join('')}</div>
+ return `<div class="bu35-card"><span class="bu35-kicker">${bu35Escape(g.people[g.turn])} · QUESTION ${bu35TurnNumber()+1}/${bu35TotalTurns()}</span><div class="bu35-question">${bu35Escape(q.q)}</div>${g.contentVersion===2?`<p class="bu35-level-meta">${bu35Escape(BU35_TOPICS[q.topic]?.name||BU35_TOPICS[g.topic]?.name||"Bible")}${q.difficulty?" · "+bu35Escape(q.difficulty.toUpperCase()):""}${q.__outside?" · Wider Bible mix":""}</p>`:""}<div class="bu35-answers">${q.choices.map((opt,i)=>`<button class="bu35-answer ${g.answered&&i===q.correct?'correct':g.answered&&i===g.choice?'wrong':''}" data-answer="${i}" ${g.answered?'disabled':''}>${String.fromCharCode(65+i)} · ${bu35Escape(opt)}</button>`).join('')}</div>
  ${g.answered?`<div class="bu35-feedback"><b>${correct?'✓ Correct!':'Answer: '+bu35Escape(q.choices[q.correct])}</b>${bu35Escape(q.explanation)}<p><a class="bu35-scripture" target="_blank" rel="noopener noreferrer" href="${scriptureUrl(q.ref)}">Read ${bu35Escape(q.ref)} ↗</a></p></div><button class="bu35-btn" id="bu35-nextturn">${bu35LastTurn()?'Finish Challenge':'Pass to Next Player'} →</button>`:`<p class="bu35-muted">${g.hinted?'Family assistance enabled · correct answers earn half points.':'Ask a family member for help whenever you need it.'}</p><button class="bu35-outline" id="bu35-help">♡ Ask Family for Help</button><button class="bu35-soft" id="bu35-skip">Skip Question</button>`}</div>${bu35ScoreStrip()}`;
 }
 function bu35BindTrivia(){const g=bu35Game;if(g.answered){bu35El().querySelector('#bu35-nextturn').onclick=bu35AfterTurn;return}
@@ -2946,7 +3111,7 @@ function bu35BindTrivia(){const g=bu35Game;if(g.answered){bu35El().querySelector
 }
 function bu35Words(story){const g=bu35Game,beat=bu35Beat(),word=bu35Word(),preview=g.wordSelection.map(i=>g.wordTiles[i]).join(''),success=g.answered&&g.choice==='correct';
  return `<div class="bu35-card"><span class="bu35-kicker">${bu35Escape(g.people[g.turn])} · ${story?'STORY DISCOVERY':'WORD TRAIL RELAY'} ${bu35TurnNumber()+1}/${bu35TotalTurns()}</span>
- ${story?'<img id="bu35-story-image" class="bu35-scene" alt="Bible story scene" loading="lazy">':''}
+ ${story&&(beat.scene&&ART[beat.scene])?'<img id="bu35-story-image" class="bu35-scene" alt="Bible story scene" loading="lazy">':story?'<div class="bu3826-story-label">✦ Bible account discovery · read the source after answering</div>':''}
  <div class="bu35-question">${story?bu35Escape(beat.clue):'Arrange the letters to discover the hidden word.'}</div>
  <div class="bu35-word-preview">${preview?bu35Escape(preview):Array.from(word).map(()=>'_').join(' ')}</div>
  <div class="bu35-tiles">${g.wordTiles.map((letter,i)=>`<button class="bu35-tile" data-letter="${i}" ${g.wordSelection.includes(i)||g.answered?'disabled':''}>${bu35Escape(letter)}</button>`).join('')}</div>
@@ -2976,7 +3141,17 @@ function bu35Wheel(){const g=bu35Game,limit=bu35WheelLimit(),shown=!!g.wheelProm
  `<button class="bu35-btn" id="bu35-spin">◉ SPIN THE WHEEL!</button>${g.quick==='wheel'?'<button class="bu35-soft" id="bu35-wheel-end">Finish Spinning</button>':''}`}
  <p class="bu35-note">The wheel chooses a player at random. Personal answers never earn or lose match points.</p>`;
 }
-function bu35PickPrompt(){const g=bu35Game,unused=BU35_PROMPTS.map((_,i)=>i).filter(i=>!g.usedPrompts.includes(i));const pick=(unused.length?unused:BU35_PROMPTS.map((_,i)=>i))[bu35Random(unused.length||BU35_PROMPTS.length)];g.usedPrompts.push(pick);return BU35_PROMPTS[pick]}
+function bu35PickPrompt(){
+ const g=bu35Game;
+ if(g.varietyVersion===1){
+  const pick=bu3825Draw('family-wheel-prompts',BU35_PROMPTS.length);
+  g.usedPrompts.push(pick);
+  return BU35_PROMPTS[pick];
+ }
+ const unused=BU35_PROMPTS.map((_,i)=>i).filter(i=>!g.usedPrompts.includes(i));
+ const pick=(unused.length?unused:BU35_PROMPTS.map((_,i)=>i))[bu35Random(unused.length||BU35_PROMPTS.length)];
+ g.usedPrompts.push(pick);return BU35_PROMPTS[pick];
+}
 function bu35BindWheel(){const g=bu35Game,b=bu35El();if(g.wheelPrompt){b.querySelector('#bu35-newprompt').onclick=()=>{g.wheelPrompt=bu35PickPrompt();bu35Save();bu35Render()};b.querySelector('#bu35-shared').onclick=()=>{g.wheelSpins++;g.wheelPrompt=null;g.wheelChoice=null;bu35Save();if(g.quick!=='wheel'&&g.wheelSpins>=bu35WheelLimit())bu35NextPhase();else bu35Render()};return}
  const spin=b.querySelector('#bu35-spin');spin.onclick=()=>{
  if(spin.disabled)return;spin.disabled=true;startAudio();const chosen=bu35Random(g.people.length),n=g.people.length;
@@ -2999,7 +3174,7 @@ function bu35Think(){
  `<div class="bu35-card"><span class="bu35-kicker">PERSONAL REFLECTION</span><h3>${bu35Escape(t.name)}</h3><div class="bu35-question">${bu35Escape(t.thought)}</div><p class="bu35-muted">Share as much or as little as you wish. Passing is always fine.</p><a href="${scriptureUrl(t.ref)}" target="_blank" rel="noopener noreferrer" class="bu35-scripture">▤ Revisit ${bu35Escape(t.reading)} on JW.org ↗</a></div>`;
  return intro+card+`<div class="bu35-button-row"><button class="bu35-outline" id="bu35-reflect-again">↻ Another Situation</button><button class="bu35-btn" id="bu35-reflect-done">${g.quick==='session'?'Continue to Celebration':'Finish Together'} →</button></div><p class="bu35-note">Discussion has no points, right/wrong verdict, or required personal answer.</p>`;
 }
-function bu35Finish(){const g=bu35Game,total=g.scores.reduce((a,n)=>a+n,0),max=g.people.length*(g.phases.filter(p=>['trivia','lightning','words','story'].includes(p)).length)*100*(g.quick!=='session'&&g.quick!=='wheel'?bu35Rounds():1),passed=max===0||total>=max*.55;
+function bu35Finish(){const g=bu35Game,total=g.scores.reduce((a,n)=>a+n,0),max=g.people.length*(g.phases.filter(p=>['trivia','lightning','words','story'].includes(p)).length)*100*(g.quick!=='wheel'?bu35Rounds():1),passed=max===0||total>=max*.55;
  const ranking=g.people.map((name,i)=>({name,points:g.scores[i],correct:g.corrects[i],id:i})).sort((a,b)=>b.points-a.points),winner=ranking[0]?.points||0;
  return `<div class="bu35-hero"><div class="bu35-done">✦</div><span class="bu35-kicker">SESSION COMPLETE</span><h2>${g.style==='team'?'Family Challenge Complete!':'Well Played, Everyone!'}</h2><p>${g.style==='team'?(passed?'You reached the team goal together!':'You explored the Bible together. Every bit counts!'):'Congratulations on a fun round of friendly competition.'}</p></div>
  <div class="bu35-card"><h3>${g.style==='team'?'Shared Team Score':'Final Leaderboard'}</h3><div class="bu35-rank"><span>${g.style==='team'?'Family total':'Top score'}</span><strong>${g.style==='team'?total:winner} pts</strong></div>${ranking.map((p,i)=>`<div class="bu35-rank"><span>${g.style==='friendly'&&p.points===winner&&winner>0?'★ ':''}${bu35Escape(p.name)}</span><strong>${p.points} · ${p.correct} ✓</strong></div>`).join('')}</div>
@@ -4606,6 +4781,89 @@ bu25AudioPulse=function(){
 document.title=document.title.replace(/3\.8\.6/g,'3.8.8');
 
 
+
+/* v3.8.26 — Family Worship depth: full-Bible topic coverage, levels, substantial account-specific words,
+   diverse ungraded discussions. New content uses existing NWT/JW.org scripture-link mechanism. */
+const BU3826_DIFFICULTIES=['beginner','intermediate','advanced','expert'];
+const BU3826_LEVELNAME={beginner:'Beginner',intermediate:'Intermediate',advanced:'Advanced',expert:'Expert'};
+const BU3826_COLLECTIONS={
+ 'allbible':{name:'All Bible · Fresh Mix',keys:BU34_KEYS.slice(),ref:'Matthew 6:33',group:'all'},
+ 'biblepeople':{name:'Bible People & Events',keys:['genesis','eden','cain','noah','babel','abraham','moses','joshua','gideon','ruth','david','solomon','elijah','elisha','esther','daniel','samuel','jonah','nehemiah','job'].filter(k=>BU34_BANK[k]),ref:'Hebrews 11:1',group:'people'},
+ 'jesusteachings':{name:'Jesus & His Teachings',keys:['jesusbirth','parables','miracles','sermon','prayer','resurrection'].filter(k=>BU34_BANK[k]),ref:'Matthew 5:1',group:'jesus'},
+ 'wisdomfuture':{name:'Wisdom, Kingdom & Prophecy',keys:['psalms','proverbs','promise','prophecy','kingdom','jehovah'].filter(k=>BU34_BANK[k]),ref:'Proverbs 3:5',group:'wisdom'},
+ 'firstchristians':{name:'Early Congregation',keys:['acts','paul','pentecost','congregation','christianliving'].filter(k=>BU34_BANK[k]),ref:'Acts 2:42',group:'congregation'}
+};
+for(const [key,c] of Object.entries(BU3826_COLLECTIONS))BU35_TOPICS[key]={name:c.name,reading:c.ref,ref:c.ref,thought:'Which passage or principle stood out, and why?'};
+const BU3826_CATEGORY=(key)=>{const label=(BU34_NAMES[key]?.[2]||'').toLowerCase();if(/congregation/.test(label))return 'congregation';if(/jesus/.test(label))return 'jesus';if(/teachings/.test(label))return 'wisdom';return 'people'};
+for(const key of BU34_KEYS){
+ if(!BU35_TOPICS[key]){const q=BU34_BANK[key]?.find(x=>x.ref);const ref=q?.ref||'Psalm 1:1';BU35_TOPICS[key]={name:BU34_NAMES[key]?.[0]||key,reading:ref,ref,thought:'What does this account or teaching help you appreciate?'};}
+}
+const BU3826_WORD_DECKS={"jesusministry":[["JESUS","Who preached the good news of God’s Kingdom?","Matthew 4:23"],["DISCIPLES","Who followed Jesus and learned from him?","Matthew 4:18-22"],["KINGDOM","What was a central theme of Jesus’ preaching?","Luke 4:43"]],"joshua":[["JERICHO","Which city had its walls fall after Israel marched around it?","Joshua 6:20"],["RAHAB","Who helped the Israelite spies at Jericho?","Joshua 2:1-6"],["JOSHUA","Who led Israel after Moses died?","Joshua 1:1-2"]],"gideon":[["GIDEON","Which judge received reassurance using a fleece?","Judges 6:36-40"],["FLEECE","What woolen object did Gideon use when asking for a sign?","Judges 6:37"],["TRUMPETS","What did Gideon’s men blow during the night attack?","Judges 7:20"]],"ruth":[["RUTH","Who stayed with Naomi and later married Boaz?","Ruth 1:16"],["BOAZ","Which man showed kindness to Ruth while she gleaned?","Ruth 2:8"],["NAOMI","Who returned to Bethlehem accompanied by Ruth?","Ruth 1:19"]],"david":[["DAVID","Who faced the giant Goliath?","1 Samuel 17:49"],["GOLIATH","Name of the Philistine champion who challenged Israel.","1 Samuel 17:4"],["JONATHAN","Who made a loyal friendship with David?","1 Samuel 18:1"]],"solomon":[["SOLOMON","Which king requested an obedient heart to judge Israel?","1 Kings 3:9"],["WISDOM","What did Jehovah grant Solomon to help him judge?","1 Kings 3:12"],["TEMPLE","What building did Solomon construct for worship?","1 Kings 6:1"]],"elijah":[["ELIJAH","Who challenged Baal’s prophets on Mount Carmel?","1 Kings 18:21"],["CARMEL","On which mountain did Elijah challenge the prophets of Baal?","1 Kings 18:19"],["ALTAR","What did Elijah repair before the fire came down?","1 Kings 18:30"]],"elisha":[["ELISHA","Who succeeded the prophet Elijah?","2 Kings 2:15"],["NAAMAN","Which Syrian army chief was healed of leprosy?","2 Kings 5:1-14"],["JORDAN","In which river did Naaman wash seven times?","2 Kings 5:14"]],"esther":[["ESTHER","Which queen approached the king for her people?","Esther 5:1-2"],["MORDECAI","Who cared for Esther after her parents died?","Esther 2:7"],["HAMAN","Which man plotted against the Jews in Persia?","Esther 3:6"]],"daniel":[["DANIEL","Who survived a night among lions?","Daniel 6:22"],["LIONS","Which animals were in the pit with Daniel?","Daniel 6:16"],["DARIUS","Which king was distressed when Daniel was accused?","Daniel 6:14"]],"jesusbirth":[["MARY","Who became Jesus’ mother?","Luke 1:30-31"],["JOSEPH","Who took Mary as his wife?","Matthew 1:24"],["BETHLEHEM","In what town was Jesus born?","Luke 2:4-7"]],"parables":[["SAMARITAN","Who helped the injured traveler in Jesus’ illustration?","Luke 10:33"],["SHEEP","What animal did Jesus use in the illustration of the lost one?","Luke 15:4"],["SEED","What did the sower scatter in Jesus’ illustration?","Matthew 13:3-4"]],"miracles":[["LAZARUS","Whom did Jesus call out from the tomb?","John 11:43"],["WATER","What did Jesus change into wine?","John 2:7-9"],["BREAD","What food was multiplied to feed the crowd?","Matthew 14:19"]],"acts":[["PETER","Who spoke to the crowd on Pentecost?","Acts 2:14"],["CORNELIUS","Which army officer received a visit from Peter?","Acts 10:1"],["TABITHA","What disciple did Peter raise in Joppa?","Acts 9:40"]],"paul":[["PAUL","Who traveled widely to preach the good news?","Acts 13:9"],["TIMOTHY","Who served with Paul as a younger fellow worker?","Acts 16:1-3"],["SILAS","Who sang praises while imprisoned with Paul?","Acts 16:25"]],"samuel":[["SAMUEL","Which boy answered Jehovah’s call at night?","1 Samuel 3:10"],["HANNAH","Who prayed for a son and later dedicated him to Jehovah?","1 Samuel 1:11"],["ELI","Which priest guided young Samuel?","1 Samuel 3:8-9"]],"jonah":[["JONAH","Which prophet was swallowed by a great fish?","Jonah 1:17"],["NINEVEH","To what city was Jonah sent to announce a warning?","Jonah 1:2"],["FISH","Which sea creature swallowed Jonah?","Jonah 1:17"]],"nehemiah":[["NEHEMIAH","Who helped rebuild the walls of Jerusalem?","Nehemiah 2:17"],["WALL","What did Nehemiah organize workers to rebuild?","Nehemiah 4:6"],["GATES","What entrances of Jerusalem were repaired?","Nehemiah 3:1"]],"psalms":[["PSALMS","What Bible book contains many songs and prayers?","Psalm 1:1"],["SHEPHERD","What does Psalm 23 call Jehovah?","Psalm 23:1"],["REFUGE","What does Psalm 46 call God?","Psalm 46:1"]],"proverbs":[["PROVERBS","Which Bible book contains many short sayings of wisdom?","Proverbs 1:1"],["WISDOM","What does Proverbs encourage readers to pursue?","Proverbs 4:5"],["ANSWER","What, when mild, turns away rage?","Proverbs 15:1"]],"sermon":[["KINGDOM","What did Jesus tell his listeners to seek first?","Matthew 6:33"],["LIGHT","What did Jesus call his disciples in relation to the world?","Matthew 5:14"],["MERCY","What quality is emphasized in the saying about the merciful?","Matthew 5:7"]],"prayer":[["PRAYER","How did Jesus teach his followers to address their Father?","Matthew 6:9"],["NAME","What did Jesus ask to be sanctified in the model prayer?","Matthew 6:9"],["KINGDOM","What did Jesus ask to come in the model prayer?","Matthew 6:10"]],"pentecost":[["PENTECOST","On which festival did the holy spirit come upon the disciples?","Acts 2:1-4"],["PETER","Who explained the events to the gathered crowd?","Acts 2:14"],["TONGUES","What appeared above the disciples when holy spirit came?","Acts 2:3"]],"resurrection":[["TOMB","From what burial place did Jesus rise?","Matthew 28:1-6"],["ANGEL","Who announced Jesus had been raised?","Matthew 28:5-6"],["WOMEN","Who visited the tomb early on the first day of the week?","Matthew 28:1"]],"promise":[["PARADISE","What did Jesus promise the criminal beside him?","Luke 23:43"],["TEARS","What will God wipe away according to Revelation?","Revelation 21:4"],["DEATH","What will be no more according to Revelation 21:4?","Revelation 21:4"]],"jehovah":[["JEHOVAH","What personal name appears in Exodus 3:15?","Exodus 3:15"],["MERCY","Which quality is highlighted when Jehovah described himself to Moses?","Exodus 34:6"],["LOVE","What quality does 1 John 4:8 say God is?","1 John 4:8"]],"angels":[["ANGEL","Who stopped Abraham from harming Isaac?","Genesis 22:11-12"],["GABRIEL","Which angel spoke to Mary?","Luke 1:26-27"],["MICHAEL","Who is called an archangel in Jude 9?","Jude 9"]],"congregation":[["ELDERS","Who are encouraged to shepherd the flock?","1 Peter 5:1-2"],["GIFTS","What differing things does Romans 12:6 mention among believers?","Romans 12:6"],["LOVE","What identifies Jesus’ disciples according to John 13:35?","John 13:35"]],"kingdom":[["KINGDOM","What did Jesus tell his followers to seek first?","Matthew 6:33"],["HEAVEN","Where does Revelation 11:15 report a loud voice proclaiming the Kingdom?","Revelation 11:15"],["PEACE","What is promised in Psalm 72:7?","Psalm 72:7"]],"job":[["JOB","Which faithful man endured severe tests of integrity?","Job 1:8"],["INTEGRITY","What quality did Job remain determined to maintain?","Job 27:5"],["FRIENDS","Who came to sympathize with Job?","Job 2:11"]],"christianliving":[["LOVE","What quality does Jesus identify as marking his disciples?","John 13:35"],["PEACE","What should Christians pursue with all people?","Romans 12:18"],["KINDNESS","What quality is mentioned in Ephesians 4:32?","Ephesians 4:32"]],"prophecy":[["PROPHECY","What does 2 Peter 1:20-21 discuss?","2 Peter 1:20-21"],["DANIEL","Which prophet received symbolic visions of kingdoms?","Daniel 7:1"],["SCROLL","What did Ezekiel receive in a vision?","Ezekiel 2:9"]]};
+const BU3826_FALLBACK_WORDS=[['FAITH','What quality is central to Hebrews chapter 11?','Hebrews 11:1'],['LOVE','What does 1 John 4:8 say that God is?','1 John 4:8'],['HOPE','Which positive expectation is emphasized in Romans 15:13?','Romans 15:13']];
+function bu3826WordCards(k){
+ const rows=BU3826_WORD_DECKS[k]||BU3826_FALLBACK_WORDS;
+ return rows.filter(x=>/^[A-Z]{3,12}$/.test(x[0])).map(([word,clue,ref])=>({word,clue,reference:ref,title:'Bible Discovery: '+word,fact:word+' is connected with '+ref+'. Read the verse together, then share why this person, place, or teaching matters in the wider Bible account.',scene:null}));
+}
+for(const key of BU34_KEYS)if(!BU35_STORY[key])BU35_STORY[key]=bu3826WordCards(key);
+for(const [key,c] of Object.entries(BU3826_COLLECTIONS)){
+ BU35_STORY[key]=c.keys.flatMap(k=>BU35_STORY[k]||[]);
+ if(!BU35_STORY[key].length)BU35_STORY[key]=bu3826WordCards('general');
+}
+const BU3826_APPLICATIONS=[{"title":"Choosing a Job","situation":"A parent is offered a higher-paying job but would have less time for loved ones.","question":"What responsibilities, priorities, and alternatives could the family weigh?","ref":"Matthew 6:33","group":"kingdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"A Sincere Apology","situation":"Two relatives have avoided one another for years after an argument.","question":"What helped Jacob approach Esau, and which ideas might help here without guaranteeing a specific result?","ref":"Genesis 33:3-11","group":"people","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Different Opinions","situation":"Family members disagree about a decision that the Bible does not directly settle.","question":"How can they respect conscience and stay united without forcing a conclusion?","ref":"Romans 14:5","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Taking Advice","situation":"Someone must make a costly decision and receives conflicting advice.","question":"How could they evaluate advice and retain responsibility for the final choice?","ref":"Proverbs 15:22","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"A Difficult Conversation","situation":"A person is upset by something said in a group message.","question":"Which responses could calm the situation, and what circumstances might affect the choice?","ref":"Proverbs 15:1","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Being Included","situation":"A new person visits a group and seems shy.","question":"What are different considerate ways to welcome them without putting them on the spot?","ref":"Romans 12:10","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Fear of Failure","situation":"A student wants to learn but is embarrassed by past mistakes.","question":"How could encouragement and realistic goals help?","ref":"Proverbs 24:16","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Concern for a Friend","situation":"A friend seems stressed but has not asked for help.","question":"How might you show concern while respecting their privacy and wishes?","ref":"Galatians 6:2","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Long-Term Planning","situation":"A family hopes to move but faces financial and personal uncertainties.","question":"What information, conversations, and priorities would be worth considering?","ref":"Proverbs 21:5","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Dealing with Anxiety","situation":"Someone is anxious about a future event that they cannot control.","question":"What could prayer, practical planning, and support from others each contribute?","ref":"Philippians 4:6-7","group":"jesus","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"A Second Chance","situation":"A person makes a mistake and sincerely tries to put things right.","question":"How could others balance kindness, trust, and reasonable boundaries?","ref":"Ephesians 4:32","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Conflicting Responsibilities","situation":"A caregiver has duties to family and work and is becoming exhausted.","question":"What supports or adjustments could be explored rather than imposing a single solution?","ref":"1 Timothy 5:8","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Praising Effort","situation":"A child tried hard but did not win a competition.","question":"What kind of encouragement recognizes both effort and individual growth?","ref":"1 Thessalonians 5:11","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"A Rumor Spreads","situation":"Someone hears an unverified accusation about another person.","question":"What should be checked before repeating it, and how can people avoid harm?","ref":"Proverbs 18:13","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"A Personal Style Choice","situation":"Someone makes a lawful appearance choice that others dislike.","question":"How can people distinguish personal preference, cultural expectations, and an actual Bible principle?","ref":"Romans 14:4","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Sharing Responsibilities","situation":"One family member is doing most of the household tasks.","question":"How might the family fairly discuss needs, abilities, and time?","ref":"Philippians 2:4","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Helping a Neighbor","situation":"A neighbor needs assistance, but a person has limited money and time.","question":"What realistic kinds of help might be possible?","ref":"Luke 10:33-35","group":"jesus","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Taking a Risk","situation":"A person sees an opportunity that could help others but carries genuine risk.","question":"What consequences, safeguards, and motives should be considered?","ref":"Proverbs 14:15","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Dealing with Disagreement","situation":"Two people read the same advice differently.","question":"How can they listen carefully and avoid treating their preference as a rule?","ref":"James 1:19","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Finding Peace","situation":"A family wants to rebuild a relationship after a disagreement.","question":"What can be learned from Jacob’s patient preparations without assuming reconciliation is always immediate?","ref":"Genesis 32:13-21","group":"people","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Asking for Help","situation":"Someone is struggling alone with a difficult task.","question":"What could make asking a trustworthy person for support useful?","ref":"Ecclesiastes 4:9-10","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Welcoming Feedback","situation":"A teammate offers criticism in a clumsy way.","question":"How can the receiver look for useful advice while explaining the impact of the delivery?","ref":"Proverbs 12:15","group":"wisdom","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Being Generous","situation":"Someone wants to give to a cause but must also meet obligations.","question":"How might they decide on an amount freely without guilt or pressure?","ref":"2 Corinthians 9:7","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Making Peace","situation":"A school group is splitting into sides over a misunderstanding.","question":"What questions could help establish the facts and restore respectful communication?","ref":"Matthew 5:9","group":"jesus","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"Caring for Creation","situation":"Neighbors disagree over how to use a shared natural area.","question":"How can different needs be considered alongside care for the environment?","ref":"Genesis 1:28","group":"people","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."},{"title":"A Question of Conscience","situation":"A friend requests your opinion on a personal choice not directly forbidden in Scripture.","question":"How could you share information without pressuring them to copy your decision?","ref":"Romans 14:22","group":"congregation","factors":"Consider different circumstances, the cited Bible principle, and the person’s conscience."}];
+const BU3826_SCENARIO_GROUP=(topic)=>topic==='kingdom'?'kingdom':BU3826_COLLECTIONS[topic]?.group||BU3826_CATEGORY(topic);
+for(const k of Object.keys(BU35_TOPICS)){
+ if(BU3817_APPLICATION[k]?.length)continue;
+ const group=BU3826_SCENARIO_GROUP(k);
+ const subset=BU3826_APPLICATIONS.filter(x=>group==='all'||x.group===group||x.group==='wisdom');
+ BU3817_APPLICATION[k]=subset.length?subset:BU3826_APPLICATIONS;
+}
+// Family setup: condensed topic groups rather than a giant unorganized list.
+const bu3826OldSetup=bu35RenderSetup;
+bu35RenderSetup=function(body){
+ bu3826OldSetup(body);const topic=body.querySelector('#bu35-topic');
+ if(topic){
+  const selected=bu35Setup.topic;topic.innerHTML='';
+  function group(name,keys){const opt=document.createElement('optgroup');opt.label=name;for(const k of keys){if(!BU35_TOPICS[k])continue;const item=document.createElement('option');item.value=k;item.textContent=BU35_TOPICS[k].name;opt.appendChild(item);}topic.appendChild(opt);}
+  group('Explore the Whole Bible',Object.keys(BU3826_COLLECTIONS));
+  group('Story Adventure Accounts',['genesis','eden','cain','noah','babel','abraham','moses']);
+  group('Other Bible Topics',BU34_KEYS.filter(k=>!['genesis','eden','cain','noah','babel','abraham','moses'].includes(k)));
+  topic.value=BU35_TOPICS[selected]?selected:'allbible';topic.onchange=e=>{bu35Setup.topic=e.target.value;bu35Save();};
+  const previousLabel=topic.previousElementSibling;if(previousLabel)previousLabel.textContent='BIBLE TOPIC OR COLLECTION';
+ }
+ const wrap=document.createElement('div');wrap.className='bu3826-level-wrap';wrap.innerHTML='<label class="bu35-label" for="bu3826-level">QUESTION LEVEL</label><select id="bu3826-level" class="bu35-select" aria-label="Choose Family Worship challenge level">'+BU3826_DIFFICULTIES.map(k=>'<option value="'+k+'">'+BU3826_LEVELNAME[k]+'</option>').join('')+'</select><p class="bu35-muted">A topic may include nearby levels or clearly labeled wider-Bible questions when its own question bank is small. Personal discussions are never graded.</p>';
+ if(topic)topic.insertAdjacentElement('afterend',wrap);
+ const input=wrap.querySelector('#bu3826-level');input.value=BU3826_DIFFICULTIES.includes(bu35Setup.difficulty)?bu35Setup.difficulty:'intermediate';
+ input.onchange=()=>{bu35Setup.difficulty=input.value;bu35Save();};
+};
+function bu3826Questions(game){
+ const topic=game.topic,requested=BU3826_DIFFICULTIES.includes(game.difficulty)?game.difficulty:'intermediate';
+ const collection=BU3826_COLLECTIONS[topic];const keys=(collection?collection.keys:[topic]).filter(k=>Array.isArray(BU34_BANK[k]));
+ const main=keys.flatMap(k=>(BU34_BANK[k]||[]).map(x=>({...x,topic:k,difficulty:x.difficulty||'beginner'})));
+ const exact=main.filter(q=>q.difficulty===requested);
+ const idx=BU3826_DIFFICULTIES.indexOf(requested);
+ const near=main.filter(q=>q.difficulty!==requested).sort((a,b)=>Math.abs(BU3826_DIFFICULTIES.indexOf(a.difficulty)-idx)-Math.abs(BU3826_DIFFICULTIES.indexOf(b.difficulty)-idx));
+ const rounds=game.quick==='session'?(game.minutes>=60?3:game.minutes>=45?2:1):Math.max(2,Math.ceil(6/game.people.length));
+ const target=Math.max(6,game.people.length*rounds);
+ const out=[...exact];
+ if(out.length<target)for(const q of near){out.push(q);if(out.length>=target)break;}
+ // For narrow topics, preserve challenge rather than cycling two questions repeatedly.
+ if(out.length<target){
+  const wide=BU34_KEYS.flatMap(k=>(BU34_BANK[k]||[]).filter(q=>(q.difficulty||'beginner')===requested).map(q=>({...q,topic:k,difficulty:requested,__outside:true})));
+  const existing=new Set(out.map(q=>q.q.trim().toLowerCase()));
+  for(const q of wide){if(existing.has(q.q.trim().toLowerCase()))continue;out.push(q);existing.add(q.q.trim().toLowerCase());if(out.length>=target+3)break;}
+ }
+ return out.length?out:main;
+}
+const bu3826OldReading=bu35Reading;
+bu35Reading=function(){const g=bu35Game;if(g.contentVersion!==2)return bu3826OldReading();
+ const t=BU35_TOPICS[g.topic],source=BU3826_COLLECTIONS[g.topic],refs=source?source.keys.flatMap(k=>BU34_BANK[k]?.filter(q=>q.ref).slice(0,2).map(q=>q.ref)||[]):[];
+ if(!g.readingRef){g.readingRef=refs.length?refs[bu3825Draw('family-reading:'+g.topic,refs.length)]:t.ref;bu35Save();}
+ const ref=g.readingRef||t.ref;return `<div class="bu35-hero"><span class="bu35-kicker">READ & EXPLORE</span><h2>Read Together</h2><p>Try a passage connected to today's subject, and discuss anything interesting you notice. No timer.</p></div><div class="bu35-card"><h3>${bu35Escape(t.name)}</h3><p><strong>${bu35Escape(ref)}</strong></p><a class="bu35-scripture" target="_blank" rel="noopener noreferrer" href="${scriptureUrl(ref)}">▤ Open on JW.org ↗</a><p class="bu35-muted">The Bible link opens in a separate page. Reading and personal observations are never graded.</p><button class="bu35-btn" id="bu35-read-done">Continue Together →</button></div>`;
+};
+// Add variety to session discussion prompts without introducing non-scriptural rules.
+const bu3826OldHandoff=bu35Handoff;
+bu35Handoff=function(){return bu3826OldHandoff();};
+
 // v3.8.19 — Family Worship music & single authoritative HTML-audio gain controller.
 // The dedicated track is a separate MP3 alongside index.html, preserving source quality.
 // No storage keys, Coins, Questions, or prior tracks are changed.
@@ -4666,7 +4924,7 @@ updateMusicState();
 
 
 <script id="bu3823-glitter-engine">
-/* v3.8.23. Soft, continuous glitter fog + gentle visual finger offset.
+/* v3.8.25. Soft, continuous glitter fog + gentle visual finger offset.
    The puzzle engine retains ownership of letter selection, scoring and progression. */
 (()=>{
  'use strict';
