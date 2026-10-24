@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.8.71</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.8.73 — Detective Prototype</title><meta name="build-version" content="v3.8.73-detective-prototype-1">
 <style>
 :root{--navy:#082530;--deep:#061b26;--teal:#0b3b44;--gold:#f4d48b;--gold2:#cba966;--cream:#fff5d8;--soft:#cbdfdf}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--deep);color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}button{font-family:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #e9c879;outline-offset:3px}button:disabled{opacity:.6;cursor:default}a{color:var(--gold)}.hide,[hidden]{display:none!important}
 #app{width:100%;min-height:100dvh;overflow:hidden;background:var(--deep)}.screen{width:100%;height:100dvh;display:flex;flex-direction:column;overflow:hidden}.home-hero{min-height:0;flex:1;position:relative;background-size:cover;background-position:center 58%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 20px 18px}.home-hero:before{content:"";inset:0;position:absolute;background:linear-gradient(180deg,#061c27ce,#061d2848 38%,#071924ca 100%)}.hero-copy{z-index:1;max-width:600px}.chapter-label,.overline{font-size:11px;letter-spacing:2.5px;color:var(--gold);font-weight:800}.brand{font-family:Georgia,serif;font-size:clamp(44px,10vw,70px);font-weight:700;line-height:.93;letter-spacing:-1.6px;text-shadow:0 3px 30px #000c;color:#ffe5a2;margin:12px auto 13px}.brand small{display:block;font:700 12px/1.8 system-ui;letter-spacing:4px;color:#fff3d2}.home-hero h1{font-family:Georgia,serif;font-size:clamp(28px,6vw,39px);font-weight:700;line-height:1.08;margin:18px 0 9px;text-shadow:0 3px 10px #0008}.hero-description{font-size:15px;color:#e7f3ed;line-height:1.5;margin:0 auto 18px;max-width:420px}.gold-button,.secondary-button{border-radius:15px;padding:15px 22px;font-size:15px;font-weight:800;border:1px solid #fce3a3;transition:transform .15s}.gold-button{background:linear-gradient(#f6d990,#c89e46);color:#1c2727;box-shadow:0 5px 28px #ffcb6c33;min-height:50px}.gold-button:active,.secondary-button:active{transform:scale(.97)}.secondary-button{color:#f0e8ce;background:#133a46;min-height:45px;border-color:#75949a}.home-actions{display:grid;gap:9px;margin:0 auto;max-width:300px}.route-panel{background:linear-gradient(180deg,#123c49,#082630);padding:13px 15px max(14px,env(safe-area-inset-bottom));border-top:1px solid #d8be7c55;box-shadow:0 -10px 30px #0006;max-height:43dvh;overflow-y:auto}.route-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.route-header h2{font-family:Georgia,serif;font-size:20px;margin:0}.route-sub{font-size:11px;color:#b1cacb}.path-list{display:flex;gap:9px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:thin;scrollbar-color:#bda16c66 transparent}.episode{flex:0 0 146px;border:1px solid #58767a77;border-radius:12px;min-height:87px;padding:9px 10px;background:#143d47;color:#d9e7e4;text-align:left}.episode.available{background:linear-gradient(135deg,#315a59,#12383e);border:1px solid #e0c580;color:#fff}.episode .n{font-family:Georgia,serif;font-size:19px;color:#fbe0a3}.episode strong{display:block;font-size:13px;margin:2px 0 3px}.episode span{display:block;font-size:10px;color:#b6d0cb}.route-foot{font-size:11px;margin:8px 0 0;color:#b6cfcb}
@@ -1639,6 +1639,7 @@ html.sea-wheel { --bu3822-ribbon:#99ffe9; --bu3822-halo:#50e7d6; }
 </header>
 <div class="cinematic-heading v37-heading"><div class="v37-emblem" role="img" aria-label="Navy and gold open Bible emblem with J and W on the covers"></div><h1>BIBLE <span>UNFOLDED</span></h1><div class="cin-gold-rule" aria-hidden="true"><i></i>✦<i></i></div><p>EXPLORE · DISCOVER · BE INSPIRED</p></div>
   <button id="bu375-home-cta" class="bu375-home-banner" type="button" aria-label="Open today's Daily Discovery challenge"><span class="bu375-sun" aria-hidden="true">✦</span><span class="bu375-banner-text"><strong>Daily Discovery</strong><small id="bu375-home-status">Five Bible questions · One new challenge each day</small></span><span class="bu375-banner-arrow" aria-hidden="true">›</span></button>
+  <button id="bu-case-entry" type="button" aria-label="Play new Bible Detective prototype" style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:calc(100% - 24px);margin:10px 12px 12px;padding:13px 16px;border:2px solid #f2cd79;border-radius:16px;background:linear-gradient(110deg,#12465a,#12352e);color:#fff3cb;font:700 16px/1.25 system-ui;box-shadow:0 0 18px #d8af5870;text-align:left;cursor:pointer;min-height:70px"><span>🕵️ NEW: BIBLE DETECTIVE<small style="display:block;font-size:12px;font-weight:500;color:#f9e3b2;margin-top:4px">TAP HERE · PLAY THE GENESIS 13 TEST CASE</small></span><span style="font-size:24px">›</span></button>
   <div class="cinematic-cards" aria-label="Choose a game mode">
  <button id="home-story" class="cinematic-card" aria-label="Play Story Adventure"><span class="cinematic-poster art-story"><span class="poster-symbol" aria-hidden="true">▤</span></span><span class="cinematic-card-body"><span class="cinematic-card-title">Story Adventure</span><span class="cinematic-card-desc">Bring Bible accounts to life, one discovery at a time.</span><span class="cinematic-card-cta">CONTINUE JOURNEY <span aria-hidden="true">›</span></span></span></button>
  <button id="home-watch" class="cinematic-card" aria-label="Browse Watch Stories"><span class="cinematic-poster art-watch"><span class="poster-symbol" aria-hidden="true">▶</span></span><span class="cinematic-card-body"><span class="cinematic-card-title">Watch Stories</span><span class="cinematic-card-desc">Revisit your unlocked cinematic picture sequences.</span><span class="cinematic-card-cta">BROWSE STORIES <span aria-hidden="true">›</span></span></span></button>
@@ -1653,12 +1654,13 @@ html.sea-wheel { --bu3822-ribbon:#99ffe9; --bu3822-halo:#50e7d6; }
 <button id="home-help"><span aria-hidden="true">?</span><b>Help</b><small>How to play</small></button>
 </nav>
 <button id="begin" class="cin-more-modes" hidden>PLAY BIBLE TRIVIA <span aria-hidden="true">›</span></button>
-<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.71 · DEMO VOICES: elevenlabs.io</div>
+<div class="cinematic-footnote">BIBLE UNFOLDED · v3.8.73 · DETECTIVE TEST · DEMO VOICES: elevenlabs.io</div>
 </div></section>
 <section class="screen mode-screen" id="modes" hidden aria-hidden="true">
 <header class="hub-head"><button class="hub-icon" id="modes-back" aria-label="Back to cover">‹</button><div class="hub-headtitle"><small>BIBLE UNFOLDED</small><b>Choose Your Adventure</b></div><button class="hub-icon" id="modes-menu" aria-label="Menu">☰</button></header>
 <div class="wallet-banner" data-wallet="true" role="status"></div><div class="mode-scroll"><p class="mode-intro">One Bible. Different ways to explore.</p>
 <button class="mode-card story" id="choose-story"><span class="mode-icon">✦</span><span><strong>Story Adventure</strong><small>Travel through Bible history. Solve words to bring each scene to life.</small></span><b>›</b></button>
+
 <button class="mode-card cross" id="choose-crossword"><span class="mode-icon">▦</span><span><strong>Bible Word Trails</strong><small>Interlocking Bible-word puzzles. Use crossing letters to help solve each answer.</small></span><b>›</b></button>
 <button class="mode-card watch" id="choose-watch"><span class="mode-icon">▶</span><span><strong>Watch Stories</strong><small>Enjoy scenes from chapters you have completed—no puzzles.</small></span><b>›</b></button>
 <button class="mode-card reward" id="choose-rewards"><span class="mode-icon">★</span><span><strong>Rewards & Progress</strong><small>Points, Insight Tokens, daily rewards, rank, and unlockables.</small></span><b>›</b></button><div class="mode-status">v2.1 · Cinematic Word Trails<br>Your existing progress remains in place.</div></div></section>
@@ -1684,7 +1686,7 @@ html.sea-wheel { --bu3822-ribbon:#99ffe9; --bu3822-halo:#50e7d6; }
 <section id="levels" class="screen hub-screen" hidden><header class="hub-head"><button id="levels-back" class="hub-icon" aria-label="Back">‹</button><div class="hub-headtitle"><small>FIND YOUR PLACE</small><b>Bible Books</b></div><button id="levels-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll"><div class="book-intro"><h1>Explore the Bible</h1><p>Choose a book to see its stories. New episodes unlock as your journey grows.</p></div><div class="testament-label">HEBREW–ARAMAIC SCRIPTURES <span>39 books</span></div><div id="hebrew-books" class="book-grid"></div><div class="testament-label new-testament">CHRISTIAN GREEK SCRIPTURES <span>27 books</span></div><div id="greek-books" class="book-grid"></div><p class="collection-note">Genesis is playable now. Six Exodus Story Adventure episodes can be opened through the Exodus tile.</p></div></section>
 <section id="episodes" class="screen hub-screen" hidden><header class="hub-head"><div class="bu-side-score"><button id="episodes-back" class="hub-icon" aria-label="Back">‹</button><span class="bu-side-value" title="Insight Tokens"><span aria-hidden="true">◉</span><b id="episodes-coin-count">45</b></span></div><div class="hub-headtitle"><small>JOURNEY 1 · THE BEGINNING</small><b>Genesis</b></div><div class="bu-side-score"><button id="episodes-menu" class="hub-icon" aria-label="Open menu">☰</button><span class="bu-side-value" title="Points"><span aria-hidden="true">✦</span><b id="episodes-point-count">0</b></span></div></header><div class="hub-scroll"><div class="episodes-cover"><div class="overline">BOOK 01 · GENESIS</div><h1>The Beginning</h1><p>Every great story has a beginning.</p></div><div class="episode-headline"><b>Discover the episodes</b><small>2 episodes planned · unlock Eden after Creation</small></div><div id="episode-list" class="episode-list"></div></div></section>
 <section id="gallery" class="screen hub-screen" hidden><header class="hub-head"><button id="gallery-back" class="hub-icon" aria-label="Go back">‹</button><div class="hub-headtitle"><small>GENESIS · EPISODE 1</small><b>Discovery Gallery</b></div><button id="gallery-menu" class="hub-icon" aria-label="Open menu">☰</button></header><div class="wallet-banner wallet-hub" data-wallet="true" role="status"></div><div class="hub-scroll gallery-scroll"><div class="overline">YOUR STORY IN PICTURES</div><h1>Moments Uncovered</h1><p>Revisit the original scenes you have revealed. More moments unlock as you play.</p><div id="gallery-grid" class="gallery-grid"></div><button id="gallery-resume" class="gold-button gallery-resume">Return to the Adventure →</button></div></section><dialog id="gallery-viewer" class="gallery-viewer"><button id="viewer-close" class="viewer-close" aria-label="Close image">×</button><img id="viewer-image" alt="A revealed moment from the Genesis account"><div id="viewer-caption"></div></dialog><div id="menu-mask" class="overlay-mask" hidden></div><aside id="game-menu" class="game-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden><div class="drawer-top"><div><small>THE ADVENTURE CONTINUES</small><h2 id="menu-title">Bible Unfolded</h2></div><button id="menu-close" class="hub-icon" aria-label="Close menu">×</button></div><div id="bu-story-menu-summary" class="bu-menu-wallet" aria-label="Current Insight Tokens and Points"><span>◉ <b id="bu-menu-coins">45</b> Insight Tokens</span><span>✦ <b id="bu-menu-points">0</b> Points</span><small id="bu-menu-rank">Check Rewards for rank progress</small></div><nav class="drawer-links"><button data-nav="continue"><span>▶</span> Continue Playing <small>Resume your current chapter</small></button><button data-nav="journey"><span>✧</span> Journey Path <small>See your progress</small></button><button data-nav="levels"><span>▦</span> Levels <small>Browse Bible books</small></button><button data-nav="gallery"><span>✧</span> Discovery Gallery <small>Revisit your unlocked scenes</small></button><button data-nav="rewards"><span>★</span> Rewards <small>Insight Tokens, Points, and prizes</small></button><button data-nav="settings"><span>♫</span> Settings <small>Music and controls</small></button><button data-nav="help"><span>?</span> How to Play <small>Learn the controls</small></button><button data-nav="home"><span>⌂</span> Cover Screen <small>Return to the beginning</small></button></nav><button id="moses" class="drawer-prototype">Exodus — The River’s Secret <span>↗</span></button><button id="menu-crossword" class="drawer-prototype">▦ Bible Word Trails <span>↗</span></button><button id="menu-watch" class="drawer-prototype">▶ Watch Stories <span>↗</span></button><p class="drawer-foot">Story Adventure and Bible Word Trails use shared Settings.</p></aside>
-<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.8.71 · Noncommercial Beta</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="bu383-sfx-preview"><button type="button" id="bu383-test-chime">▶ Hear word-complete sound</button><small id="bu383-sfx-status" role="status"></small></div><div class="bu381-voice-controls" id="bu381-voice-controls">
+<div id="dialog-mask" class="overlay-mask above-drawer" hidden></div><section id="settings-dialog" class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden><button class="dialog-x" id="settings-close" aria-label="Close settings">×</button><div class="overline">PERSONALIZE THE JOURNEY</div><h2 id="settings-title">Settings</h2><small class="music-note">Bible Unfolded v3.8.73 · Detective Test · Noncommercial Beta</small><label class="setting-row"><span><b>Music</b><small>Background soundtrack</small></span><input type="checkbox" id="setting-music" checked></label><label class="setting-row"><span><b>Sound Effects</b><small>Letters and discoveries</small></span><input type="checkbox" id="setting-sfx" checked></label><label class="setting-volume"><b>Music volume</b><input id="setting-volume" type="range" min="0" max="100" value="42"><span id="volume-display">42%</span></label><label class="setting-volume"><b>Sound effects volume</b><input id="setting-sfx-volume" type="range" min="0" max="100" step="1" value="20"><span id="sfx-volume-display">20%</span></label><div class="bu383-sfx-preview"><button type="button" id="bu383-test-chime">▶ Hear word-complete sound</button><small id="bu383-sfx-status" role="status"></small></div><div class="bu381-voice-controls" id="bu381-voice-controls">
 <div class="bu381-voice-label">VOICE ANNOUNCEMENTS <span class="bu381-private">NONCOMMERCIAL TEST</span></div>
 <label class="setting-row"><span><b>Announcer</b><small>Off, rotating voices, or one favorite speaker</small></span>
 <select id="bu381-voice-mode" aria-label="Voice announcer"><option value="rotate">Rotate voices (default)</option><option value="off">Off</option><option value="charlie">Charlie</option><option value="paul">Paul</option><option value="toby">Toby</option><option value="julian">Julian</option></select></label>
@@ -2204,7 +2206,7 @@ function iconSVG(id){return `<svg viewBox="0 0 44 44" aria-hidden="true">${ICONS
 function notify(msg){let e=$('toast');e.textContent=msg;e.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{e.hidden=true},3200)}
 function hideAll(){['home','modes','journey','levels','episodes','gallery','play','crossword-screen','cross-pick','watch-pick','watch-player','rewards','bu3857-screen'].forEach(id=>$(id).hidden=true);}
 function syncMusic(){updateMusicState();}
-function focusHome(){hideAll();closeMenu();closeDialog();$('home').hidden=false;document.title='Bible Unfolded v3.8.71 — Home';syncMusic()}
+function focusHome(){hideAll();closeMenu();closeDialog();$('home').hidden=false;document.title='Bible Unfolded v3.8.73 — Detective Prototype — Home';syncMusic()}
 function openJourney(celebrate=false){hideAll();closeMenu();closeDialog();$('journey').hidden=false;lastHub='journey';updateJourney(celebrate);$('journey-scroll').scrollTop=0;document.title='Bible Unfolded · The Journey';syncMusic()}
 function openLevels(){hideAll();closeMenu();closeDialog();$('levels').hidden=false;lastHub='levels';document.title='Bible Unfolded · Bible Books';syncMusic()}
 let bu3854EpisodeBook='genesis';
@@ -7746,4 +7748,268 @@ function familyInfo(){
 }
 const oldFamily=bu35Render;bu35Render=function(...args){let out=oldFamily.apply(this,args);familyInfo();return out};
 })();
-</script></body></html>
+</script><style id="bu-detective-review-css">
+/* Bible Unfolded HQ — isolated Genesis 13 detective review prototype.
+   The existing word game, story chapters, player wallet, and save keys are untouched. */
+#bu-case[hidden],#bu-case .case-modal[hidden]{display:none!important}
+#bu-case,#bu-case *{box-sizing:border-box}
+#bu-case{position:fixed;inset:0;z-index:2147482000;height:100vh;height:100dvh;overflow:hidden;background:radial-gradient(ellipse at 25% 0%,#185663 0%,#081d2b 49%,#05141f 100%);color:#f4ebda;font:500 13px/1.35 system-ui,-apple-system,'Segoe UI',sans-serif;touch-action:pan-x;overscroll-behavior:contain}
+#bu-case button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#bu-case button:focus-visible,#bu-case a:focus-visible{outline:2px solid #f8dd9a;outline-offset:2px}
+#bu-case button:active{transform:scale(.974)}
+#bu-case .case-shell{max-width:520px;margin:0 auto;height:100%;min-height:0;display:flex;flex-direction:column;box-shadow:0 0 70px #0006;border-inline:1px solid #e8c17a15}
+#bu-case .case-top{height:51px;flex:0 0 51px;display:flex;align-items:center;gap:8px;padding:5px 12px;background:linear-gradient(90deg,#071c2a,#0a3441);border-bottom:1px solid #cda86658}
+#bu-case .case-top b{display:block;font:700 15px/1.15 Georgia,serif;letter-spacing:.02em;color:#fff2d4}
+#bu-case .case-top small{display:block;letter-spacing:.14em;font-size:9px;font-weight:850;color:#dcbd78}
+#bu-case .case-headtools{display:flex;gap:6px;margin-left:auto}
+#bu-case .case-icon{display:grid;place-items:center;flex:0 0 35px;height:35px;color:#f8e2b1;background:#184451;border:1px solid #c69b566e;border-radius:11px;font-size:21px}
+#bu-case .case-body{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 12px 10px;gap:7px;overflow:hidden}
+#bu-case .case-kicker{color:#b9dce1;text-transform:uppercase;letter-spacing:.12em;font-size:9px;font-weight:800}
+#bu-case .case-title{font:700 clamp(21px,5.1vw,29px)/1.04 Georgia,serif;margin:0;color:#ffebc5}
+#bu-case .case-desc{color:#d6e5e7;line-height:1.34;font-size:12px;margin:0}
+#bu-case .case-hero{margin:0;width:100%;position:relative;min-height:0;flex:0 0 clamp(103px,20dvh,176px);border-radius:13px;overflow:hidden;border:1px solid #e5b96a75;background:#164858}
+#bu-case .case-hero.large{flex:0 0 clamp(152px,24dvh,213px)}
+#bu-case .case-hero img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#09232e}
+#bu-case .case-hero:after{content:'';pointer-events:none;position:absolute;inset:auto 0 0;height:26%;background:linear-gradient(0deg,#031b24a8,transparent)}
+#bu-case .case-hero-label{position:absolute;left:8px;bottom:5px;z-index:1;color:#ffedc6;font:700 10px Georgia,serif;text-shadow:0 2px 6px #000}
+#bu-case .case-sourcebar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;min-height:22px}
+#bu-case .case-sourcebar a{border:1px solid #62a7b276;border-radius:12px;color:#d5f7f0;background:#123845;padding:3px 8px;font-size:10px;font-weight:750;text-decoration:none}
+#bu-case .case-mission{display:flex;align-items:center;gap:8px;padding:6px 9px;border:1px solid #ba985469;background:linear-gradient(90deg,#183947,#0d2c38);border-radius:10px}
+#bu-case .case-mission strong{color:#ffdea1;display:block;font:700 13px Georgia,serif}
+#bu-case .case-mission span{display:block;font-size:11px;color:#e5eeeb}
+#bu-case .case-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;min-height:0}
+#bu-case .case-evidence{background:#123440;border:1px solid #548a8a88;color:#e9f6f0;border-radius:9px;min-height:41px;padding:5px 3px;display:flex;justify-content:center;align-items:center;flex-direction:column;gap:2px;text-align:center}
+#bu-case .case-evidence b{color:#f6d999;font-size:10px;letter-spacing:.04em}
+#bu-case .case-evidence small{font-size:9px;line-height:1.1;color:#c6dddb}
+#bu-case .case-evidence:active{border-color:#f6d999;background:#245466}
+#bu-case .case-map{background:radial-gradient(ellipse at 50% 0%,#184957,#0a2934);border:1px solid #d4a96086;border-radius:12px;min-height:0;flex:1;display:flex;flex-direction:column;justify-content:center;gap:7px;padding:8px 10px}
+#bu-case .case-step-title{font:700 15px Georgia,serif;color:#ffebb9;margin:0 0 3px;text-align:center}
+#bu-case .case-choice-row{display:flex;align-items:center;justify-content:space-between;gap:7px;min-height:42px}
+#bu-case .case-choice-name{color:#f0eadc;font-size:11px;font-weight:700;flex:1}
+#bu-case .case-choice-group{display:flex;gap:6px;flex:0 0 auto}
+#bu-case .case-choice{min-width:71px;padding:8px 5px;border:1px solid #66959b88;color:#d6eded;background:#16424e;border-radius:9px;font-weight:750}
+#bu-case .case-choice.selected{color:#102329;background:linear-gradient(180deg,#ffe7b2,#d5aa64);border-color:#fff3c2;box-shadow:0 0 0 1px #f9dd9666}
+#bu-case .case-ribbon{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border-radius:8px;background:#061d2a91;color:#bce3d9;font-size:10px}
+#bu-case .case-foot{display:flex;flex:0 0 auto;gap:7px;align-items:stretch}
+#bu-case .case-btn{border:1px solid #bb9258;border-radius:10px;background:linear-gradient(180deg,#ffe6a6 0%,#e1b769 65%,#c39548 100%);color:#192932;font-weight:850;min-height:43px;padding:9px 11px;flex:1;box-shadow:inset 0 1px 1px #fff9;white-space:normal}
+#bu-case .case-btn.secondary{flex:0 0 auto;background:#154353;border-color:#47798a;color:#e2eeea;box-shadow:none}
+#bu-case .case-btn:disabled{opacity:.45;filter:grayscale(.5);cursor:default}
+#bu-case .case-feedback{min-height:17px;color:#f6d996;font-size:11px;line-height:1.25;text-align:center;font-weight:650}
+#bu-case .case-lede{font:700 16px/1.18 Georgia,serif;color:#ffe8b6;text-align:center;margin:0}
+#bu-case .case-notice{font-size:11px;text-align:center;color:#b9d3d3}
+#bu-case .case-intro-text{padding:10px 10px;border-radius:12px;background:linear-gradient(130deg,#153744,#092835);border:1px solid #5b9b9e55;line-height:1.48;font-size:13px;color:#eff5ec}
+#bu-case .case-intro-footer{margin-top:auto;text-align:center;color:#9cb7bc;font-size:10px}
+#bu-case .case-cardlist{display:flex;flex:1;min-height:0;flex-direction:column;gap:5px}
+#bu-case .case-claim{flex:1;min-height:0;display:flex;gap:6px;align-items:center;text-align:left;width:100%;padding:5px 8px;border:1px solid #4a898f77;border-radius:10px;background:linear-gradient(110deg,#133c48,#082734);color:#f4eee1}
+#bu-case .case-claim.active{border:1px solid #e6bf71;box-shadow:inset 0 0 0 1px #e6bf713f}
+#bu-case .case-claim.done{background:linear-gradient(110deg,#234b51,#0e3941)}
+#bu-case .case-claim .case-num{width:23px;height:23px;display:grid;place-items:center;background:#193e49;border:1px solid #7eb3ad55;border-radius:7px;flex:0 0 23px;color:#f3ce7e;font-size:11px;font-weight:800}
+#bu-case .case-claim .case-words{flex:1;font-size:clamp(10px,2.8vw,12px);line-height:1.23}
+#bu-case .case-claim .case-stamp{flex:0 0 auto;color:#ffda91;font-size:10px;font-weight:800;max-width:76px;text-align:right}
+#bu-case .case-stamps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex:0 0 auto}
+#bu-case .case-stampbtn{min-height:35px;padding:5px 3px;background:#12434e;border:1px solid #71a29e80;border-radius:9px;color:#e4ede7;font-size:10px;font-weight:800}
+#bu-case .case-stampbtn b{display:block;font-size:11px;color:#f5d89a}
+#bu-case .case-finish{display:flex;flex-direction:column;flex:1;min-height:0;gap:9px;justify-content:center}
+#bu-case .case-result{padding:9px;border:1px solid #b89559aa;background:linear-gradient(145deg,#235461,#0d3241);border-radius:13px;box-shadow:0 12px 40px #0004;text-align:center}
+#bu-case .case-result h2{font:700 clamp(26px,7vw,34px) Georgia,serif;line-height:1.08;margin:0 0 7px;color:#ffdfa1}
+#bu-case .case-result p{font:600 13px/1.45 Georgia,serif;margin:0;color:#f3efe0}
+#bu-case .case-twist{padding:8px 11px;background:#092b36;border-left:3px solid #e5bf76;border-radius:8px;font-size:12px;line-height:1.45}
+#bu-case .case-twist strong{color:#f5d995}
+#bu-case .case-badge{color:#ffdd9c;text-align:center;font-size:12px;font-weight:800}
+#bu-case .case-modal{position:absolute;inset:0;background:#000b;z-index:9;display:flex;align-items:center;justify-content:center;padding:14px}
+#bu-case .case-dialog{width:100%;max-width:440px;max-height:calc(100dvh - 30px);overflow:auto;background:linear-gradient(145deg,#173f4d,#071d2a);border:1px solid #e4b96b88;box-shadow:0 20px 80px #000c;border-radius:17px;padding:16px;position:relative}
+#bu-case .case-dialog h2{font:700 21px/1.1 Georgia,serif;color:#ffe3a8;margin:3px 28px 10px 0}
+#bu-case .case-dialog p{font-size:13px;line-height:1.55;color:#e6f2ed}
+#bu-case .case-dialog a{color:#fae2ac;text-underline-offset:3px}
+#bu-case .case-dialog-close{position:absolute;right:10px;top:10px;border:1px solid #6a9195;background:#1c4652;color:#f3e2bd;border-radius:10px;width:32px;height:32px;font-size:21px}
+#bu-case .case-flash{animation:case-pulse .55s ease both}
+#bu-case .case-star{position:absolute;z-index:10;pointer-events:none;width:5px;height:5px;background:#fcebb6;border-radius:100%;box-shadow:0 0 9px #ffdda4;animation:case-burst .68s ease-out forwards}
+@keyframes case-pulse{0%{filter:brightness(1.9)}100%{filter:brightness(1)}}
+@keyframes case-burst{0%{transform:translate(0,0) scale(.3);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.05);opacity:0}}
+#bu-case #case-status{min-height:0}
+#bu-case .case-proof{font-size:10px;color:#9fc6ca;text-align:center}
+@media(max-height:680px){
+ #bu-case .case-top{height:44px;flex-basis:44px;padding:3px 10px}
+ #bu-case .case-icon{height:31px;flex-basis:31px;font-size:18px}
+ #bu-case .case-body{padding:5px 9px 7px;gap:4px}
+ #bu-case .case-hero{flex-basis:clamp(85px,17dvh,119px)}
+ #bu-case .case-hero.large{flex-basis:clamp(148px,30dvh,205px)}
+ #bu-case .case-title{font-size:19px}
+ #bu-case .case-desc{font-size:11px;line-height:1.2}
+ #bu-case .case-chips{gap:4px}
+ #bu-case .case-evidence{min-height:34px;padding:2px 3px}
+ #bu-case .case-map{gap:4px;padding:5px 8px}
+ #bu-case .case-choice-row{min-height:34px}
+ #bu-case .case-choice{padding:5px 5px}
+ #bu-case .case-btn{min-height:36px;padding:6px 9px}
+ #bu-case .case-sourcebar{min-height:17px}
+ #bu-case .case-feedback{min-height:14px;font-size:10px}
+ #bu-case .case-stampbtn{min-height:30px;padding:3px 2px}
+ #bu-case .case-twist{padding:6px 9px;font-size:11px}
+}
+@media(max-width:340px){#bu-case .case-top b{font-size:13px}#bu-case .case-choice{min-width:60px}#bu-case .case-stampbtn{font-size:9px}#bu-case .case-stampbtn b{font-size:10px}}
+@media(prefers-reduced-motion:reduce){#bu-case *,#bu-case *:before,#bu-case *:after{transition:none!important;animation:none!important}}
+
+</style>
+<section id="bu-case" aria-label="Bible Detective Genesis 13 prototype" hidden>
+ <div class="case-shell">
+ <div class="case-top"><button type="button" class="case-icon" id="case-exit" aria-label="Close detective review">×</button><button type="button" class="case-icon" id="case-prev" aria-label="Go to previous part">‹</button><div><small>GENESIS 13 · BIBLE DETECTIVE</small><b>The Valley Case</b></div><div class="case-headtools"><button type="button" id="case-sound" class="case-icon" aria-label="Toggle sound effects">♫</button></div></div>
+ <div class="case-body" id="case-body"></div>
+ </div><div class="case-modal" role="presentation" hidden></div>
+</section>
+<script id="bu-detective-review-js">
+/* HQ / Bible Detective — Genesis 13, ONE REVIEW-ONLY PROTOTYPE.
+ * No existing game/episode/puzzle ID is changed, no main wallet or unlocking is touched.
+ * Word-solving games remain unchanged. This separate trial stores only its own checkpoint.
+ */
+(function(){
+ 'use strict';
+ const key='bible-unfolded-detective-gen13-pilot-v1';
+ const bible='https://www.jw.org/en/library/bible/nwt/books/genesis/13/';
+ const study='https://www.jw.org/en/library/magazines/watchtower-study-may-2016/settle-differences-in-spirit-of-love/';
+ const root=document.getElementById('bu-case'), body=document.getElementById('case-body'), entry=document.getElementById('bu-case-entry');
+ if(!root||!body||!entry)return;
+ const $=q=>root.querySelector(q);
+ const defaults=()=>({step:0,first:null,water:null,labels:[null,null,null],active:0,solvedOffer:false,solvedProof:false,badge:false,hintOffer:0,hintProof:0,sound:true,triesOffer:0,triesProof:0});
+ let data=defaults(), sound=null, feedback='',originalTitle=document.title;
+ try{let a=JSON.parse(localStorage.getItem(key)||'null');if(a&&typeof a==='object'){
+  data={...data,...a};if(!Array.isArray(data.labels)||data.labels.length!==3)data.labels=[null,null,null];
+  data.step=Math.max(0,Math.min(3,Number(data.step)||0));
+ }}catch(_){ }
+ const save=()=>{try{localStorage.setItem(key,JSON.stringify(data))}catch(_){}};
+ const art=(id)=>{try{return typeof BU_GENESIS_SCENE_ART!=='undefined'?BU_GENESIS_SCENE_ART[id]:''}catch(_){return ''}};
+ const image=(id,alt,large=false,label='')=>`<figure class="case-hero${large?' large':''}">${art(id)?`<img src="${art(id)}" alt="${alt}">`:''}<figcaption class="case-hero-label">${label}</figcaption></figure>`;
+ function audio(type){
+  if(!data.sound)return;
+  try{
+   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+   sound=sound||new AC();if(sound.state==='suspended')sound.resume();
+   const now=sound.currentTime;
+   const notes=type==='win'?[[440,0],[554.37,.08],[659.25,.16],[880,.24]]:type==='wrong'?[[230,0],[205,.09]]:type==='turn'?[[345,0],[460,.07]]:[[515,0]];
+   notes.forEach(([freq,delay])=>{let osc=sound.createOscillator(),gain=sound.createGain();osc.type=type==='wrong'?'sine':'triangle';osc.frequency.value=freq;gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(type==='win'?.07:.035,now+delay+.014);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+(type==='win'?.27:.15));osc.connect(gain).connect(sound.destination);osc.start(now+delay);osc.stop(now+delay+(type==='win'?.29:.16));});
+  }catch(_){ }
+ }
+ function sparkle(){
+  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
+  for(let i=0;i<16;i++){
+   const el=document.createElement('i');el.className='case-star';el.style.left=(35+Math.random()*30)+'%';el.style.top=(45+Math.random()*18)+'%';
+   let angle=i*Math.PI/8;el.style.setProperty('--dx',Math.cos(angle)*(38+Math.random()*82)+'px');el.style.setProperty('--dy',Math.sin(angle)*(42+Math.random()*72)+'px');root.appendChild(el);setTimeout(()=>el.remove(),720);
+  }
+ }
+ function showModal(title,html){
+  const dialog=$('.case-modal');dialog.innerHTML=`<div class="case-dialog" role="dialog" aria-modal="true" aria-label="${title}"><button class="case-dialog-close" type="button" aria-label="Close details">×</button><div class="case-kicker">BIBLE DETECTIVE · CASE NOTES</div><h2>${title}</h2>${html}<button type="button" class="case-btn" data-close="true">Back to case</button></div>`;
+  dialog.hidden=false;
+  dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal);
+  dialog.querySelector('.case-dialog-close').onclick=closeModal;
+  dialog.querySelector('.case-dialog-close').focus();
+ }
+ function closeModal(){const m=$('.case-modal');m.hidden=true;m.innerHTML='';}
+ const source=(extra=false)=>`<div class="case-sourcebar"><a href="${bible}" target="_blank" rel="noopener">📖 Genesis 13:5–18 ↗</a>${extra?`<a href="${study}" target="_blank" rel="noopener">▤ Watchtower study ↗</a>`:''}</div>`;
+ const evidence=[
+  {name:'THE DISPUTE',caption:'Grazing report',title:'Report from the herders',desc:'Both households had large flocks. The land could no longer support them staying together, and their herders began arguing. The problem was sharing limited space, not a recorded quarrel between Abram and Lot themselves. Genesis 13:5–7.'},
+  {name:'THE OFFER',caption:'Abram’s words',title:'The unexpected offer',desc:'Abram asked that there be no quarreling, since they were brothers. He invited Lot to separate and choose a direction, promising to go the other way. That gave Lot the first choice. Genesis 13:8–9.'},
+  {name:'THE VIEW',caption:'Lot’s choice',title:'What looked irresistible',desc:'Lot saw that the Jordan district was well watered. He chose that region and moved east. The record later says he camped near Sodom. Genesis 13:10–13.'}
+ ];
+ function render(){
+  root.querySelector('#case-sound').textContent=data.sound?'♫':'♪̸';
+  root.querySelector('#case-sound').title=data.sound?'Mute detective effects':'Enable detective effects';
+  feedback='';
+  if(data.step===0)intro();if(data.step===1)offer();if(data.step===2)proof();if(data.step===3)complete();
+ }
+ function intro(){
+  body.innerHTML=`<div class="case-kicker">CASE 01 · GENESIS 13 · REVIEW PROTOTYPE</div><h1 class="case-title">The Valley Looked Perfect</h1>
+  ${image('g07-d02','Cinematic illustration of Abram and Lot meeting beside their camp',true,'TWO HOUSEHOLDS. ONE DIFFICULT DECISION.')}
+  ${source()}
+  <div class="case-intro-text">Two wealthy households. Not enough grazing land. A dispute is growing among their herders.<br><br><b>One man makes a deal that seems to surrender the advantage.</b> But the seemingly perfect choice hides something. Reconstruct what happened—then decide what the evidence really proves.</div>
+  <div class="case-foot" style="margin-top:auto"><button type="button" class="case-btn" id="case-begin">Open the case file →</button></div>
+  <div class="case-intro-footer">One case. Two deductions. No timer, no trivia wheel.</div>`;
+  $('#case-begin').onclick=()=>{data.step=1;save();audio('turn');render()};
+ }
+ function offer(){
+  body.innerHTML=`<div class="case-kicker">PART 1 OF 2 · THE NEGOTIATION</div>
+   ${image('g07-d03','Lot looking toward the Jordan district from a ridge',false,'A WATERED VALLEY · A CHOICE TO BE MADE')}
+   ${source()}
+   <div class="case-mission"><div><strong>Reconstruct the deal.</strong><span>Inspect any file you need. Then place the first-choice seal and the valley.</span></div></div>
+   <div class="case-chips">${evidence.map((v,i)=>`<button type="button" class="case-evidence" data-evidence="${i}"><b>${v.name}</b><small>${v.caption} ▸</small></button>`).join('')}</div>
+   <div class="case-map"><h2 class="case-step-title">The settlement table</h2>
+    <div class="case-choice-row"><div class="case-choice-name">Who was given the <em>first choice</em>?</div><div class="case-choice-group"><button class="case-choice${data.first==='Abram'?' selected':''}" data-pick="first" data-person="Abram">Abram</button><button class="case-choice${data.first==='Lot'?' selected':''}" data-pick="first" data-person="Lot">Lot</button></div></div>
+    <div class="case-choice-row"><div class="case-choice-name">Who took the <em>well-watered valley</em>?</div><div class="case-choice-group"><button class="case-choice${data.water==='Abram'?' selected':''}" data-pick="water" data-person="Abram">Abram</button><button class="case-choice${data.water==='Lot'?' selected':''}" data-pick="water" data-person="Lot">Lot</button></div></div>
+    <div class="case-ribbon"><span>✦ First choice: <b id="case-preview-first">${data.first||'?'}</b></span><span>≈ Valley: <b id="case-preview-water">${data.water||'?'}</b></span><span>✧ Other land: <b id="case-preview-other">${data.water?(data.water==='Lot'?'Abram':'Lot'):'?'}</b></span></div>
+   </div><div class="case-feedback" role="status" aria-live="polite" id="case-status">${data.solvedOffer?'✓ Negotiation reconstructed. You can review it.':''}</div>
+   <div class="case-foot"><button type="button" class="case-btn secondary" id="case-hint">✧ Clue</button><button type="button" class="case-btn" id="case-submit">${data.solvedOffer?'Examine the hidden cost →':'Test the deal →'}</button></div>`;
+  body.querySelectorAll('[data-evidence]').forEach(b=>b.onclick=()=>{let v=evidence[Number(b.dataset.evidence)];audio('tap');showModal(v.title,`<p>${v.desc}</p><p><a href="${bible}" target="_blank" rel="noopener">Read Genesis 13 ↗</a></p>`)});
+  body.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
+   if(data.solvedOffer){showModal('Reconstruction preserved','<p>This settlement is already solved. You can reread the evidence or continue to the second deduction. No rewards are added when you revisit.</p>');return;}
+   data[b.dataset.pick]=b.dataset.person;save();audio('tap');offer();
+  });
+  $('#case-hint').onclick=()=>{data.hintOffer=Math.min(2,data.hintOffer+1);save();audio('tap');showModal('A useful lead',`<p>${data.hintOffer===1?'One offer explicitly makes the chooser go first, while the other man promises to go the opposite direction. Which file contains that line?':'Compare the negotiation report with Lot’s view of the Jordan district. The person who looked at and chose the watered region also moved east.'}</p><p>Prototype clues are free; no Insight Tokens are charged.</p>`)};
+  $('#case-submit').onclick=()=>{
+   if(data.solvedOffer){data.step=2;save();audio('turn');render();return;}
+   if(!data.first||!data.water){status('Both seals need a person before you can test the deal.');audio('wrong');return;}
+   data.triesOffer++;if(data.first==='Lot'&&data.water==='Lot'){
+    data.solvedOffer=true;data.step=2;save();audio('win');sparkle();render();showModal('The deal is reconstructed',`<p><strong>Abram did something counterintuitive:</strong> he let Lot choose first, even though Abram might have benefited from keeping the best-looking land.</p><p>Lot took the well-watered Jordan region. Now inspect the detail that made this attractive outcome less straightforward.</p>`);
+   }else{
+    save();audio('wrong');status(data.first!=='Lot'?'Compare your first-choice seal with Abram’s actual proposal. Who got to choose the direction?':'The watered district caught someone’s attention. Check the View report to see who moved east.');
+   }
+  };
+ }
+ function status(message){let s=$('#case-status');if(s){s.textContent=message;s.classList.remove('case-flash');void s.offsetWidth;s.classList.add('case-flash')}}
+ const claims=[
+  'Lot selected the well-watered Jordan district.',
+  'Abram put peace ahead of his own immediate advantage.',
+  'Lot knew the full danger near Sodom when he moved east.'
+ ];
+ const categories=[{id:'recorded',label:'IN THE RECORD',icon:'▤'}, {id:'commentary',label:'STUDY INSIGHT',icon:'✧'}, {id:'unknown',label:'NOT PROVEN',icon:'?'}];
+ const correct=['recorded','commentary','unknown'];
+ function proof(){
+  body.innerHTML=`<div class="case-kicker">PART 2 OF 2 · THE EVIDENCE TEST</div>
+   ${image('g07-d03','Cinematic view of Lot looking toward the fertile Jordan district',false,'BEAUTIFUL LAND CAN STILL HOLD A WARNING')}
+   ${source(true)}
+   <div class="case-mission"><div><strong>Three claims. Three kinds of proof.</strong><span>Tap a statement, then stamp it: Bible record, study insight, or something we cannot establish.</span></div></div>
+   <div class="case-cardlist">${claims.map((c,i)=>`<button type="button" class="case-claim${data.active===i?' active':''}${data.labels[i]?' done':''}" data-claim="${i}"><span class="case-num">0${i+1}</span><span class="case-words">${c}</span><span class="case-stamp">${categories.find(x=>x.id===data.labels[i])?.icon||'□'} ${categories.find(x=>x.id===data.labels[i])?.label||''}</span></button>`).join('')}</div>
+   <div class="case-stamps">${categories.map((c)=>`<button type="button" class="case-stampbtn" data-stamp="${c.id}"><b>${c.icon}</b>${c.label}</button>`).join('')}</div>
+   <div class="case-feedback" id="case-status" role="status" aria-live="polite">${data.solvedProof?'✓ Your report is complete.':''}</div>
+   <div class="case-foot"><button type="button" class="case-btn secondary" id="case-hint">✧ Clue</button><button type="button" class="case-btn" id="case-submit">${data.solvedProof?'See the revelation →':'Submit the report →'}</button></div>`;
+  body.querySelectorAll('[data-claim]').forEach(b=>b.onclick=()=>{data.active=+b.dataset.claim;save();audio('tap');proof()});
+  body.querySelectorAll('[data-stamp]').forEach(b=>b.onclick=()=>{
+   if(data.solvedProof){showModal('Report preserved','<p>Those classifications are already on file. View the conclusion or revisit any part of the case.</p>');return}
+   data.labels[data.active]=b.dataset.stamp;let next=data.labels.findIndex((v,i)=>!v);data.active=next<0?data.active:next;save();audio('tap');proof();
+  });
+  $('#case-hint').onclick=()=>{data.hintProof=Math.min(2,data.hintProof+1);save();audio('tap');showModal('Examine the quality of the evidence',`<p>${data.hintProof===1?'The Bible records actions. A Watchtower study can explain their significance. But an investigator cannot confidently report what was in someone’s mind unless the record tells us.':'Read Genesis 13:10–13 for what Lot actually did. Then read paragraph 12 of the Watchtower study for the lesson about Abram’s peace-making. The third claim describes knowledge not recorded in the passage.'}</p><p>Prototype clues are free; they do not spend Insight Tokens.</p>`)};
+  $('#case-submit').onclick=()=>{
+   if(data.solvedProof){data.step=3;save();audio('turn');render();return;}
+   if(data.labels.some(x=>!x)){status('Stamp every statement to finish the report.');audio('wrong');return;}
+   data.triesProof++;
+   if(correct.every((v,i)=>v===data.labels[i])){
+    data.solvedProof=true;data.badge=true;data.step=3;save();audio('win');sparkle();render();
+   }else{
+    save();audio('wrong');status('One or more seals are unproven. Separate the actual words of Genesis from the study’s interpretation—and from a guess about someone’s private knowledge.');
+   }
+  };
+ }
+ function complete(){
+  body.innerHTML=`<div class="case-kicker">CASE FILE CLOSED · GENUINE DEDUCTION</div>
+   ${image('g07-d02','Abram and Lot considering their options beside the tent camp',false,'THE OUTCOME WAS NOT WHAT LOOKED OBVIOUS')}
+   <div class="case-finish"><div class="case-result"><div style="font-size:21px;color:#ffe4a3">✦ ◈ ✦</div><h2>Case solved.</h2><p>He gave up the first choice.<br><strong>He did not give up the promise.</strong></p></div>
+   <div class="case-twist"><strong>The twist:</strong> Lot took the fertile Jordan district—but his tents eventually stood near wicked Sodom. And <em>after</em> the separation, Jehovah reaffirmed the land promise to Abram. The apparent winner of the land contest was not the whole story.</div>
+   <div class="case-badge">◇ Evidence badge secured ${data.badge?'✓':''}</div>
+   ${source(true)}
+   <div class="case-proof">Genesis 13:5–18 records the events. The 2016 Watchtower study, par. 12, highlights Abram’s pursuit of peace. Lot’s unrecorded thoughts are not asserted.</div>
+   </div><div class="case-foot"><button type="button" class="case-btn secondary" id="case-review">‹ Review</button><button type="button" class="case-btn secondary" id="case-read">What did it mean?</button><button type="button" class="case-btn" id="case-replay">Replay ↻</button></div>`;
+  $('#case-review').onclick=()=>{data.step=2;save();audio('turn');render()};
+  $('#case-read').onclick=()=>{audio('tap');showModal('The revelation',`<p><b>Recorded in Genesis:</b> Abram let Lot choose first to end the herders’ quarrel. Lot selected the well-watered Jordan district, later camped near Sodom, and Jehovah reaffirmed the promise to Abram after they separated (Genesis 13:5–18).</p><p><b>Insight from the study:</b> The Watchtower (May 2016, paragraph 12) points to Abram’s generosity and commitment to peace rather than his own immediate interests.</p><p><b>Not established:</b> The account does not describe all of Lot’s private motives or how much of Sodom’s wickedness he understood when choosing.</p><p><a href="${bible}" target="_blank" rel="noopener">Read Genesis 13 ↗</a> · <a href="${study}" target="_blank" rel="noopener">Read the Watchtower study ↗</a></p>`)};
+  $('#case-replay').onclick=()=>{const earned=data.badge,wasSound=data.sound;data=defaults();data.badge=earned;data.sound=wasSound;save();audio('turn');render();};
+ }
+ function openCase(){originalTitle=document.title;document.title='Bible Unfolded · Bible Detective Trial';root.hidden=false;document.body.style.overflow='hidden';render();}
+ function exitCase(){closeModal();save();root.hidden=true;document.body.style.overflow='';document.title=originalTitle;}
+ $('#case-exit').onclick=exitCase;
+ $('#case-sound').onclick=()=>{data.sound=!data.sound;save();if(data.sound)audio('tap');render();};
+ $('#case-prev').onclick=()=>{closeModal();if(data.step>0){data.step=data.step===3?2:data.step-1;save();audio('turn');render();}else exitCase();};
+ root.querySelector('.case-modal').addEventListener('click',e=>{if(e.target.classList.contains('case-modal'))closeModal()});
+ root.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!root.querySelector('.case-modal').hidden)closeModal();else exitCase();}});
+ entry.onclick=openCase;
+ window.__BIBLE_DETECTIVE_QA__={open:openCase,exit:exitCase,state:()=>JSON.parse(JSON.stringify(data)),restart:()=>{data=defaults();save();render();},sources:{bible,study}};
+})();
+
+</script>
+</body></html>
