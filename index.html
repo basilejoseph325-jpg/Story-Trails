@@ -1629,13 +1629,39 @@ html.sea-wheel { --bu3822-ribbon:#99ffe9; --bu3822-halo:#50e7d6; }
 #bu3857-screen .bu3869-mamre small{font-size:10px;color:#c9d7cc}
 @media(max-height:670px){#bu3857-screen .bu3869-stage{gap:3px;}#bu3857-screen .bu3869-compass{max-height:140px;min-height:106px;}#bu3857-screen .bu3869-dir{min-height:34px;}#bu3857-screen .bu3869-question{font-size:13px;}#bu3857-screen .bu3869-mamre{min-height:70px;}}
 @media(prefers-reduced-motion:reduce){#bu3857-screen .bu3869-dir{transition:none!important}}
-</style><style id="buhq-words-css">.buhq-game{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;min-height:0;height:100%;padding:6px 8px}.buhq-clue{font:bold clamp(16px,4vw,22px)/1.25 Georgia,serif;color:#ffdf9a;text-align:center;max-width:450px}.buhq-slots{display:flex;justify-content:center;gap:3px;flex-wrap:wrap}.buhq-slots span{display:grid;place-items:center;min-width:clamp(15px,4vw,25px);height:27px;border-bottom:2px solid #e8c77e;font:bold 17px system-ui;color:#fff6d7}.buhq-wheel{position:relative;flex:none;width:min(49vw,210px,24dvh);height:min(49vw,210px,24dvh);margin:auto;touch-action:none;border-radius:50%;background:radial-gradient(circle,#225766aa,#062c3d88 70%);border:1px solid #b79d5866}.buhq-letter{position:absolute;transform:translate(-50%,-50%);width:clamp(31px,9vw,43px);height:clamp(31px,9vw,43px);border-radius:50%;border:1px solid #f6dc99;background:#164959;color:#fff1c4;font:bold 20px system-ui;touch-action:none;user-select:none;cursor:pointer}.buhq-letter.picked{background:#e9c473;color:#12323c;box-shadow:0 0 13px #ffdf8799}.buhq-actions{display:flex;align-items:center;justify-content:center;gap:15px;font-size:11px;color:#e7dac0}.buhq-clear{background:#155164;border:1px solid #a9c2b9;border-radius:12px;padding:7px 12px;color:#fff;min-height:38px}.buhq-incorrect{animation:buhq-shake .25s 2;color:#ffb9a5}@keyframes buhq-shake{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}@media(max-height:630px){.buhq-game{gap:3px}.buhq-wheel{width:min(42vw,165px,22dvh);height:min(42vw,165px,22dvh)}.buhq-clue{font-size:15px}.buhq-slots span{height:21px}}</style><meta name="bible-unfolded-review-build" content="v3.8.88 · Story Adventure Meaningful Clues">
+</style><style id="buhq-words-css">.buhq-game{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;min-height:0;height:100%;padding:6px 8px}.buhq-clue{font:bold clamp(16px,4vw,22px)/1.25 Georgia,serif;color:#ffdf9a;text-align:center;max-width:450px}.buhq-slots{display:flex;justify-content:center;gap:3px;flex-wrap:wrap}.buhq-slots span{display:grid;place-items:center;min-width:clamp(15px,4vw,25px);height:27px;border-bottom:2px solid #e8c77e;font:bold 17px system-ui;color:#fff6d7}.buhq-wheel{position:relative;flex:none;width:min(57vw,240px,29dvh);height:min(57vw,240px,29dvh);margin:auto;touch-action:none;border-radius:50%;background:radial-gradient(circle,#225766aa,#062c3d88 70%);border:1px solid #b79d5866}.buhq-letter{position:absolute;transform:translate(-50%,-50%);width:clamp(34px,9.4vw,46px);height:clamp(34px,9.4vw,46px);border-radius:50%;border:1px solid #f6dc99;background:#164959;color:#fff1c4;font:bold 20px system-ui;touch-action:none;user-select:none;cursor:pointer}.buhq-letter.picked{background:#e9c473;color:#12323c;box-shadow:0 0 13px #ffdf8799}.buhq-actions{display:flex;align-items:center;justify-content:center;gap:15px;font-size:11px;color:#e7dac0}.buhq-clear{background:#155164;border:1px solid #a9c2b9;border-radius:12px;padding:7px 12px;color:#fff;min-height:38px}.buhq-incorrect{animation:buhq-shake .25s 2;color:#ffb9a5}@keyframes buhq-shake{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}@media(max-height:630px){.buhq-game{gap:3px}.buhq-wheel{width:min(49vw,185px,24dvh);height:min(49vw,185px,24dvh)}.buhq-clue{font-size:15px}.buhq-slots span{height:21px}}</style><meta name="bible-unfolded-review-build" content="v3.8.88 · Story Adventure Meaningful Clues">
 <style>
-#bu3857-screen .bu3857-head{display:flex;align-items:center;gap:6px;padding-left:8px;padding-right:8px}
+#bu3857-screen .bu3857-head{display:grid;grid-template-columns:40px minmax(58px,72px) 1fr minmax(58px,72px) 40px;align-items:center;gap:6px;padding-left:8px;padding-right:8px}
 #bu3857-screen .bu3857-headtitle{flex:1;min-width:0;text-align:center}
 #bu3857-screen .bu3857-headtitle strong{font-size:clamp(16px,3.5vw,22px)}
-#bu3857-screen .bu3857-head-left{display:flex;flex-direction:column;gap:2px;min-width:56px;color:#f9daa1;font-size:12px;font-weight:700}
-#bu3857-screen .bu3857-head-right{display:flex;align-items:center;gap:5px}
+#bu3857-screen .bu3857-headtitle small{font-size:10px;letter-spacing:1.2px}
+#bu3857-screen #bu3857-back{grid-column:1}
+#bu3857-screen .bu3857-head-left{grid-column:2}
+#bu3857-screen .bu3857-headtitle{grid-column:3}
+#bu3857-screen .bu3857-head-right{grid-column:4}
+#bu3857-screen #bu3857-menu{grid-column:5}
+#bu3857-screen .bu3863-image{height:clamp(118px,23dvh,186px)}
+#bu3857-screen .bu3863-stage{gap:6px}
+#bu3857-screen .bu3863-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;padding:8px 12px;border:1px solid #a88d5c;border-radius:14px;background:linear-gradient(140deg,#103a47,#0b2e39)}
+#bu3857-screen .bu3863-headcopy{min-width:0;flex:1}
+#bu3857-screen .bu3863-overline{font-size:10px;letter-spacing:1.2px}
+#bu3857-screen .bu3863-heading h2{font:700 clamp(16px,4.8vw,24px)/1.08 Georgia,serif;color:#ffe4af;margin:3px 0 0}
+#bu3857-screen .bu3863-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+#bu3857-screen .bu3863-toolbtn{width:38px;height:38px;border-radius:12px;border:1px solid #b89d69;background:#174352;color:#ffdfab;font-size:18px;display:grid;place-items:center;box-shadow:0 2px 8px #001a2160}
+#bu3857-screen .bu3863-progresschip{display:grid;place-items:center;min-width:50px;height:38px;padding:0 10px;border-radius:12px;border:1px solid #b89d69;background:#123745;color:#ffdfab;font:800 14px system-ui}
+#bu3857-screen .bu3863-question{font:700 clamp(20px,5vw,32px)/1.14 Georgia,serif;color:#f1eade;text-align:center;max-height:none;padding:2px 4px 0}
+#bu3857-screen .bu3863-question.bu3868-brief{display:block!important;font:700 clamp(20px,5vw,32px)/1.14 Georgia,serif;color:#f1eade;text-align:center}
+#bu3857-screen .bu3863-textbar{display:none!important}
+#bu3857-screen .buhq-clue{display:none!important}
+#bu3857-screen .buhq-actions{display:none!important}
+#bu3857-screen .buhq-game{gap:4px;padding:0 4px}
+#bu3857-screen .buhq-wheel{width:min(60vw,248px,31dvh)!important;height:min(60vw,248px,31dvh)!important}
+#bu3857-screen .buhq-slots{min-height:18px}
+#bu3857-screen .bu3863-footer-empty{display:none!important}
+@media(max-width:380px){#bu3857-screen .bu3863-toolbar{gap:4px}#bu3857-screen .bu3863-toolbtn{width:34px;height:34px;font-size:16px}#bu3857-screen .bu3863-progresschip{height:34px;min-width:44px;font-size:12px;padding:0 7px}}
+
+#bu3857-screen .bu3857-head-left,#bu3857-screen .bu3857-head-right{display:flex;align-items:center;justify-content:center;min-width:0;color:#f9daa1;font-size:14px;font-weight:800;white-space:nowrap}
+#bu3857-screen .bu3857-head-left span,#bu3857-screen .bu3857-head-right span{display:flex;align-items:center;gap:3px}
 #bu3857-screen #bu3857-progress{font-size:11px}
 #bu3857-screen #bu3857-menu{background:#164552;color:#ffe1a9;border:1px solid #9f956d;border-radius:12px;padding:8px 9px;font-size:20px}
 #bu3857-screen .buhq-wheel{touch-action:none;position:relative}
@@ -1784,7 +1810,7 @@ html.sea-wheel #bu3857-screen .buhq-wheel{color:#7bf5dc}
 </section>
 <section id="bu3857-screen" aria-label="Exodus interactive Story Adventure" hidden>
 <div class="bu3857-shell">
-<header class="bu3857-head"><button id="bu3857-back" type="button" aria-label="Back to Exodus episodes">‹</button><div class="bu3857-head-left"><span title="Insight Tokens">◉ <b id="bu3857-token-count">0</b></span><span title="Points">✦ <b id="bu3857-point-count">0</b></span></div><div class="bu3857-headtitle"><small id="bu3857-episode">EXODUS · EPISODE 4</small><strong id="bu3857-header-title">New Exodus Adventure</strong></div><div class="bu3857-head-right"><span id="bu3857-progress">0/10</span><button id="bu3857-menu" title="Menu, settings and store" aria-label="Open menu">☰</button></div></header>
+<header class="bu3857-head"><button id="bu3857-back" type="button" aria-label="Back to episodes">‹</button><div class="bu3857-head-left"><span title="Insight Tokens" aria-label="Insight Tokens">◉ <b id="bu3857-token-count">0</b></span></div><div class="bu3857-headtitle"><small id="bu3857-episode">EXODUS · EPISODE 4</small><strong id="bu3857-header-title">New Exodus Adventure</strong></div><div class="bu3857-head-right"><span title="Points" aria-label="Points">✦ <b id="bu3857-point-count">0</b></span></div><button id="bu3857-menu" title="Menu, settings and store" aria-label="Open menu">☰</button><span id="bu3857-progress" hidden>0/10</span></header>
 <div class="bu3857-progress-rail"><i id="bu3857-bar" style="width:0"></i></div>
 <div class="bu3857-scroll"><div id="bu3857-content"></div></div>
 </div></section>
@@ -2876,19 +2902,28 @@ function bu3857Render(){
  }
  const sceneSrc=BU3857_SCENE_ART[d.id]||BU_GENESIS_SCENE_ART[d.id];
  const sceneHtml=sceneSrc?`<figure class="bu3863-image"><img src="${sceneSrc}" alt="${bu3857Esc(BU3857_SCENE_ALT[d.id]||BU_GENESIS_SCENE_ALT[d.id]||'Bible story scene')}" decoding="async" loading="eager"></figure>`:'';
- const scripture=d.scripture.map(x=>`<a class="bu3863-scripture" target="_blank" rel="noopener noreferrer" href="${bu3857Esc(x.url)}">📖 ${bu3857Esc(x.reference)} ↗</a>`).join('');
- const intro=`<div class="bu3863-heading"><div><div class="bu3863-overline">DISCOVERY ${s.step+1} OF ${ch.discoveries.length}</div><h2>${bu3857Esc(d.title)}</h2></div><button type="button" id="bu3863-story" class="bu3863-story-button">Read story</button></div>`;
- const actions=solved?`<div class="bu3863-result">✓ Discovery complete</div><div class="bu3863-controls"><button class="gold-button" id="bu3857-continue">${s.step===9?'Complete Chapter ✦':'Next Discovery →'}</button><button class="secondary-button" id="bu3863-learn">Read explanation</button></div>`:
- `${bu3868Genesis()?'':'<div class="bu3863-controls"><button class="gold-button" id="bu3857-check">✓ Check</button><button class="secondary-button" id="bu3857-clear">↺ Reset</button></div>'}<div class="bu3863-tools ${bu3868Genesis()?'bu3868-tools':''}"><button class="secondary-button" id="bu3857-hint">💡 ${Number(s.hints[d.id]||0)===0?'Free hint':Number(s.hints[d.id]||0)===1?'Hint · 15 Tokens':Number(s.hints[d.id]||0)===2?'Letter hint · 20 Tokens':bu3868Genesis()?'Next letter · 25 Tokens':'Review hint'}</button><button class="secondary-button" id="bu3857-reveal">Reveal · −25 Points</button></div>`;
- wrap.innerHTML=`<div class="bu3863-stage">${intro}${sceneHtml}<div class="bu3863-textbar">${scripture}</div><div class="bu3863-question ${bu3868Genesis()?'bu3868-brief':''}">${bu3868Genesis()?'Connect the letters to discover the answer.':bu3857Esc(d.interaction.prompt)}</div><div class="bu3863-board">${solved?'<div class="bu3863-solved-hint">You solved this scene. Continue or read the explanation.</div>':bu3857Puzzle()}</div><div class="bu3863-footer">${actions}</div></div>`;
- $('bu3863-story').onclick=()=>bu3863Modal(d.title,d.narration);
+ const primaryScripture=d.scripture?.[0]||null;
+ const questionText=bu3868Genesis()?(BU_HQ_WORDS[d.id]?.clue||bu3857Esc(d.interaction.prompt)):bu3857Esc(d.interaction.prompt);
+ const toolbar=solved
+  ?`${primaryScripture?'<button type="button" class="bu3863-toolbtn" id="bu3863-scripture" title="Read scripture" aria-label="Read scripture">📖</button>':''}<button type="button" class="bu3863-toolbtn" id="bu3863-story" title="Read story" aria-label="Read story">📜</button><span class="bu3863-progresschip">${progress}/${ch.discoveries.length}</span>`
+  :(bu3868Genesis()
+    ?`${primaryScripture?'<button type="button" class="bu3863-toolbtn" id="bu3863-scripture" title="Read scripture" aria-label="Read scripture">📖</button>':''}<button type="button" class="bu3863-toolbtn" id="bu3863-story" title="Read story" aria-label="Read story">📜</button><button type="button" class="bu3863-toolbtn" id="bu3857-hint" title="Hint" aria-label="Hint">💡</button><button type="button" class="bu3863-toolbtn" id="bu3863-shuffle" title="Shuffle letters" aria-label="Shuffle letters">⤨</button><button type="button" class="bu3863-toolbtn" id="bu3863-clear" title="Clear selection" aria-label="Clear selection">↺</button><button type="button" class="bu3863-toolbtn" id="bu3857-reveal" title="Reveal answer" aria-label="Reveal answer">👁</button><span class="bu3863-progresschip">${progress}/${ch.discoveries.length}</span>`
+    :`${primaryScripture?'<button type="button" class="bu3863-toolbtn" id="bu3863-scripture" title="Read scripture" aria-label="Read scripture">📖</button>':''}<button type="button" class="bu3863-toolbtn" id="bu3863-story" title="Read story" aria-label="Read story">📜</button><button type="button" class="bu3863-toolbtn" id="bu3857-hint" title="Hint" aria-label="Hint">💡</button><button type="button" class="bu3863-toolbtn" id="bu3857-check" title="Check" aria-label="Check answer">✓</button><button type="button" class="bu3863-toolbtn" id="bu3857-clear" title="Reset" aria-label="Reset">↺</button><button type="button" class="bu3863-toolbtn" id="bu3857-reveal" title="Reveal answer" aria-label="Reveal answer">👁</button><span class="bu3863-progresschip">${progress}/${ch.discoveries.length}</span>`);
+ const intro=`<div class="bu3863-heading"><div class="bu3863-headcopy"><div class="bu3863-overline">DISCOVERY ${s.step+1} OF ${ch.discoveries.length}</div><h2>${bu3857Esc(d.title)}</h2></div><div class="bu3863-toolbar">${toolbar}</div></div>`;
+ const footer=solved?`<div class="bu3863-footer"><div class="bu3863-result">✓ Discovery complete</div><div class="bu3863-controls"><button class="gold-button" id="bu3857-continue">${s.step===9?'Complete Chapter ✦':'Next Discovery →'}</button><button class="secondary-button" id="bu3863-learn">Read explanation</button></div></div>`:'<div class="bu3863-footer-empty"></div>';
+ wrap.innerHTML=`<div class="bu3863-stage">${sceneHtml}${intro}<div class="bu3863-question ${bu3868Genesis()?'bu3868-brief':''}">${questionText}</div><div class="bu3863-board">${solved?'<div class="bu3863-solved-hint">You solved this scene. Continue or read the explanation.</div>':bu3857Puzzle()}</div>${footer}</div>`;
+ wrap.querySelector('#bu3863-story')?.addEventListener('click',()=>bu3863Modal(d.title,d.narration));
+ wrap.querySelector('#bu3863-scripture')?.addEventListener('click',()=>{if(primaryScripture)window.open(primaryScripture.url,'_blank','noopener,noreferrer')});
  buHQBind();
  wrap.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>b.dataset.action==='well'?bu3870WellAction(b.dataset.id):b.dataset.action==='arcade'?bu3868Answer(b.dataset.id):b.dataset.action==='arcade-complete'?bu3857Solve(false):bu3857Act(b.dataset.action,b.dataset.id));
  if(solved){
   $('bu3857-continue').onclick=bu3857Next;
   $('bu3863-learn').onclick=()=>bu3863Modal(s.revealed[d.id]?'Answer: '+(BU_HQ_WORDS[d.id]?.answer||'Revealed'):'Discovery complete',d.explanation);
  }else{
-  if(!bu3868Genesis()){
+  if(bu3868Genesis()){
+   wrap.querySelector('#bu3863-clear')?.addEventListener('click',()=>wrap.querySelector('[data-buhq-clear]')?.click());
+   wrap.querySelector('#bu3863-shuffle')?.addEventListener('click',()=>wrap.querySelector('[data-buhq-shuffle]')?.click());
+  }else{
    $('bu3857-check').onclick=bu3857Check;
    $('bu3857-clear').onclick=bu3857Clear;
   }
