@@ -8753,7 +8753,7 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
   }
   stages.set(key,next);
   if(next>=2){revealPrefixOnBoard(w,next-1);crossRender();}
-  bulb();
+  informationHint(w);
  }
  function extraClue(w,stage){
   const c=currentClue(),insights=bu3909Insights[source().bank]?.[w.word];
@@ -8786,7 +8786,7 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
   if(stage<4){
    const next=stage+1;
    const label=(stage===0?'Get another information clue':stage===1?'Reveal first letter':`Reveal letter ${stage}`)+' · '+hintPrices[next]+' Insight Tokens';
-   action(d,label,()=>{d.close();advanceHint(w,stage);});
+   action(d,label,()=>{advanceHint(w,stage);});
   }else{action(d,'Use the eye icon to reveal the full answer',()=>d.close());}
  }
  function dropLetter(w){
