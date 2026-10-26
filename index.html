@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.9.28 CANDIDATE — Genesis Word Adventure</title><meta name="build-version" content="v3.9.28-behind-name-candidate">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.9.29 CANDIDATE — Genesis Word Adventure</title><meta name="build-version" content="v3.9.29-behind-name-candidate">
 <style>
 :root{--navy:#082530;--deep:#061b26;--teal:#0b3b44;--gold:#f4d48b;--gold2:#cba966;--cream:#fff5d8;--soft:#cbdfdf}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--deep);color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}button{font-family:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #e9c879;outline-offset:3px}button:disabled{opacity:.6;cursor:default}a{color:var(--gold)}.hide,[hidden]{display:none!important}
 #app{width:100%;min-height:100dvh;overflow:hidden;background:var(--deep)}.screen{width:100%;height:100dvh;display:flex;flex-direction:column;overflow:hidden}.home-hero{min-height:0;flex:1;position:relative;background-size:cover;background-position:center 58%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 20px 18px}.home-hero:before{content:"";inset:0;position:absolute;background:linear-gradient(180deg,#061c27ce,#061d2848 38%,#071924ca 100%)}.hero-copy{z-index:1;max-width:600px}.chapter-label,.overline{font-size:11px;letter-spacing:2.5px;color:var(--gold);font-weight:800}.brand{font-family:Georgia,serif;font-size:clamp(44px,10vw,70px);font-weight:700;line-height:.93;letter-spacing:-1.6px;text-shadow:0 3px 30px #000c;color:#ffe5a2;margin:12px auto 13px}.brand small{display:block;font:700 12px/1.8 system-ui;letter-spacing:4px;color:#fff3d2}.home-hero h1{font-family:Georgia,serif;font-size:clamp(28px,6vw,39px);font-weight:700;line-height:1.08;margin:18px 0 9px;text-shadow:0 3px 10px #0008}.hero-description{font-size:15px;color:#e7f3ed;line-height:1.5;margin:0 auto 18px;max-width:420px}.gold-button,.secondary-button{border-radius:15px;padding:15px 22px;font-size:15px;font-weight:800;border:1px solid #fce3a3;transition:transform .15s}.gold-button{background:linear-gradient(#f6d990,#c89e46);color:#1c2727;box-shadow:0 5px 28px #ffcb6c33;min-height:50px}.gold-button:active,.secondary-button:active{transform:scale(.97)}.secondary-button{color:#f0e8ce;background:#133a46;min-height:45px;border-color:#75949a}.home-actions{display:grid;gap:9px;margin:0 auto;max-width:300px}.route-panel{background:linear-gradient(180deg,#123c49,#082630);padding:13px 15px max(14px,env(safe-area-inset-bottom));border-top:1px solid #d8be7c55;box-shadow:0 -10px 30px #0006;max-height:43dvh;overflow-y:auto}.route-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.route-header h2{font-family:Georgia,serif;font-size:20px;margin:0}.route-sub{font-size:11px;color:#b1cacb}.path-list{display:flex;gap:9px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:thin;scrollbar-color:#bda16c66 transparent}.episode{flex:0 0 146px;border:1px solid #58767a77;border-radius:12px;min-height:87px;padding:9px 10px;background:#143d47;color:#d9e7e4;text-align:left}.episode.available{background:linear-gradient(135deg,#315a59,#12383e);border:1px solid #e0c580;color:#fff}.episode .n{font-family:Georgia,serif;font-size:19px;color:#fbe0a3}.episode strong{display:block;font-size:13px;margin:2px 0 3px}.episode span{display:block;font-size:10px;color:#b6d0cb}.route-foot{font-size:11px;margin:8px 0 0;color:#b6cfcb}
@@ -456,6 +456,28 @@
 @media(max-height:670px){#bu3857-screen .bu3868-stage{gap:5px;padding:6px 8px;}#bu3857-screen .bu3868-title{font-size:clamp(15px,4.2vw,19px)}#bu3857-screen .bu3868-answer{min-height:44px;font-size:12px;padding:5px 8px;}#bu3857-screen:has(.bu3868-stage) .bu3863-image{height:70px;}#bu3857-screen .bu3868-top{font-size:9px;}#bu3857-screen .bu3868-footnote{font-size:9px;}}
 @media(prefers-reduced-motion:reduce){#bu3857-screen .bu3868-answer,#bu3857-screen .bu3868-flash,#bu3857-screen .bu3868-spark{animation:none!important;transition:none!important;}}
 
+
+
+/* v3.9.29 hint refinement: same modal, free first, optional single paid unlock. */
+#btn3926-modal .btn3929-hint-heading{color:#f7d78e;font-weight:850;font-size:13px;letter-spacing:.25px;margin:10px 0 4px;}
+#btn3926-modal .btn3929-hint-copy{font-size:16px;line-height:1.48;margin:3px 0 10px;color:#fffaeb;}
+#btn3926-modal .btn3929-hint-purchase{text-align:center;margin-top:12px;}
+
+/* v3.9.29 Behind the Name: popup progression & completion effects only. */
+#btn3926-modal .btn3929-next {min-height:46px;background:linear-gradient(125deg,#f6da95,#cda65e);color:#102b35;text-align:center;font-size:17px;font-weight:900;border:0;margin-top:15px;box-shadow:0 3px 11px #0003;}
+#btn3926-play .btn3929-inline-next{min-height:39px;padding:7px 22px;background:linear-gradient(120deg,#f1d48f,#bf9a58);color:#0c2c37;border:0;border-radius:12px;font-weight:850;font-size:15px;max-width:100%;}
+#btn3926-play .btn3926-feedback:has(.btn3929-inline-next){display:flex;justify-content:center;align-items:center;}
+#btn3926-modal .btn3929-celebration{position:relative;overflow:hidden;text-align:center;border:1px solid #f0d39278;border-radius:16px;background:radial-gradient(ellipse at 50% 15%,#206273,#0a303d 78%);padding:15px 12px 13px;isolation:isolate;}
+#btn3926-modal .btn3929-star{font-size:clamp(36px,10vw,61px);color:#f8d68c;text-shadow:0 0 19px #e8bd65ab;animation:btn3929-pulse 1.8s ease-in-out infinite;}
+#btn3926-modal .btn3929-celebrate-title{font:900 clamp(18px,6vw,27px) Georgia,serif;color:#f8dc9a;letter-spacing:.7px;margin:1px 0 10px;}
+#btn3926-modal .btn3929-celebrate-text{position:relative;font-size:15px;line-height:1.3;margin:5px 0;}
+#btn3926-modal .btn3929-celebrate-wallet{position:relative;font-size:12px;color:#eac981;margin:12px 0 0;}
+#btn3926-modal .btn3929-confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+#btn3926-modal .btn3929-confetti i{position:absolute;top:-13px;left:var(--x);width:7px;height:14px;border-radius:2px;opacity:0;background:#e9ca79;animation:btn3929-fall 2.35s ease-in var(--delay) 2 both;transform:rotate(var(--spin));}
+#btn3926-modal .btn3929-confetti i[style*="--tone:1"]{background:#7cdae0}#btn3926-modal .btn3929-confetti i[style*="--tone:2"]{background:#f8f2df}#btn3926-modal .btn3929-confetti i[style*="--tone:3"]{background:#9abd8d}
+@keyframes btn3929-fall{0%{transform:translate3d(0,-10px,0) rotate(var(--spin));opacity:0}12%{opacity:1}100%{transform:translate3d(25px,370px,0) rotate(580deg);opacity:0}}
+@keyframes btn3929-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+@media (prefers-reduced-motion:reduce){#btn3926-modal .btn3929-star,#btn3926-modal .btn3929-confetti i{animation:none!important}}
 </style>
 <style>
 @supports(padding:env(safe-area-inset-bottom)){.xword-actions,.watch-controls{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
@@ -1902,7 +1924,7 @@ html.reduce-motion #home .bu3924-glint{display:none!important}
 @media(prefers-reduced-motion:reduce){#bu3925-about *,#bu3925-about *::before,#bu3925-about *::after{animation:none!important;transition:none!important}}
 </style>
 <style id="btn3926-theme">
-/* v3.9.28 candidate: Behind the Name enhancements scoped to this mode. */
+/* v3.9.29 candidate: Behind the Name enhancements scoped to this mode. */
 #btn3926-home,#btn3926-play{background:radial-gradient(ellipse at top,#174650 0%,#092936 60%,#061a26 100%);color:#fff4da}
 #btn3926-home .btn3926-body,#btn3926-play .btn3926-body{display:flex;flex:1;flex-direction:column;min-height:0;overflow:hidden;padding:clamp(7px,1.25dvh,13px) 12px max(6px,env(safe-area-inset-bottom));gap:clamp(5px,1dvh,10px)}
 .btn3926-title{font:700 clamp(17px,4.7vw,22px)/1.12 Georgia,serif;letter-spacing:.1px}
@@ -1967,7 +1989,7 @@ html.reduce-motion #home .bu3924-glint{display:none!important}
 <button id="home-help"><span aria-hidden="true">?</span><b>Help</b><small>How to play</small></button>
 </nav>
 <button id="begin" class="cin-more-modes" hidden>PLAY BIBLE TRIVIA <span aria-hidden="true">›</span></button>
-<div class="cinematic-footnote">BIBLE UNFOLDED · v3.9.28 CANDIDATE · WORD ADVENTURE · DEMO VOICES: elevenlabs.io</div>
+<div class="cinematic-footnote">BIBLE UNFOLDED · v3.9.29 CANDIDATE · WORD ADVENTURE · DEMO VOICES: elevenlabs.io</div>
 </div></section>
 <section class="screen mode-screen" id="modes" hidden aria-hidden="true">
 <header class="hub-head"><button class="hub-icon" id="modes-back" aria-label="Back to cover">‹</button><div class="hub-headtitle"><small>BIBLE UNFOLDED</small><b>Choose Your Adventure</b></div><button class="hub-icon" id="modes-menu" aria-label="Menu">☰</button></header>
@@ -2030,7 +2052,7 @@ html.reduce-motion #home .bu3924-glint{display:none!important}
 <div class="bu3857-scroll"><div id="bu3857-content"></div></div>
 </div></section>
 <section id="play" class="screen" hidden><header class="play-head"><div class="bu-side-score"><button id="to-home" class="back" aria-label="Back to episodes">‹</button><span class="bu-side-value" title="Insight Tokens; details in Menu" aria-label="Insight Tokens"><span aria-hidden="true">◉</span><b id="story-coin-count">45</b></span></div><div class="head-title"><small>GENESIS · EPISODE 1</small><b>A World Awakens</b></div><div class="bu-side-score"><button id="play-menu" class="head-btn" aria-label="Open game menu" title="Menu">☰</button><span class="bu-side-value" title="Points; details in Menu" aria-label="Points"><span aria-hidden="true">✦</span><b id="story-point-count">0</b></span></div></header><div class="scene" id="scene"><div id="initial-world" class="initial-world"></div><div id="frame-a" class="scene-img"></div><div id="frame-b" class="scene-img"></div><div class="scene-shade"></div><div id="scene-sub" class="scene-sub"></div></div><div class="scene-label"><div><span id="world-phase">THE BEGINNING</span><strong id="world-title">A world waiting to awaken</strong></div><div id="story-quick-actions" class="story-quick-actions" hidden><button type="button" id="scene-scripture" title="Read scripture" aria-label="Read scripture">📖</button><button type="button" id="scene-context" title="Scene context" aria-label="Scene context">📜</button><button type="button" id="scene-hint" title="Hint" aria-label="Hint">💡</button><button type="button" id="scene-shuffle" title="Shuffle letters" aria-label="Shuffle letters">⤨</button><button type="button" id="scene-clear" title="Clear selection" aria-label="Clear selection">↺</button><button type="button" id="scene-reveal" title="Reveal answer (−25 Points)" aria-label="Reveal answer, costs 25 Points">👁</button><button type="button" id="scene-restart" hidden aria-label="Replay chapter">⟲</button><div id="stepdots" class="stepdots bu-shared-progresschip" aria-label="Story progress">1/10</div></div></div><div id="gamepanel" class="gamepanel"><div class="eyebrow">DISCOVER · <span id="step-label">1 OF 3</span></div><h2 id="clue" class="clue">What was created along with the heavens?</h2><div id="answer" class="letter-answer empty">Trace or tap the letters</div><div id="wheel" class="wheel"><svg class="wheel-line" viewBox="0 0 100 100" preserveAspectRatio="none"><path class="bu3822-halo" d=""></path><path class="bu3822-ribbon" id="trace" d=""></path><circle class="bu3822-tip" r="1.7" cx="50" cy="50" visibility="hidden"></circle></svg></div><p id="note" class="note" aria-live="polite"></p><div class="panel-foot"><button id="clear" class="utility-btn">↶ Clear</button><button id="hint" class="utility-btn">✦ Hint</button><button id="restart" class="utility-btn">⟲ Restart</button></div></div></section>
-<!-- v3.9.28 CANDIDATE: Behind the Name. Original Watch Story views/data remain intact but unreachable from the approved slot. -->
+<!-- v3.9.29 CANDIDATE: Behind the Name. Original Watch Story views/data remain intact but unreachable from the approved slot. -->
 <section id="btn3926-home" class="screen hub-screen" hidden>
  <header class="hub-head"><button id="btn3926-home-back" class="hub-icon" aria-label="Home">‹</button><div class="hub-headtitle"><small>DISCOVER THE STORY BEHIND THE WORD</small><b>Behind the Name</b></div><button id="btn3926-home-menu" class="hub-icon" aria-label="Menu">☰</button></header>
  <div class="btn3926-body"><div class="btn3926-headline"><div class="btn3926-halo" aria-hidden="true">✧</div><div class="btn3926-overline">Names carry stories</div><div class="btn3926-subtitle">People, places, and surprising connections. Pick a set to begin.</div></div><div id="btn3926-packs" class="btn3926-packs"></div><div class="btn3926-footnote">27 source-linked pilot challenges · 109 researched entries in the content library</div></div>
@@ -2586,7 +2608,7 @@ function iconSVG(id){return `<svg viewBox="0 0 44 44" aria-hidden="true">${ICONS
 function notify(msg){let e=$('toast');e.textContent=msg;e.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{e.hidden=true},3200)}
 function hideAll(){['home','modes','journey','levels','episodes','gallery','play','bu3857-screen','crossword-screen','cross-pick','watch-pick','watch-player','rewards','bu3857-screen','btn3926-home','btn3926-play'].forEach(id=>$(id).hidden=true);}
 function syncMusic(){updateMusicState();}
-function focusHome(){hideAll();closeMenu();closeDialog();$('home').hidden=false;document.title='Bible Unfolded v3.9.28 CANDIDATE — Genesis Word Adventure — Home';syncMusic()}
+function focusHome(){hideAll();closeMenu();closeDialog();$('home').hidden=false;document.title='Bible Unfolded v3.9.29 CANDIDATE — Genesis Word Adventure — Home';syncMusic()}
 function openJourney(celebrate=false){hideAll();closeMenu();closeDialog();$('journey').hidden=false;lastHub='journey';updateJourney(celebrate);$('journey-scroll').scrollTop=0;document.title='Bible Unfolded · The Journey';syncMusic()}
 function openLevels(){hideAll();closeMenu();closeDialog();$('levels').hidden=false;lastHub='levels';document.title='Bible Unfolded · Bible Books';syncMusic()}
 let bu3854EpisodeBook='genesis';
@@ -9425,7 +9447,7 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
  const save=()=>{try{localStorage.setItem(STATE_KEY,JSON.stringify(state))}catch(_){}};
  function syncBalances(){try{const coins=document.getElementById('btn3928-coins'),points=document.getElementById('btn3928-points');if(coins)coins.textContent=Math.max(0,economy.coins).toLocaleString();if(points)points.textContent=economy.points.toLocaleString()}catch(_){}}
  const shuffle=list=>{const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
- let currentCategory=null,active=null,options=[],selected=-1,answered=false,hintsUsed={},returnFocus=null,modalOnClose=null,lastRevealed=null;
+ let currentCategory=null,active=null,options=[],selected=-1,answered=false,hintsUsed={},returnFocus=null,modalOnClose=null;
  const e=(tag,text,cls)=>{const x=document.createElement(tag);if(text!=null)x.textContent=text;if(cls)x.className=cls;return x};
  const clear=n=>{while(n.firstChild)n.removeChild(n.firstChild)};
  function modal(title,render,onClose=null){returnFocus=document.activeElement;modalOnClose=onClose;const root=$b('modal'),body=$b('modal-body');$b('modal-title').textContent=title;clear(body);render(body);root.hidden=false;$b('modal-x').focus({preventScroll:true})}
@@ -9447,34 +9469,49 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
   const bible=entry.scriptures?.[0];
   if(bible){const m=bible.match(/^(.*?)\s+(\d+):/);if(m){const slug=m[1].toLowerCase().replace(/\s+/g,'-');link(body,'Read the Bible book on JW.org ↗','https://www.jw.org/en/library/bible/study-bible/books/'+slug+'/'+m[2]+'/')}}
  })}
- function showInfo(autoAdvance=false,correct=null){
-  // Once the new question begins, 📜 safely reviews the PREVIOUS lesson only.
-  const q=answered?active:lastRevealed;
-  if(!q)return;
+ function showInfo(correct=null){
+  // The scroll belongs ONLY to the current discovery. Never reveal a previous name
+  // while a different question is on screen, or expose the answer ahead of time.
+  if(!active||!answered)return;
+  const q=active;
   const entry=byId.get(q.entry);
   modal('Behind the name: '+entry.name,body=>{
-   if(typeof correct==='boolean'){const msg=line(body,correct?'✓ Correct! Great discovery.':'Not quite — here is the meaning.','btn3927-result');if(!correct)msg.classList.add('is-wrong')}
+   if(typeof correct==='boolean'){const msg=line(body,correct?(state.done[active.id]?'✓ Correct! Great discovery.':'✓ Correct! Great discovery.'):'Not quite — here is the meaning.','btn3927-result');if(!correct)msg.classList.add('is-wrong')}
    line(body,entry.meaning,'btn3926-meaning');line(body,q.explanation);line(body,entry.context);line(body,'Bible: '+sourceHint(q,entry),'btn3926-note');
    if(entry.certainty!=='stated')line(body,'Research note: The source gives this name an alternative or qualified meaning.','btn3926-note');
-   link(body,'Verify in Insight on JW.org ↗',entry.source);
-  },autoAdvance?advanceDiscovery:null)
+   // JW.org research links belong only in the 📖 Bible-reference dialog.
+   action(body,'Next Puzzle ›',()=>{closeModal(false);advanceDiscovery()}).classList.add('btn3929-next');
+  })
  }
  function showHint(){
   if(!active||answered)return;
   syncBalances();
-  const unlocked=!!state.hintUnlocks[active.id];
+  // The free clue is the default: no needless first-choice screen.
+  hintsUsed.free=true;
   modal('Helpful hints',body=>{
-   line(body,'First clue is free. Stronger clue costs 10 Insight Tokens (once per discovery).','btn3926-note');
-   action(body,'Clue · FREE',()=>{hintsUsed.free=true;modal('Free clue',b=>line(b,active.free))});
-   action(body,unlocked?'Stronger clue · UNLOCKED':'Stronger clue · 10 Insight Tokens',()=>{
-    if(!state.hintUnlocks[active.id]){
-     // Existing global wallet handles nonnegative balances, spend FX and persistence.
-     if(!canSpend(10,true)){syncBalances();line(body,'Not enough Insight Tokens yet. No tokens were deducted.','btn3926-note');return}
-     state.hintUnlocks[active.id]=true;save();syncBalances();
+   function renderHints(message=''){
+    clear(body);
+    line(body,'Free hint','btn3929-hint-heading');
+    line(body,active.free,'btn3929-hint-copy');
+    if(state.hintUnlocks[active.id]){
+     hintsUsed.strong=true;
+     line(body,'Paid hint · already unlocked','btn3929-hint-heading');
+     line(body,active.strong,'btn3929-hint-copy');
+    }else{
+     action(body,'Reveal stronger hint · 10 Insight Tokens',()=>{
+      if(state.hintUnlocks[active.id]){renderHints();return}
+      // Use the EXISTING wallet; charge once, and never permit negative tokens.
+      if(!canSpend(10,true)){
+       syncBalances();renderHints('Not enough Insight Tokens. No tokens were deducted.');return;
+      }
+      state.hintUnlocks[active.id]=true;
+      hintsUsed.strong=true;
+      save();syncBalances();renderHints();
+     }).classList.add('btn3929-hint-purchase');
     }
-    hintsUsed.strong=true;
-    modal('Stronger clue',b=>line(b,active.strong));
-   });
+    if(message)line(body,message,'btn3926-note');
+   }
+   renderHints();
   });
  }
  function showProgress(){const valid=questions.filter(q=>q.category===currentCategory);const complete=valid.filter(q=>state.done[q.id]).length;modal('Your discoveries',body=>{
@@ -9482,36 +9519,82 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
   line(body,'Rewards are awarded only once per question. Replay is always free.','btn3926-note');
   action(body,'Return to all topics',()=>{closeModal();pick()})
  })}
- function pick(){closeModal(false);syncBalances();lastRevealed=null;try{stopWatch()}catch(_){}hideAll();closeMenu();closeDialog();currentCategory=null;active=null;
+ function pick(){closeModal(false);syncBalances();try{stopWatch()}catch(_){}hideAll();closeMenu();closeDialog();currentCategory=null;active=null;
  $b('home').hidden=false;renderPacks();document.title='Bible Unfolded · Behind the Name';syncMusic()}
  function renderPacks(){clear($b('packs'));for(const [key,g] of Object.entries(groups)){
   const valid=questions.filter(q=>q.category===key);const done=valid.filter(q=>state.done[q.id]).length;
   const b=e('button',null,'btn3926-pack');b.type='button';const ico=e('span',g.icon,'btn3926-packicon');ico.setAttribute('aria-hidden','true');const body=e('span');const title=e('b',g.title),small=e('small',g.detail+'  '+done+'/'+valid.length+' mastered');body.append(title,small);const arrow=e('b','›');arrow.style.marginLeft='auto';b.append(ico,body,arrow);b.onclick=()=>startGroup(key);$b('packs').append(b)
  }}
- function startGroup(key){if(!groups[key])return;syncBalances();currentCategory=key;lastRevealed=null;
+ function startGroup(key){if(!groups[key])return;syncBalances();currentCategory=key;
  if(!state.sessions[key]){const arr=questions.filter(q=>q.category===key).map(q=>q.id);state.sessions[key]={order:shuffle(arr),index:0};save()}
  if(state.sessions[key].index>=state.sessions[key].order.length){state.sessions[key].index=0;state.sessions[key].order=shuffle(state.sessions[key].order);save()}
  hideAll();closeMenu();closeDialog();$b('play').hidden=false;$b('play-title').textContent=groups[key].short;nextQuestion();document.title='Bible Unfolded · Behind the Name';syncMusic()}
- function nextQuestion(){syncBalances();const st=state.sessions[currentCategory];if(!st)return pick();if(st.index>=st.order.length){
-   const n=questions.filter(q=>q.category===currentCategory).filter(q=>state.done[q.id]).length;modal('Discovery set complete!',body=>{
-    line(body,'You finished '+groups[currentCategory].title+'. Great exploring!');
-    line(body,'You have mastered '+n+' of '+st.order.length+' unique challenges.');
-    action(body,'Explore more names',()=>{closeModal(false);pick()});action(body,'Play this set again',()=>{closeModal(false);st.index=0;st.order=shuffle(st.order);save();lastRevealed=null;nextQuestion()});
-   },()=>pick());return}
+ function nextQuestion(){syncBalances();const st=state.sessions[currentCategory];if(!st)return pick();if(st.index>=st.order.length){showFinish(st);return}
  active=questions.find(q=>q.id===st.order[st.index]);if(!active){st.index++;save();return nextQuestion()}
  selected=-1;answered=false;hintsUsed={};options=shuffle(active.answers.map((value,index)=>({text:value,correct:index===0})));
  $b('kind').textContent=groups[currentCategory].title;$b('step').textContent='Discovery '+(st.index+1)+' of '+st.order.length;$b('progress').textContent=(st.index+1)+'/'+st.order.length;
  $b('points').textContent=state.done[active.id]?'✓ Played before':'✦ One-time reward';$b('meter').style.width=(100*st.index/st.order.length)+'%';
- $b('prompt').textContent=active.question;$b('feedback').textContent='Tap an answer to discover its meaning.';$b('info').disabled=!lastRevealed;renderOptions();save()}
+ $b('prompt').textContent=active.question;$b('feedback').textContent='Tap an answer to discover its meaning.';$b('info').disabled=true;renderOptions();save()}
  function renderOptions(){clear($b('answers'));options.forEach((o,i)=>{const b=e('button',null,'btn3926-answer');b.type='button';const letter=e('span',String.fromCharCode(65+i));const text=e('div',o.text);b.append(letter,text);if(answered){b.disabled=true;if(o.correct)b.classList.add('is-correct');else if(i===selected)b.classList.add('is-wrong')}
  else if(selected===i){b.style.borderColor='#f0ce88';b.style.background='#245b61'}
  b.onclick=()=>{if(answered)return;selected=i;submit()};$b('answers').append(b)})}
+ // A recognizable but gentle two-note descending cue; the legacy wrong cue is
+ // exceptionally quiet under music. This affects Behind the Name only.
+ function nameWrongChime(){
+  try{
+   if(!sfxOn||sfxVolume<=0)return false;
+   const ctx=audioContext();if(!ctx)return false;
+   const at=ctx.currentTime+0.015,level=Math.max(.018,Math.min(.085,.082*sfxVolume/100));
+   [392,329.63].forEach((hz,i)=>{
+    const osc=ctx.createOscillator(),gain=ctx.createGain(),t=at+i*.14;
+    osc.type='sine';osc.frequency.value=hz;
+    gain.gain.setValueAtTime(.0001,t);
+    gain.gain.linearRampToValueAtTime(level,t+.025);
+    gain.gain.exponentialRampToValueAtTime(.0001,t+.34);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start(t);osc.stop(t+.355);
+    osc.onended=()=>{try{osc.disconnect();gain.disconnect()}catch(_){}};
+   });
+   return true;
+  }catch(_){return false}
+ }
+ function nameCompletion(){
+  // Reuse the established warm victory fanfare and existing announcer system.
+  try{trailCelebrateSound()}catch(_){}
+  try{bu381Play('chapter_complete',{milestone:true})}catch(_){}
+ }
+ function showFinish(st){
+  const n=questions.filter(q=>q.category===currentCategory&&state.done[q.id]).length;
+  const total=st.order.length;
+  nameCompletion();
+  modal('Discovery set complete!',body=>{
+   const celebrate=e('div',null,'btn3929-celebration');
+   celebrate.setAttribute('aria-label','Set complete — congratulations!');
+   const conf=e('div',null,'btn3929-confetti');conf.setAttribute('aria-hidden','true');
+   for(let i=0;i<36;i++){
+    const bit=e('i');bit.style.setProperty('--x',((i*47)%97+2)+'%');
+    bit.style.setProperty('--delay',((i*11)%23)/25+'s');
+    bit.style.setProperty('--spin',((i*41)%360)+'deg');
+    bit.style.setProperty('--tone',String(i%4));
+    conf.append(bit);
+   }
+   celebrate.append(conf);
+   celebrate.append(e('div','✦','btn3929-star'));
+   celebrate.append(e('div','SET COMPLETE!','btn3929-celebrate-title'));
+   celebrate.append(e('p','You finished '+groups[currentCategory].title+'!','btn3929-celebrate-text'));
+   celebrate.append(e('p','You have discovered '+n+' of '+total+' names in this set.','btn3929-celebrate-text'));
+   const wallet=e('p','✦ '+economy.points.toLocaleString()+' Points  ·  🪙 '+Math.max(0,economy.coins).toLocaleString()+' Insight Tokens','btn3929-celebrate-wallet');
+   celebrate.append(wallet);body.append(celebrate);
+   action(body,'Explore More Names ›',()=>{closeModal(false);pick()}).classList.add('btn3929-next');
+   action(body,'Play This Set Again',()=>{closeModal(false);st.index=0;st.order=shuffle(st.order);save();nextQuestion()});
+  },()=>pick());
+ }
  function submit(){
-  // Single tap: save once, play the approved cue, and present the lesson immediately.
+  // Single tap: save once, play feedback, and present the lesson immediately.
   if(!active||answered||selected<0||!$b('modal').hidden)return;
   answered=true;
   const correct=options[selected]?.correct===true;
-  try{audioContext();if(correct)playChime();else bu3846WrongTone()}catch(_){/* sound is optional */}
+  try{audioContext();if(correct)playChime();else nameWrongChime()}catch(_){/* sound is optional */}
   if(correct){
    if(!state.done[active.id]){
     state.done[active.id]=true;let earned=false;
@@ -9520,16 +9603,21 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
    }else $b('feedback').textContent='✓ Correct! This discovery was already rewarded.';
   }else $b('feedback').textContent='Not quite — the correct answer is highlighted in green.';
   renderOptions();save();syncBalances();$b('info').disabled=false;
-  showInfo(true,correct);
+  // Show Next Puzzle in place of the pre-answer instruction if the player closes
+  // the lesson using X and wants to inspect the highlighted answer.
+  const footer=$b('feedback');footer.textContent='';
+  const next=e('button','Next Puzzle ›','btn3929-inline-next');next.type='button';
+  next.onclick=advanceDiscovery;footer.append(next);
+  showInfo(correct);
+  if(correct){try{bu381Play('excellent_thinking')}catch(_){}}
  }
  function advanceDiscovery(){
   // Called only by closing the automatically revealed lesson, never Bible/hint/review panels.
   if(!answered||!active||!currentCategory)return;
-  lastRevealed=active;
   const st=state.sessions[currentCategory];if(!st)return;
   st.index++;save();nextQuestion();
  }
- $b('bible').onclick=()=>active&&showBible();$b('hint').onclick=()=>active&&showHint();$b('info').onclick=()=>active&&showInfo();$b('progress').onclick=()=>active&&showProgress();
+ $b('bible').onclick=()=>active&&showBible();$b('hint').onclick=()=>active&&showHint();$b('info').onclick=()=>active&&answered&&showInfo();$b('progress').onclick=()=>active&&showProgress();
  $b('home-back').onclick=()=>{closeModal();focusHome()};$b('back').onclick=pick;
  $b('home-menu').onclick=openMenu;$b('menu').onclick=openMenu;
  // Capture only the retired Watch Stories card before its older bubble-phase listener.
