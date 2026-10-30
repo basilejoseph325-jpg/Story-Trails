@@ -2005,7 +2005,7 @@ html.reduce-motion #home .bu3924-glint{display:none!important}
 <h2>Your 7-Day Journey <small id="streak-count"></small></h2><div id="rewards-days" class="reward-days"></div><p class="reward-explain">Return on seven consecutive days for a bigger prize. Missing a day starts a new streak, but never removes earned Points or Insight Tokens.</p>
 <h2>Your Journey Milestones</h2><p id="bu389-summary" class="bu389-summary">Your accomplishments across the game.</p><div id="bu389-milestone-grid" role="list" aria-label="Your Bible Unfolded milestones"></div>
 <h2>Unlock with Insight Tokens</h2><div id="reward-products"></div><p class="reward-explain">Hints are available in Story Adventure and Crosswords. Main Bible chapters always unlock by playing—not by paying.</p></div></section>
-<div id="daily-modal" class="daily-mask" hidden role="dialog" aria-modal="true" aria-labelledby="daily-title"><div class="daily-dialog"><button id="daily-close" class="daily-x" aria-label="Close reward reminder">×</button><div class="daily-overline">✦ A LITTLE REWARD FOR RETURNING</div><h2 id="daily-title">Your Daily Journey</h2><p id="daily-description"></p><div id="daily-bubbles" class="daily-bubbles"></div><p id="daily-gift" class="daily-gift"></p><button id="daily-continue" class="gold-button">Continue Adventure →</button></div></div>
+<div id="daily-modal" class="daily-mask" hidden role="dialog" aria-modal="true" aria-labelledby="daily-title"><div class="daily-dialog"><button id="daily-close" class="daily-x" aria-label="Close reward reminder">×</button><div class="daily-overline">✦ WELCOME BACK TO BIBLE UNFOLDED</div><h2 id="daily-title">Your Daily Reward</h2><p id="daily-description"></p><div id="daily-bubbles" class="daily-bubbles"></div><p id="daily-gift" class="daily-gift"></p><button id="daily-continue" class="gold-button">Let’s Play!</button></div></div>
 <section id="cross-pick" class="screen hub-screen" hidden>
 <header class="hub-head"><button class="hub-icon" id="cross-pick-back" aria-label="Back">‹</button><div class="hub-headtitle"><small>PLAY ANY TIME</small><b>Bible Word Trails</b></div><button class="hub-icon" id="cross-pick-menu">☰</button></header>
 <div class="wallet-banner" data-wallet="true" role="status"></div><div class="mode-scroll"><p class="mode-intro">Solve intersecting Bible words: correct crossings reveal letters for the next answer. Earn Insight Tokens for new answers and a bonus for each completed board.</p><div class="cross-pack-list" id="cross-pack-list"></div><p class="mode-source">Original clues checked against the New World Translation on JW.org · Source links appear in each puzzle.</p></div></section>
@@ -2079,7 +2079,7 @@ html.reduce-motion #home .bu3924-glint{display:none!important}
 </section>
 
 <section class="wb36-screen" id="wb36" hidden aria-label="Word Builder">
-  <header class="wb36-top"><button id="wb36-back" class="wb36-back" aria-label="Back">‹</button><h1 id="wb36-title">Word Builder</h1><button id="wb36-menu" class="wb36-back" aria-label="Settings">☰</button></header>
+  <header class="wb36-top"><button id="wb36-back" class="wb36-back" aria-label="Back">‹</button><h1 id="wb36-title">Word Builder</h1><button id="wb36-menu" class="wb36-back" aria-label="Open full game menu">☰</button></header>
   <main id="wb36-main" class="wb36-main"></main>
 </section>
 
@@ -4735,23 +4735,60 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
   const remove=wrong[0];
   return {text:'You can cross out option '+String.fromCharCode(65+remove.index)+': “'+remove.choice+'.” That choice is incorrect. Compare the remaining answers.',eliminate:remove.index};
  }
+ // Stage39: dedicated Daily help. One free clue, then the existing 15-token
+ // wrong-choice elimination; the single paid unlock persists with this day's
+ // mode-specific session and NEVER affects first-try score eligibility.
+ function dailyHint(q,r,root){
+  const picked=bu3922DailyClue(q),step=r.step;
+  const paid=r.paidEliminations?.[step]??null;
+  document.getElementById('bu3918-dialog')?.remove();
+  const shade=document.createElement('div');shade.id='bu3918-dialog';shade.className='bu65-info-overlay';
+  const card=document.createElement('section');card.className='bu65-info-card';card.setAttribute('role','dialog');card.setAttribute('aria-modal','true');card.setAttribute('aria-label','Daily Discovery hints');
+  const h=document.createElement('h2');h.textContent='Helpful hints';
+  const body=document.createElement('div');body.className='bu65-info-body';
+  const free=document.createElement('p');free.textContent='Free hint: '+picked.text;body.append(free);
+  const note=document.createElement('p');note.setAttribute('role','status');note.style.cssText='font-size:13px;color:#ffe2a3';
+  function dim(index){const b=root.querySelector('[data-bu375-answer="'+index+'"]');if(b){b.classList.add('bu3922-eliminated');b.setAttribute('aria-label','Eliminated: '+String(q.choices[index]));b.disabled=true;}}
+  if(picked.eliminate!==null)dim(picked.eliminate);
+  if(Number.isInteger(paid)){
+   dim(paid);const p=document.createElement('p');p.textContent='Stronger hint already unlocked: Option '+String.fromCharCode(65+paid)+' is incorrect. No further charge.';body.append(p);
+  }else{
+   const choices=q.choices.map((text,i)=>i).filter(i=>i!==q.correct&&i!==picked.eliminate&&!r.missed?.[step]?.includes(i));
+   if(choices.length){
+    const btn=document.createElement('button');btn.type='button';btn.className='bu65-confirm';btn.textContent='Stronger hint · 15 Insight Tokens';
+    btn.onclick=()=>{
+     if(Number.isInteger(r.paidEliminations?.[step])){btn.disabled=true;note.textContent='This hint is already unlocked.';return;}
+     const index=choices[0];if(index===q.correct)return;
+     if(!ctx.canSpendDaily(15)){note.textContent='Not enough Insight Tokens. No tokens were deducted.';return;}
+     r.paidEliminations??={};r.paidEliminations[step]=index;ctx.dailySave();dim(index);
+     btn.disabled=true;note.textContent='Option '+String.fromCharCode(65+index)+' is incorrect. −15 Insight Tokens. This help stays unlocked.';
+     const funds=root.querySelector('.bu39-daily-wallet');if(funds){const b=ctx.dailyBalances();funds.textContent='✦ '+b.points.toLocaleString()+' Achievement Points · ◉ '+b.coins.toLocaleString()+' Insight Tokens';}
+    };
+    body.append(btn,note);
+   }
+  }
+  const close=document.createElement('button');close.type='button';close.className='bu65-confirm';close.textContent='Back to question';close.onclick=()=>shade.remove();
+  card.append(h,body,close);shade.append(card);document.body.append(shade);
+  shade.addEventListener('click',e=>{if(e.target===shade)shade.remove()});close.focus({preventScroll:true});
+ }
  const priorDaily=ctx.getDailyDraw();
  ctx.setDailyDraw(function(...args){const result=priorDaily.apply(this,args);const r=ctx.getDailyData().active;if(!r||r.step>=5)return result;
   const q=bu375Items(r)[r.step],root=document.getElementById('bu375-body'),anchor=root.querySelector('.bu375-answer');
   if(anchor)mount(root,anchor,q,r.step,5,()=>{
     if(Number.isInteger(r.answers[r.step])){details('Already answered','Your answer has been recorded. Open the scroll for the explanation.');return;}
-    const picked=bu3922DailyClue(q);
-    if(picked.eliminate!=null){
-      // Only a confirmed wrong answer may be dimmed. No score, balance or save is changed.
-      const bad=root.querySelector('[data-bu375-answer="'+picked.eliminate+'"]');
-      if(bad){bad.classList.add('bu3922-eliminated');bad.setAttribute('aria-label','Ruled out: '+String(q.choices[picked.eliminate]));}
-    }
-    details('Helpful clue · FREE',picked.text);
+    dailyHint(q,r,root);
   },()=>{
     // Never leak the answer or full explanation before this specific question is answered.
     if(!Number.isInteger(r.answers[r.step])){const hadWrong=Array.isArray(r.missed?.[r.step])&&r.missed[r.step].length>0;details('Explanation unlocks after the correct answer',hadWrong?'That choice was not right, but you can still work it out. Try another answer, use the free hint, or read the Bible passage. The explanation will open when you find the correct answer.':'You can use the free hint or read the Bible passage before choosing. The explanation opens after you find the correct answer.');return;}
     details('About this passage',String(q.explanation||'No additional explanation is available for this question.'));
-  });return result;
+  });
+  // A session reload must retain the purchased elimination rather than charging twice.
+  const paid=r.paidEliminations?.[r.step];if(Number.isInteger(paid)){
+   const btn=root.querySelector('[data-bu375-answer="'+paid+'"]');if(btn){btn.disabled=true;btn.classList.add('bu3922-eliminated');btn.setAttribute('aria-label','Eliminated by paid hint: '+q.choices[paid]);}
+  }
+  const balances=ctx.dailyBalances();const wallet=document.createElement('div');wallet.className='bu39-daily-wallet';wallet.setAttribute('role','status');wallet.textContent='✦ '+balances.points.toLocaleString()+' Achievement Points · ◉ '+balances.coins.toLocaleString()+' Insight Tokens';
+  root.querySelector('.bu375-steps')?.after(wallet);
+  return result;
  });
  }});
 })();
@@ -4762,6 +4799,9 @@ body.bu3902-shake #crossword-screen{animation:bu3902-shake .4s ease-in-out}
 window.BUUnifiedStudyToolbar.install({
  scriptureUrl:ref=>scriptureUrl(ref),
  dailyItems:r=>bu375Items(r),
+ dailySave:()=>bu375Save(),
+ canSpendDaily:(n)=>canSpend(n,true),
+ dailyBalances:()=>({points:economy.points,coins:economy.coins}),
  getDailyData:()=>bu375Data,
  getTriviaQuiz:BUStage16TriviaLifecycle.getQuiz,
  getTriviaDraw:BUStage16TriviaLifecycle.getDraw,
@@ -5035,10 +5075,11 @@ window.BUScholarHintInformationController.install({
  const groups={people:{title:'People & Their Names',short:'People & Names',icon:'♙',detail:'Meet Bible characters in a new way.'},places:{title:'Places & Their Stories',short:'Places & Stories',icon:'⌖',detail:'Uncover what ancient locations reveal.'},connections:{title:'Changed Names & Connections',short:'Name Connections',icon:'✧',detail:'Explore why names mattered.'},origins:{title:'First Families',short:'First Families',icon:'✧',detail:'Why the earliest names were chosen.'},tribes:{title:'Tribes & Family Links',short:'Family Links',icon:'♙',detail:'Births, bonds, and name origins.'},faith:{title:'Faith & Decisions',short:'Faith & Decisions',icon:'✦',detail:'Names connected with remarkable lives.'},prophets:{title:'Prophets & Kings',short:'Prophets & Kings',icon:'✧',detail:'Meaningful names from Israel’s history.'},disciples:{title:'Disciples & Messengers',short:'Disciples & Messengers',icon:'♙',detail:'Names in the Christian Greek Scriptures.'},landmarks:{title:'Lands & Landmarks',short:'Lands & Landmarks',icon:'⌖',detail:'The stories in geographical names.'}};
  const STATE_KEY='bible-unfolded-behind-name-v1';
  const allIds=new Set(questions.map(x=>x.id));
- let state={done:{},sessions:{},hintUnlocks:{}};
+ let state={done:{},sessions:{},hintUnlocks:{},wrongChoices:{}};
  try{const o=JSON.parse(localStorage.getItem(STATE_KEY)||'null');if(o&&typeof o==='object'){
   if(o.done&&typeof o.done==='object')for(const [k,v] of Object.entries(o.done))if(allIds.has(k)&&v===true)state.done[k]=true;
   if(o.hintUnlocks&&typeof o.hintUnlocks==='object')for(const [k,v] of Object.entries(o.hintUnlocks))if(allIds.has(k)&&v===true)state.hintUnlocks[k]=true;
+  if(o.wrongChoices&&typeof o.wrongChoices==='object')for(const [k,v] of Object.entries(o.wrongChoices))if(allIds.has(k)&&Array.isArray(v))state.wrongChoices[k]=v.filter(x=>typeof x==='string').slice(0,3);
   if(o.sessions&&typeof o.sessions==='object')for(const [k,v] of Object.entries(o.sessions)){
    if(!groups[k]||!v||!Array.isArray(v.order))continue;
    const valid=questions.filter(q=>q.category===k).map(q=>q.id);
@@ -5078,7 +5119,7 @@ window.BUScholarHintInformationController.install({
   const q=active;
   const entry=byId.get(q.entry);
   modal('Behind the name: '+entry.name,body=>{
-   if(typeof correct==='boolean'){const msg=line(body,correct?(state.done[active.id]?'✓ Correct! Great discovery.':'✓ Correct! Great discovery.'):'Not quite — here is the meaning.','btn3927-result');if(!correct)msg.classList.add('is-wrong')}
+   if(typeof correct==='boolean'){line(body,'✓ Correct! Great discovery.','btn3927-result')}
    line(body,entry.meaning,'btn3926-meaning');line(body,q.explanation);line(body,entry.context);line(body,'Bible: '+sourceHint(q,entry),'btn3926-note');
    if(entry.certainty!=='stated')line(body,'Research note: The source gives this name an alternative or qualified meaning.','btn3926-note');
    // JW.org research links belong only in the 📖 Bible-reference dialog.
@@ -5155,6 +5196,7 @@ window.BUScholarHintInformationController.install({
  $b('points').textContent=state.done[active.id]?'✓ Played before':'✦ One-time reward';$b('meter').style.width=(100*st.index/st.order.length)+'%';
  $b('prompt').textContent=active.question;$b('feedback').textContent='Tap an answer to discover its meaning.';$b('info').disabled=true;renderOptions();save()}
  function renderOptions(){clear($b('answers'));options.forEach((o,i)=>{const b=e('button',null,'btn3926-answer');b.type='button';const letter=e('span',String.fromCharCode(65+i));const text=e('div',o.text);b.append(letter,text);if(answered){b.disabled=true;if(o.correct)b.classList.add('is-correct');else if(i===selected)b.classList.add('is-wrong')}
+ else if(state.wrongChoices[active.id]?.includes(o.text)){b.disabled=true;b.classList.add('is-wrong')}
  else if(selected===i){b.style.borderColor='#f0ce88';b.style.background='#245b61'}
  b.onclick=()=>{if(answered)return;selected=i;submit()};$b('answers').append(b)})}
  // v3.9.32 — Behind the Name ONLY. Dedicated, full-level pre-rendered chime.
@@ -5251,8 +5293,17 @@ window.BUScholarHintInformationController.install({
  function submit(){
   // Single tap: save once, play feedback, and present the lesson immediately.
   if(!active||answered||selected<0||!$b('modal').hidden)return;
-  answered=true;
   const correct=options[selected]?.correct===true;
+  if(!correct){
+   try{audioContext();nameWrongChime()}catch(_){}
+   const attempted=options[selected].text;
+   state.wrongChoices[active.id]??=[];
+   if(!state.wrongChoices[active.id].includes(attempted))state.wrongChoices[active.id].push(attempted);
+   save();selected=-1;renderOptions();
+   $b('feedback').textContent='Not quite. Try another answer, use a hint, or check the Bible reference.';
+   return; // Do NOT end the puzzle, expose the explanation, or award anything.
+  }
+  answered=true;
   try{audioContext();if(correct)namePositiveChime();else nameWrongChime()}catch(_){/* sound is optional */}
   if(correct){
    if(!state.done[active.id]){
@@ -5260,7 +5311,7 @@ window.BUScholarHintInformationController.install({
     try{earned=awardOnce('btn3926-'+active.id,10,2,true)}catch(err){console.warn('Behind the Name rewards unavailable',err)}
     $b('feedback').textContent=earned?'✓ Correct! +10 Points · +2 Insight Tokens (once)':'✓ Correct! Discovery recorded; no duplicate reward.';
    }else $b('feedback').textContent='✓ Correct! This discovery was already rewarded.';
-  }else $b('feedback').textContent='Not quite — the correct answer is highlighted in green.';
+  }
   renderOptions();save();syncBalances();$b('info').disabled=false;
   // Show Next Puzzle in place of the pre-answer instruction if the player closes
   // the lesson using X and wants to inspect the highlighted answer.
@@ -5281,7 +5332,7 @@ window.BUScholarHintInformationController.install({
  $b('home-menu').onclick=openMenu;$b('menu').onclick=openMenu;
  // Capture only the retired Watch Stories card before its older bubble-phase listener.
  const homeCard=document.getElementById('home-watch');homeCard.addEventListener('click',event=>{
-   event.preventDefault();event.stopImmediatePropagation();try{startAudio()}catch(_){}pick();try{rewardPopup()}catch(_){ }
+   event.preventDefault();event.stopImmediatePropagation();try{startAudio()}catch(_){}pick();
  },true);
  const chooser=document.getElementById('choose-watch');if(chooser)chooser.onclick=pick;
  const drawer=document.getElementById('menu-watch');if(drawer)drawer.onclick=()=>{pick()};
@@ -5476,6 +5527,29 @@ window.BUScholarHintInformationController.install({
 #bu395-source-dialog a:nth-of-type(2){background:#133f4d;border:1px solid #cfb87f;color:#f9e6b6}
 #bu395-source-x{position:absolute;right:14px;top:13px;border:1px solid #d2b77d;border-radius:50%;background:transparent;color:#f9dda0;width:40px;height:40px;font-size:24px}
 @media(max-height:575px){#bu395-source-dialog{gap:7px;padding:18px 14px 15px}#bu395-source-dialog a{padding:8px;min-height:36px}}
+
+/* Stage39: owner-approved shortcut cleanup and phone-first Daily selection. */
+#home .cinematic-bottom-nav,#game-menu .drawer-prototype,#game-menu .drawer-foot{display:none!important}
+#bu375-daily .bu375-mode-list{grid-template-columns:minmax(0,1fr)!important;gap:14px!important;max-width:490px;margin:22px auto 18px}
+#bu375-daily .bu375-mode{min-height:138px;padding:24px 22px;border-radius:18px;display:flex;flex-direction:column;justify-content:center;gap:7px}
+#bu375-daily .bu375-mode strong{font-size:clamp(22px,5.7vw,29px);line-height:1.2}
+#bu375-daily .bu375-mode small{font-size:clamp(13px,3.5vw,16px);line-height:1.5}
+#wb36 .wb37-tools #wb36-try,#wb36 .wb37-tools #wb36-undo,#wb36 .wb37-tools #wb36-mix{min-width:44px;min-height:44px;font-size:23px;touch-action:manipulation}
+
+#wb36 .wb39-wallet{display:inline-flex;align-items:center;justify-content:center;flex:1 1 100%;font-size:11px;line-height:1.25;color:#ebdbad;letter-spacing:.1px;white-space:normal;text-align:center}
+#btn3926-answers .btn3926-answer.is-wrong{background:rgba(135,36,40,.28)!important;border-color:#d46e70!important;color:#fbe1dd!important;opacity:.72}
+
+#bu375-daily .bu39-daily-wallet{font-size:12px;line-height:1.4;text-align:center;color:#f4dfad;margin:8px auto 12px;padding:8px 10px;background:#153a4799;border:1px solid #c7a97266;border-radius:10px;max-width:430px}
+
+#wb36 .wb37-tools #wb36-try svg{display:block;margin:auto;pointer-events:none}
+
+/* Stage40: the whole-app daily welcome celebrates on Home; confetti never obstructs taps. */
+#bu40-daily-confetti{position:fixed;inset:0;z-index:251;overflow:hidden;pointer-events:none;contain:strict}
+.bu40-confetti-piece{position:absolute;top:-18px;width:8px;height:13px;border-radius:2px;box-shadow:0 1px 3px #0002;opacity:0;animation:bu40-confetti-fall 3.65s var(--bu40-delay,0s) ease-in both}
+.bu40-confetti-piece:nth-child(3n){width:6px;height:8px;border-radius:50%}
+@keyframes bu40-confetti-fall{0%{transform:translate3d(0,0,0) rotate(0deg);opacity:0}5%{opacity:1}82%{opacity:1}100%{transform:translate3d(var(--bu40-drift,0px),104dvh,0) rotate(var(--bu40-spin,700deg));opacity:0}}
+@media(prefers-reduced-motion:reduce){#bu40-daily-confetti{display:none!important}}
+.reduce-motion #bu40-daily-confetti{display:none!important}
 </style>
 <script id="bu-stage14-behind-name-mode">/* Stage14: Bible name research content and complete source-overlay controller.
    Executed at the historical legacy033 position through an explicit dependency bridge. */
