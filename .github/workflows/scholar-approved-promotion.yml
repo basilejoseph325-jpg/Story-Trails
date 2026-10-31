@@ -1,0 +1,88 @@
+name: Integrate approved Scholar Research artwork
+on:
+  push:
+    paths:
+      - .github/workflows/scholar-approved-promotion.yml
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out live game
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Integrate only approved Scholar Research
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import urllib.request
+
+          def gitsha(b):
+              return hashlib.sha1(b'blob ' + str(len(b)).encode() + b'\0' + b).hexdigest()
+
+          main=Path('index.html')
+          original=main.read_bytes()
+          assert gitsha(original)=='8a955afba2e9cf56af769f161b42aa89ffaac3ad', 'Live game differs from protected verified version; refusing to overwrite'
+          root='https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/main/'
+          def source(path):
+              req=urllib.request.Request(root+path,headers={'User-Agent':'Bible-Unfolded-approved-promotion'})
+              with urllib.request.urlopen(req,timeout=45) as response:
+                  assert response.status==200, 'Source download failed: '+path
+                  return response.read()
+
+          css=source('scholar-native.css')
+          fragment=source('scholar-native-fragment.txt')
+          assert gitsha(css)=='13d2eba430da5953f887aebbbdb29115e4b08e1a', 'Test stylesheet changed'
+          assert gitsha(fragment)=='f8ff78b35497a58fc4fa1b966195dbe3208b0477', 'Test markup changed'
+          css=css.decode('utf-8')
+          fragment=fragment.decode('utf-8')
+          assert 'buScholarVisual' in fragment and 'ctx.setTrack(b.dataset.track);ctx.pick()' in fragment
+          assert 'ctx.home()' in fragment and 'buScholarDescription' not in fragment and '<em>' not in fragment
+          assert 'buScholarThumb:after' in css and '.buScholarCard' in css
+
+          src=original.decode('utf-8')
+          marker='  const esc=ctx.esc();\n  e.innerHTML=\u0060<div class="bu3835-tracks">'
+          end_token='e.scrollTop=0;'
+          assert src.count(marker)==1 and '<div class="bu3835-tracks">' in src
+          start=src.index(marker)
+          end=src.index(end_token,start)
+          assert 0 < end-start < 2000, 'Unexpected Scholar function'
+          assert src.count('</head>')==1
+          changed=src[:start]+fragment+src[end+len(end_token):]
+          changed=changed.replace('</head>','<style id="bu-scholar-illustrated-native-style">\n'+css+'\n</style>\n</head>')
+          assert changed.count('id="bu-scholar-illustrated-native-style"')==1
+          assert changed.count('buScholarVisual')==3
+          assert changed.count('scholar-research-assets/')==2
+          assert 'bible_unfolded_core_part1.js' in changed and 'BU3835_TRACKS' in changed
+          main.write_text(changed,encoding='utf-8')
+
+          names=['hero','joshua-jericho','prophecies-uncovered','witness-history','ultimate-challenge','heroes-of-courage','hidden-bible-details','big-bible-questions','courage-and-faith','bible-surprises','surprise-me','warm-up']
+          target=Path('scholar-research-assets')
+          target.mkdir(exist_ok=True)
+          for name in names:
+              filename=name+'.webp'
+              contents=source('scholar-research-assets/'+filename)
+              assert 100000 < len(contents) < 1500000, 'Wrong art size: '+filename
+              assert contents[:4]==b'RIFF' and contents[8:12]==b'WEBP', 'Invalid image: '+filename
+              (target/filename).write_bytes(contents)
+          assert len(list(target.glob('*.webp')))==12, 'Scholar artwork count mismatch'
+          print('PASS: original preserved via Git branch; only native Scholar menu changed; all 12 images copied; all 11 routes untouched.')
+          PY
+      - name: Check final assets and commit, then retire one-time workflow
+        shell: bash
+        run: |
+          set -e
+          test "$(find scholar-research-assets -maxdepth 1 -name '*.webp' | wc -l)" -eq 12
+          test -s index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -- .github/workflows/scholar-approved-promotion.yml
+          git add index.html scholar-research-assets
+          git diff --cached --check
+          git commit -m "Approve Scholar Research full-art cards and copy assets"
+          git push origin HEAD:main
