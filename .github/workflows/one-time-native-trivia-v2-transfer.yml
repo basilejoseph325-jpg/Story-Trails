@@ -1,0 +1,36 @@
+name: One-time verified native Trivia V2 transfer
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-native-trivia-v2-transfer.yml'
+permissions:
+  contents: write
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and copy exact tested Trivia index
+        shell: bash
+        run: |
+          set -euo pipefail
+          ORIGINAL='fc99808bc8afd336fef50701639058f47a64ed49'
+          APPROVED='12d2f03d7818692ceb33f39b627e0a842984fa43'
+          current="$(git hash-object index.html)"
+          if [ "$current" = "$APPROVED" ]; then
+            echo 'Already transferred; nothing to do.'
+            exit 0
+          fi
+          if [ "$current" != "$ORIGINAL" ]; then
+            echo "::error::Production index changed. Refusing to overwrite."
+            exit 1
+          fi
+          curl --fail --location --retry 4 --retry-all-errors --output /tmp/verified-bible-index.html             'https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/33909a7332de75bda379fe873f3ab2f9110bf02e/index.html'
+          test "$(git hash-object /tmp/verified-bible-index.html)" = "$APPROVED" || { echo 'Source fingerprint mismatch'; exit 1; }
+          cp /tmp/verified-bible-index.html index.html
+          git add -- index.html
+          git config user.name 'Bible Unfolded Verified Integration'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Transfer tested native Trivia V2 to Story-Trails (preserve production assets)'
+          git push origin HEAD:main
