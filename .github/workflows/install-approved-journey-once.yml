@@ -1,0 +1,91 @@
+name: Install Approved Cinematic Story Journey Once
+on:
+  push:
+    paths:
+      - '.github/workflows/install-approved-journey-once.yml'
+permissions:
+  contents: write
+concurrency:
+  group: bible-story-journey-live-one-time
+  cancel-in-progress: false
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Guard current live source, copy approved Visual Lab artwork, and add two imports
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'Asserting exact approved live index checkpoint'
+          test "$(git hash-object index.html)" = "fbf563448eb6813530787de678230a268d285c10"
+          test ! -e journey-cinematic.css
+          test ! -e journey-cinematic.js
+          test ! -d journey-art
+          BASE="https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/8c5f775030bbe48243fb6378b34c594bb143a0b5"
+          mkdir -p journey-art
+          curl -fsSL --retry 3 "$BASE/journey-cinematic.css" -o journey-cinematic.css
+          curl -fsSL --retry 3 "$BASE/journey-cinematic.js" -o journey-cinematic.js
+          for n in 01_the_beginning 02_faith_promises 03_deliverance 04_judges_kings 05_exile_return 06_the_messiah 07_good_news_spreads 08_revelation; do
+            curl -fsSL --retry 3 "$BASE/journey-art/$n.webp" -o "journey-art/$n.webp"
+          done
+          test "$(git hash-object journey-cinematic.css)" = "ef0e61812cf6265ac7b203c97a458b020d03f03d"
+          test "$(git hash-object journey-cinematic.js)" = "af5ff97e0e257033298cce60d7403ae23b0ba0b3"
+          cat > /tmp/journey-expected-hashes <<'EOF'
+          5e30b88c66b3f56117d1aecce6c85f0e0870b12a  journey-art/01_the_beginning.webp
+          84ce9252af4d5ecd0eb61efffc3f4d377b4ee359  journey-art/02_faith_promises.webp
+          02933200c41c47b7abdbdad69eae2918cb0a4834  journey-art/03_deliverance.webp
+          e9c943f8edb63489abd0f6f7d918e288ae6e413d  journey-art/04_judges_kings.webp
+          d6822bf297b3ed193d346891c6bff131e557a3e0  journey-art/05_exile_return.webp
+          154470b5326bf4e898b9f3586e2972263abf20ad  journey-art/06_the_messiah.webp
+          2a95287920e83ddb778d9642cc0a1fd4beb26798  journey-art/07_good_news_spreads.webp
+          2134311afd7b480aeb6b6300872ec84bc0d576d1  journey-art/08_revelation.webp
+          EOF
+          sha256sum --version >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          expected={
+            "01_the_beginning.webp": "5e30b88c66b3f56117d1aecce6c85f0e0870b12a",
+            "02_faith_promises.webp": "84ce9252af4d5ecd0eb61efffc3f4d377b4ee359",
+            "03_deliverance.webp": "02933200c41c47b7abdbdad69eae2918cb0a4834",
+            "04_judges_kings.webp": "e9c943f8edb63489abd0f6f7d918e288ae6e413d",
+            "05_exile_return.webp": "d6822bf297b3ed193d346891c6bff131e557a3e0",
+            "06_the_messiah.webp": "154470b5326bf4e898b9f3586e2972263abf20ad",
+            "07_good_news_spreads.webp": "2a95287920e83ddb778d9642cc0a1fd4beb26798",
+            "08_revelation.webp": "2134311afd7b480aeb6b6300872ec84bc0d576d1"
+          }
+          import subprocess
+          for filename,blob in expected.items():
+            path=Path('journey-art')/filename
+            data=path.read_bytes()
+            assert len(data)>50000 and data[:4]==b'RIFF' and data[8:12]==b'WEBP', filename
+            sha=subprocess.check_output(['git','hash-object',str(path)],text=True).strip()
+            assert sha==blob,(filename,sha,blob)
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          assert len(s)>11000000,'Unexpected live index size'
+          assert s.count('</head>')==1 and s.count('</body>')==1,'Unexpected HTML shape'
+          assert s.count('id="journey-stops"')==1
+          assert 'class="episodes-cover"' in s
+          assert 'id="chapter-guide-cover"' in s
+          assert 'id="route-world"' in s
+          assert 'trivia-together-premium.css' in s and 'trivia-together-premium.js' in s
+          css='<link rel="stylesheet" href="journey-cinematic.css">'
+          js='<script defer src="journey-cinematic.js"></script>'
+          assert css not in s and js not in s
+          updated=s.replace('</head>','  '+css+'\n</head>',1).replace('</body>','  '+js+'\n</body>',1)
+          assert updated.replace('  '+css+'\n','').replace('  '+js+'\n','')==s,'Unexpected index changes'
+          p.write_text(updated,encoding='utf-8')
+          assert updated.count(css)==1 and updated.count(js)==1
+          print('APPROVED JOURNEY INTEGRATION VERIFIED: 8 authentic scene files and exactly two imports')
+          PY
+          node --check journey-cinematic.js
+          git diff --check
+          git config user.name "bible-unfolded-release"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html journey-cinematic.css journey-cinematic.js journey-art
+          git commit -m "Production: approved cinematic Story Adventure Journey from Visual Lab"
+          git push origin HEAD:main
