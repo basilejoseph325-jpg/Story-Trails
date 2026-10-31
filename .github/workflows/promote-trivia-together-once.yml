@@ -1,0 +1,56 @@
+name: Promote approved Trivia Together premium setup once
+on:
+  push:
+    paths:
+      - .github/workflows/promote-trivia-together-once.yml
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out current live game
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Guard protected game and verify tested design
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object index.html)" = "95ff1e56003d1c2713833fb622c406c29f23cab7" || { echo "::error::Main game differs from protected pre-promotion version"; exit 1; }
+          test "$(git hash-object trivia-together-premium.css)" = "fb4dddf80da1d6f3b549e441302a460f95f8405e" || { echo "::error::CSS differs from approved test"; exit 1; }
+          test "$(git hash-object trivia-together-premium.js)" = "cb166bfa16eb4cdb5b36df6730c9911d257ab8ba" || { echo "::error::JS differs from approved test"; exit 1; }
+          node --check trivia-together-premium.js
+          test -s scholar-research-assets/hero.webp
+          test -s scholar-research-assets/hidden-bible-details.webp
+          test -s scholar-research-assets/ultimate-challenge.webp
+          test -s scholar-research-assets/heroes-of-courage.webp
+          test -s scholar-research-assets/big-bible-questions.webp
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          original=p.read_bytes()
+          assert original.count(b'</head>') == 1 and original.count(b'</body>') == 1
+          assert b'bible_unfolded_core_part5.js' in original
+          assert b'bu-scholar-illustrated-production-style' in original
+          assert b'trivia-together-premium.' not in original
+          style=b'<link rel="stylesheet" href="trivia-together-premium.css?v=2">\n</head>'
+          script=b'<script src="trivia-together-premium.js?v=2"></script>\n</body>'
+          changed=original.replace(b'</head>',style).replace(b'</body>',script)
+          assert changed.count(b'trivia-together-premium.css')==1
+          assert changed.count(b'trivia-together-premium.js')==1
+          assert 0<len(changed)-len(original)<200
+          assert changed.replace(style,b'</head>').replace(script,b'</body>')==original
+          p.write_bytes(changed)
+          PY
+          git diff --check
+      - name: Commit native premium Trivia Together activation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Activate approved full-scene Trivia Together setup in production"
+          git push
