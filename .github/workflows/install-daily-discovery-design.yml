@@ -1,0 +1,108 @@
+name: Publish approved Daily Discovery visual redesign (one-time)
+
+on:
+  push:
+    paths:
+      - .github/workflows/install-daily-discovery-design.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: approved-daily-discovery-live
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout live Bible Unfolded
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Check current live build before any changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected_index=263f4a002b66a2ad5664b5b40d3a0fab3e4c63ae
+          expected_trivia_css=fb4dddf80da1d6f3b549e441302a460f95f8405e
+          if [[ "$(git hash-object index.html)" != "$expected_index" ]]; then
+            echo "::error::Live game HTML has changed. Aborting without modification."
+            exit 1
+          fi
+          if [[ "$(git hash-object trivia-together-premium.css)" != "$expected_trivia_css" ]]; then
+            echo "::error::Live Trivia styles changed. Aborting without modification."
+            exit 1
+          fi
+          if [[ -e daily-discovery-cinematic.css || -e daily-discovery-hero.webp ]]; then
+            echo "::error::Daily Discovery destination files already exist."
+            exit 1
+          fi
+
+      - name: Obtain exactly the user-approved Visual Lab checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --single-branch \
+            --branch checkpoint/daily-discovery-approved-2026-11-02 \
+            https://github.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab.git \
+            "$RUNNER_TEMP/approved-daily-discovery"
+          checkpoint=$(git -C "$RUNNER_TEMP/approved-daily-discovery" rev-parse HEAD)
+          if [[ "$checkpoint" != "f7d097b5d61c72063cd5256d4f146ff979539dd5" ]]; then
+            echo "::error::Visual Lab checkpoint changed. Aborting."
+            exit 1
+          fi
+          if [[ "$(git -C "$RUNNER_TEMP/approved-daily-discovery" hash-object daily-discovery-cinematic.css)" != "403106e82d59661ce5d3f283b990aece8e65cb75" ]]; then
+            echo "::error::Approved Daily Discovery stylesheet failed verification."
+            exit 1
+          fi
+          if [[ "$(git -C "$RUNNER_TEMP/approved-daily-discovery" hash-object daily-discovery-hero.webp)" != "0682c21606b44e29d468717af8d2abd869536b8e" ]]; then
+            echo "::error::Approved hero image failed verification."
+            exit 1
+          fi
+          echo "Verified approved stylesheet and new original hero image."
+
+      - name: Install only the new assets and CSS import
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/approved-daily-discovery/daily-discovery-cinematic.css" ./daily-discovery-cinematic.css
+          cp "$RUNNER_TEMP/approved-daily-discovery/daily-discovery-hero.webp" ./daily-discovery-hero.webp
+          python3 - <<'PY'
+          from pathlib import Path
+          path=Path("trivia-together-premium.css")
+          content=path.read_text(encoding="utf-8")
+          if "daily-discovery-cinematic.css" in content:
+              raise SystemExit("Daily Discovery stylesheet is already imported; refusing duplicate import")
+          # The Trivia CSS is already linked in the live game. An import at its
+          # beginning enables the approved Daily Discovery design without altering
+          # the enormous HTML, app JavaScript, game state, scoring or routing.
+          path.write_text(
+              '@import url("./daily-discovery-cinematic.css?v=dd-live-20261102");\n'+content,
+              encoding="utf-8"
+          )
+          PY
+          if [[ "$(git hash-object index.html)" != "263f4a002b66a2ad5664b5b40d3a0fab3e4c63ae" ]]; then
+            echo "::error::Unexpected change to live game HTML."
+            exit 1
+          fi
+          git add -- daily-discovery-hero.webp daily-discovery-cinematic.css trivia-together-premium.css
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          allowed={"daily-discovery-hero.webp","daily-discovery-cinematic.css","trivia-together-premium.css"}
+          if changed != allowed:
+              raise SystemExit(f"Staged changes mismatch: {changed} vs {allowed}")
+          print("Verified exactly 3 staged Daily Discovery files. No game logic changes.")
+          PY
+
+      - name: Publish Daily Discovery design to the real game
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Live Daily Discovery: publish approved cinematic hero and brighter mode cards"
+          git push origin HEAD:main
