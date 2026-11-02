@@ -1,6 +1,6 @@
-/* Bible Unfolded — Bible Books visual refresh, Visual Lab only.
+/* Bible Unfolded — Bible Books visual refresh, live deployment.
    Native 66-book grid and existing click/unlock rules remain untouched.
-   The first 21 books have approved individual art; others await artwork. */
+   The first 39 books have approved individual art; others await artwork. */
 #levels .book-intro {
   box-sizing:border-box!important;
   position:relative;
@@ -67,7 +67,7 @@
   background-color:#143946!important;
   background-image:linear-gradient(180deg,rgba(3,22,27,.04) 3%,rgba(1,15,24,.12) 36%,rgba(1,14,23,.56) 68%,rgba(0,11,18,.96) 100%),var(--bu-book-cover,linear-gradient(135deg,#32545d 0%,#173e4b 54%,#0b2635 100%))!important;
   background-size:cover!important;
-  background-position:center center!important;
+  background-position:center center,var(--bu-book-x,50%) center!important;
   box-shadow:inset 0 0 0 1px #f5deab16,0 7px 19px #0008!important;
   transition:transform .16s ease,border-color .2s ease,box-shadow .2s ease!important;
   -webkit-tap-highlight-color:transparent;
@@ -109,13 +109,10 @@
   color:#ffdf9d!important;
   text-shadow:0 2px 6px #000f,0 0 16px #000b!important;
 }
+/* The original book-status UI produced stray diamonds/XP glyphs on artwork.
+   Hide only its card overlay; underlying completion and unlock logic remain unchanged. */
 #levels .book-tile .book-status {
-  top:10px!important;
-  right:11px!important;
-  z-index:2!important;
-  font-size:16px!important;
-  color:#ead095!important;
-  text-shadow:0 2px 5px #000f!important;
+  display:none!important;
 }
 #levels .book-tile.open {
   border:1.5px solid #ffe29c!important;
@@ -144,6 +141,41 @@
 #levels #hebrew-books .book-tile:nth-child(19) {--bu-book-cover:url("bible-book-art/19_psalms.webp");}
 #levels #hebrew-books .book-tile:nth-child(20) {--bu-book-cover:url("bible-book-art/20_proverbs.webp");}
 #levels #hebrew-books .book-tile:nth-child(21) {--bu-book-cover:url("bible-book-art/21_ecclesiastes.webp");}
+#levels #hebrew-books .book-tile:nth-child(22) {--bu-book-cover:url("bible-book-art/22_song_of_solomon.webp");}
+#levels #hebrew-books .book-tile:nth-child(23) {--bu-book-cover:url("bible-book-art/23_isaiah.webp");}
+#levels #hebrew-books .book-tile:nth-child(24) {--bu-book-cover:url("bible-book-art/24_jeremiah.webp");}
+#levels #hebrew-books .book-tile:nth-child(25) {--bu-book-cover:url("bible-book-art/25_lamentations.webp");}
+#levels #hebrew-books .book-tile:nth-child(26) {--bu-book-cover:url("bible-book-art/26_ezekiel.webp");}
+#levels #hebrew-books .book-tile:nth-child(27) {--bu-book-cover:url("bible-book-art/27_daniel.webp");}
+#levels #hebrew-books .book-tile:nth-child(28) {--bu-book-cover:url("bible-book-art/28_hosea.webp");}
+#levels #hebrew-books .book-tile:nth-child(29) {--bu-book-cover:url("bible-book-art/29_joel.webp");}
+#levels #hebrew-books .book-tile:nth-child(30) {--bu-book-cover:url("bible-book-art/30_amos.webp");}
+#levels #hebrew-books .book-tile:nth-child(31) {--bu-book-cover:url("bible-book-art/31_obadiah.webp");}
+#levels #hebrew-books .book-tile:nth-child(32) {--bu-book-cover:url("bible-book-art/32_jonah.webp");}
+#levels #hebrew-books .book-tile:nth-child(33) {--bu-book-cover:url("bible-book-art/33_micah.webp");}
+#levels #hebrew-books .book-tile:nth-child(34) {--bu-book-cover:url("bible-book-art/34_nahum.webp");}
+#levels #hebrew-books .book-tile:nth-child(35) {--bu-book-cover:url("bible-book-art/35_habakkuk.webp");}
+#levels #hebrew-books .book-tile:nth-child(36) {--bu-book-cover:url("bible-book-art/36_zephaniah.webp");}
+#levels #hebrew-books .book-tile:nth-child(37) {--bu-book-cover:url("bible-book-art/37_haggai.webp");}
+#levels #hebrew-books .book-tile:nth-child(38) {--bu-book-cover:url("bible-book-art/38_zechariah.webp");}
+#levels #hebrew-books .book-tile:nth-child(39) {--bu-book-cover:url("bible-book-art/39_malachi.webp");}
+/* Focus-only mobile crop adjustments: preserve the original illustrated art. */
+/* Book 4 — Numbers: bias the card toward the main biblical subject. */
+#levels #hebrew-books .book-tile:nth-child(4) {--bu-book-x:25%;}
+/* Book 5 — Deuteronomy: bias the card toward the main biblical subject. */
+#levels #hebrew-books .book-tile:nth-child(5) {--bu-book-x:12%;}
+/* Book 11 — 1 Kings: bias the card toward the main biblical subject. */
+#levels #hebrew-books .book-tile:nth-child(11) {--bu-book-x:8%;}
+/* Book 13 — 1 Chronicles: bias the card toward the main biblical subject. */
+#levels #hebrew-books .book-tile:nth-child(13) {--bu-book-x:25%;}
+/* Book 19 — Psalms: bias the card toward the main biblical subject. */
+#levels #hebrew-books .book-tile:nth-child(19) {--bu-book-x:0%;}
+/* Book 25 — Lamentations: bias the card toward the main biblical subject. */
+#levels #hebrew-books .book-tile:nth-child(25) {--bu-book-x:15%;}
+#levels #hebrew-books .book-tile:nth-child(26) {--bu-book-x:17%;}
+#levels #hebrew-books .book-tile:nth-child(29) {--bu-book-x:20%;}
+#levels #hebrew-books .book-tile:nth-child(31) {--bu-book-x:22%;}
+#levels #hebrew-books .book-tile:nth-child(34) {--bu-book-x:33%;}
 #levels .book-grid .book-tile:not(.open) {filter:none!important;}
 #levels .collection-note {
   margin:21px 17px 27px!important;
