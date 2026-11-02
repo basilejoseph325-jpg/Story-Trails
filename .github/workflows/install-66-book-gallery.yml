@@ -1,0 +1,84 @@
+name: Install approved 66-book gallery (one-time)
+
+on:
+  push:
+    paths:
+      - .github/workflows/install-66-book-gallery.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: install-approved-66-book-gallery
+  cancel-in-progress: false
+
+jobs:
+  deploy-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Retrieve exact verified Visual Lab checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --single-branch \
+            --branch checkpoint/66-books-approved-2026-11-02 \
+            https://github.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab.git \
+            "$RUNNER_TEMP/approved-66-books"
+          actual=$(git -C "$RUNNER_TEMP/approved-66-books" rev-parse HEAD)
+          expected=9676d6556353e20a26516ce0ac7cfb5c628b474c
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::Checkpoint SHA mismatch: $actual"
+            exit 1
+          fi
+          css_sha=$(git -C "$RUNNER_TEMP/approved-66-books" hash-object bible-books-cinematic.css)
+          if [ "$css_sha" != "59eb25eb9b18a011a7b4d5ab7d96c4677db70b2b" ]; then
+            echo "::error::Approved CSS did not match the verified checksum"
+            exit 1
+          fi
+          echo "Verified Visual Lab checkpoint at $actual"
+
+      - name: Install only book images and their framing CSS
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Important: do not alter the main HTML or game scripts.
+          before_index=$(git hash-object index.html)
+          if [ "$before_index" != "263f4a002b66a2ad5664b5b40d3a0fab3e4c63ae" ]; then
+            echo "::error::Unexpected live index.html version; aborting safely"
+            exit 1
+          fi
+          cp -a "$RUNNER_TEMP/approved-66-books/bible-book-art/." bible-book-art/
+          cp "$RUNNER_TEMP/approved-66-books/bible-books-cinematic.css" bible-books-cinematic.css
+          python3 - <<'PY'
+          from pathlib import Path
+          names = sorted(p.name for p in Path("bible-book-art").glob("*.webp"))
+          if len(names) != 66 or any(not name.startswith(f"{i:02d}_") for i,name in enumerate(names, 1)):
+              raise SystemExit(f"Expected exactly 66 sequentially numbered Bible illustrations, found {len(names)}")
+          print("All 66 distinct numbered artwork files confirmed.")
+          PY
+          if [ "$(git hash-object index.html)" != "$before_index" ]; then
+            echo "::error::Main game HTML changed; aborting"
+            exit 1
+          fi
+          git add -- bible-book-art bible-books-cinematic.css
+          git diff --cached --name-only | python3 -c '
+          import re,sys
+          paths=[s.strip() for s in sys.stdin if s.strip()]
+          invalid=[s for s in paths if s!="bible-books-cinematic.css" and not re.fullmatch(r"bible-book-art/[0-9]{2}_[a-z0-9_]+\.webp",s)]
+          if invalid: raise SystemExit("Unexpected staged changes: "+repr(invalid))
+          print("Verified approved-only changed paths:",len(paths))
+          '
+          if git diff --cached --quiet; then
+            echo "Gallery already matches checkpoint; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Live: publish all 66 approved Bible Books artworks and crops"
+          git push origin HEAD:main
+          echo "Installed verified 66-book gallery without changing gameplay."
