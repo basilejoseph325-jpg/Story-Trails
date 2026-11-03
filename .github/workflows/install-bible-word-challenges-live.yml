@@ -1,8 +1,9 @@
-name: Enable Bible Word Challenges cinematic cards
+name: Promote approved Bible Word Challenges visuals
 on:
   push:
     paths:
       - '.github/workflows/install-bible-word-challenges-live.yml'
+      - 'bible-word-challenges-visual.js'
   workflow_dispatch:
 permissions:
   contents: write
@@ -11,27 +12,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add isolated cinematic card enhancement
+      - name: Copy approved hero artwork from Visual Lab
+        run: |
+          curl --fail --location --retry 3 --silent --show-error \
+            'https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/main/hero.jpg' \
+            --output hero.jpg
+          test "$(wc -c < hero.jpg)" -gt 100000
+      - name: Load approved Word Challenges script
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-          tag='<script defer src="bible-word-challenges-visual.js?v=live-1"></script>'
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          tag = '<script defer src="bible-word-challenges-visual.js?v=approved-20261103"></script>'
           if 'bible-word-challenges-visual.js' in s:
-              s=re.sub(r'bible-word-challenges-visual\\.js\\?v=[^"\\s<]+', 'bible-word-challenges-visual.js?v=live-1', s)
+              s = re.sub(r'<script[^>]*src=["\']bible-word-challenges-visual\.js(?:\?[^"\']*)?["\'][^>]*></script>', tag, s)
           else:
-              if '</body>' not in s: raise SystemExit('No closing body tag; refusing edit')
-              s=s.replace('</body>',tag+'\n</body>',1)
-          p.write_text(s,encoding='utf-8')
+              if '</body>' not in s:
+                  raise SystemExit('No closing body tag; refusing edit')
+              s = s.replace('</body>', tag + '\n</body>', 1)
+          p.write_text(s, encoding='utf-8')
           PY
-      - name: Commit if changed
+      - name: Commit only approved hero and loader changes
         run: |
-          if ! git diff --quiet -- index.html; then
+          if ! git diff --quiet -- index.html hero.jpg; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add index.html
-            git commit -m "Enable approved Bible Word Challenges cinematic cards"
+            git add index.html hero.jpg
+            git commit -m "Promote approved Word Challenges hero and layout loader"
             git push
           fi
