@@ -34,7 +34,7 @@ jobs:
             'index.html':'263f4a002b66a2ad5664b5b40d3a0fab3e4c63ae'
           }
           def blob_sha(data):
-            return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\\0'+data).hexdigest()
+            return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
           # The first commit is the temporary workflow addition, so its parent
           # must be exactly the production checkpoint we just saved.
           parent=subprocess.check_output(['git','rev-parse','HEAD^'],text=True).strip()
@@ -56,17 +56,17 @@ jobs:
           new_js=test['trivia-together-premium.js']
           marker='/* Play Together icon text cleanup v7'
           assert marker in new_js and new_js.rstrip().startswith(old_js.rstrip())
-          assert new_js.index(marker)==len(old_js.rstrip())+1
+          assert new_js[:new_js.index(marker)].rstrip()==old_js.rstrip(), 'Unexpected JavaScript prefix change'
           # Verify presentation CSS differs ONLY in test/live import versions.
           norm=test['trivia-together-premium.css']
           norm=norm.replace('dd-visual-lab-20261102','dd-live-20261102').replace('behind-name-test-20261102','behind-name-live-20261102').replace('word-trails-test-20261102','word-trails-live-20261102')
-          test_import='@import url("./play-together-cinematic.css?v=play-together-clean-icons-v8");\\n'
+          test_import='@import url("./play-together-cinematic.css?v=play-together-clean-icons-v8");\n'
           assert norm.count(test_import)==1
           assert norm.replace(test_import,'')==live['trivia-together-premium.css'], 'Unexpected CSS mismatch, abort'
-          live_import='@import url("./play-together-cinematic.css?v=play-together-live-20261102");\\n'
+          live_import='@import url("./play-together-cinematic.css?v=play-together-live-20261102");\n'
           new_css=live['trivia-together-premium.css'].replace(
-            '@import url("./word-trails-cinematic.css?v=word-trails-live-20261102");\\n',
-            '@import url("./word-trails-cinematic.css?v=word-trails-live-20261102");\\n'+live_import
+            '@import url("./word-trails-cinematic.css?v=word-trails-live-20261102");\n',
+            '@import url("./word-trails-cinematic.css?v=word-trails-live-20261102");\n'+live_import
           )
           assert new_css.count('play-together-cinematic.css')==1
           # Version the two top-level links too: the previous test had kept
