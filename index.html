@@ -7574,4 +7574,38 @@ function bu39226SourceLink(q){
 </script>
 <script src="trivia-together-premium.js?v=play-together-live-20261102"></script>
   <script defer src="journey-cinematic.js"></script>
+
+<style id="wb-cinematic-final-style">
+.wb-cinema-hub{padding:0 12px 25px!important;display:flex!important;flex-direction:column!important;gap:14px!important;background:transparent!important}
+.wb-cinema-hero{display:block;width:100%;aspect-ratio:2.56;background:center/cover no-repeat url('wb-cinematic-hero.webp');border-radius:16px;border:1px solid #b58b4d;box-shadow:0 6px 22px #0006}
+.wb-cinema-card{display:block!important;width:100%!important;min-height:0!important;aspect-ratio:3.55!important;border:2px solid #d7a94f!important;border-radius:18px!important;background-position:center!important;background-size:cover!important;box-shadow:0 5px 18px #0008!important;padding:0!important;margin:0!important;overflow:hidden!important;cursor:pointer!important;position:relative!important}
+.wb-cinema-card:focus-visible{outline:3px solid #fff!important;outline-offset:3px}
+.wb-cinema-rules{display:flex!important;align-items:center!important;justify-content:center!important;width:85%!important;margin:10px auto!important;min-height:57px!important;border-radius:35px!important;border:2px solid #d5a64f!important;background:linear-gradient(145deg,#154752,#092731)!important;color:#ffe0a0!important;font:bold 22px Georgia,serif!important;box-shadow:0 3px 12px #0005!important}
+.wb-cinema-rules:before{content:'♧';margin-right:12px;font-size:25px}
+</style>
+<script id="wb-cinematic-final-script">
+(function(){
+ function install(){
+  if(typeof wb36HubUI!=='function'||window.__wbCinematicInstalled)return;
+  window.__wbCinematicInstalled=true;
+  const original=wb36HubUI;
+  wb36HubUI=function(body){
+   original(body);
+   const buttons=[...body.querySelectorAll('button')];
+   const find=re=>buttons.find(b=>re.test((b.textContent||'').replace(/\s+/g,' ').trim()));
+   const newBtn=find(/new game/i),resumeBtn=find(/resume game|continue your game/i),challengeBtn=find(/play bible challenges/i),rulesBtn=find(/rules\s*(?:&|and)\s*tips/i);
+   if(!newBtn||!challengeBtn||!rulesBtn)return;
+   // Preserve original click handlers by moving the actual button elements, not cloning them.
+   const hero=document.createElement('div');hero.className='wb-cinema-hero';hero.setAttribute('aria-label','Word Builder cinematic artwork');
+   const items=[['new',newBtn,'New Game'],['continue',resumeBtn,'Continue Your Game'],['challenges',challengeBtn,'Bible Word Challenges']];
+   const fragment=document.createDocumentFragment();fragment.appendChild(hero);
+   for(const [kind,btn,label] of items){if(!btn)continue;btn.className='wb-cinema-card';btn.style.backgroundImage="url('wb-cinematic-"+kind+".webp')";btn.textContent='';btn.setAttribute('aria-label',label);btn.setAttribute('title',label);fragment.appendChild(btn)}
+   rulesBtn.className='wb-cinema-rules';rulesBtn.textContent='Rules & Tips';fragment.appendChild(rulesBtn);
+   body.replaceChildren(fragment);body.classList.add('wb-cinema-hub');
+  };
+ }
+ install();
+ document.addEventListener('DOMContentLoaded',install,{once:true});
+})();
+</script>
 </body></html>
