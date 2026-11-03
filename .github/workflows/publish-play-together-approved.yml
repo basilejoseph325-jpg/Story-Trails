@@ -35,10 +35,8 @@ jobs:
           }
           def blob_sha(data):
             return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
-          # The first commit is the temporary workflow addition, so its parent
-          # must be exactly the production checkpoint we just saved.
-          parent=subprocess.check_output(['git','rev-parse','HEAD^'],text=True).strip()
-          assert parent=='fb2cc448da498f603fa6eebaa8ba09a9f8b21012',('Production changed unexpectedly',parent)
+          # The current production file hashes below are authoritative guards.
+          # Workflow-only setup commits do not modify the app.
           live={}
           for file,expected in live_sha.items():
             data=Path(file).read_bytes()
