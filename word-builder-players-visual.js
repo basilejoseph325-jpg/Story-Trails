@@ -1,0 +1,54 @@
+/* Word Builder Players premium styling — Visual Lab only. */
+(()=>{'use strict';
+const style=document.createElement('style');style.textContent=`
+.bu-players-hero{background:linear-gradient(90deg,rgba(5,28,34,.84),rgba(5,28,34,.32)),radial-gradient(circle at 82% 22%,#dba35b 0%,#52665a 35%,#0c3339 75%)!important;min-height:170px!important;position:relative!important;overflow:hidden!important;border:1px solid #d5af70!important;border-radius:24px!important;box-shadow:0 8px 22px #0005!important}
+.bu-players-hero h1,.bu-players-hero h2{color:#ffe0a2!important;text-shadow:0 3px 8px #000!important}
+.bu-players-panel{background:linear-gradient(145deg,rgba(32,73,67,.94),rgba(7,38,48,.97)),radial-gradient(circle at 90% 15%,#b68b50,transparent 50%)!important;border:1px solid #d5af70!important;border-radius:24px!important;box-shadow:0 10px 24px #0005!important}
+.bu-players-panel select{appearance:none!important;background:#082b38!important;color:#ffe0a2!important;border:1px solid #c7a46e!important;border-radius:14px!important}
+.bu-players-panel .bu-player-dropdown{width:100%;position:relative;margin:0}
+.bu-player-dropdown-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:11px 14px;border:1px solid #e2ba73;border-radius:14px;background:linear-gradient(110deg,#123c43,#082631);color:#ffe1a4;font:600 16px Georgia,serif;text-align:left;box-shadow:inset 0 0 8px #d5a75524;cursor:pointer}
+.bu-player-dropdown-menu{position:absolute;z-index:9999;left:0;right:0;top:calc(100% + 5px);max-height:min(42dvh,260px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#092c37;border:1px solid #d5af70;border-radius:14px;box-shadow:0 12px 25px #000b;padding:5px}
+.bu-player-dropdown-menu[hidden]{display:none!important}
+.bu-player-dropdown-option{display:block;width:100%;padding:12px 11px;margin:2px 0;text-align:left;border:0;border-radius:9px;background:transparent;color:#fff0cf;font:500 15px system-ui,sans-serif;cursor:pointer}
+.bu-player-dropdown-option[aria-selected=true]{background:#36554d;color:#ffe0a2}
+.bu-player-dropdown-option:focus-visible,.bu-player-dropdown-trigger:focus-visible{outline:2px solid #ffe0a2;outline-offset:2px}
+.bu-player-dropdown select.bu-player-original-select{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important}
+@media(max-width:430px){.bu-players-hero{min-height:145px!important}.bu-players-panel{padding-bottom:12px!important}}
+
+/* Approved individual art assets: images appear after asset upload. */
+.bu-players-hero{background-image:linear-gradient(180deg,rgba(2,25,34,.35),rgba(2,25,34,.1)),url('word-builder-players-hero.jpg')!important;background-size:cover!important;background-position:center!important;min-height:clamp(195px,43vw,300px)!important}
+.bu-players-panel{background-image:linear-gradient(120deg,rgba(3,38,45,.86),rgba(5,44,49,.8)),url('word-builder-players-panel.jpg')!important;background-size:cover!important;background-position:center!important}
+.bu-players-hero .bu-players-intro-hidden{display:none!important}
+.bu-players-panel .bu-players-help-hidden{display:none!important}
+.bu-players-panel .bu-players-help-button{display:block;margin:8px 0 8px auto;width:32px;height:32px;border:1px solid #d9b36e;border-radius:50%;background:#06313c;color:#ffdfa0;font:700 21px Georgia,serif;cursor:pointer}
+.bu-players-help-dialog{position:fixed;inset:0;z-index:99999;background:#00151dbb;display:grid;place-items:center;padding:18px}
+.bu-players-help-dialog[hidden]{display:none!important}
+.bu-players-help-card{position:relative;max-height:70dvh;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;width:min(100%,460px);padding:26px 20px 18px;border:1px solid #d9b36e;border-radius:20px;background:#092e38;color:#f5e8d3;box-shadow:0 20px 50px #000b}
+.bu-players-help-close{position:absolute;right:12px;top:8px;border:0;background:transparent;color:#ffe0a2;font-size:28px}
+.bu-players-panel .bu-player-dropdown-trigger{padding-left:56px!important;position:relative}
+.bu-players-panel .bu-player-dropdown:nth-of-type(1) .bu-player-dropdown-trigger::before{content:'';position:absolute;left:8px;top:7px;bottom:7px;width:39px;background:url('word-builder-players-scrolls.jpg') center/cover;border-radius:6px}
+.bu-players-panel .bu-player-dropdown:nth-of-type(2) .bu-player-dropdown-trigger::before{content:'';position:absolute;left:8px;top:7px;bottom:7px;width:39px;background:url('word-builder-players-tiles.jpg') center/cover;border-radius:6px}
+.bu-players-panel{padding-bottom:max(20px,env(safe-area-inset-bottom))!important;overflow:visible!important}
+.bu-players-panel button{flex-shrink:0}
+
+.bu-players-panel .bu-player-dropdown[data-bu-art="scrolls"] .bu-player-dropdown-trigger::before{content:'';position:absolute;left:8px;top:7px;bottom:7px;width:39px;background:url('word-builder-players-scrolls.jpg') center/cover;border-radius:6px}
+.bu-players-panel .bu-player-dropdown[data-bu-art="tiles"] .bu-player-dropdown-trigger::before{content:'';position:absolute;left:8px;top:7px;bottom:7px;width:39px;background:url('word-builder-players-tiles.jpg') center/cover;border-radius:6px}
+@media(max-width:600px){
+.bu-players-hero{min-height:0!important;height:clamp(168px,27dvh,245px)!important;margin-bottom:0!important}
+.bu-players-hero h1,.bu-players-hero h2{margin-block:5px!important}
+.bu-players-panel{padding-top:12px!important;padding-bottom:12px!important}
+.bu-players-panel .bu-player-dropdown-trigger{min-height:43px!important;padding-top:7px!important;padding-bottom:7px!important;font-size:clamp(14px,3.8vw,16px)!important}
+.bu-players-panel .bu-players-help-button{width:29px;height:29px;margin:3px 0 4px auto}
+.bu-players-panel label{margin-bottom:3px!important}
+.bu-players-panel input{min-height:40px!important}
+}
+`;document.head.appendChild(style);
+let open=null;
+function close(){if(open){open.menu.hidden=true;open.trigger.setAttribute('aria-expanded','false');open=null}}
+function enhance(select){if(select.dataset.buPlayerDropdown)return;const wrap=document.createElement('div');wrap.className='bu-player-dropdown';wrap.dataset.buArt=(select.closest('label')?.textContent||'').toLowerCase().includes('letter')?'tiles':((select.parentElement?.textContent||'').toLowerCase().includes('letter')?'tiles':'scrolls');select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);select.classList.add('bu-player-original-select');select.dataset.buPlayerDropdown='1';const trigger=document.createElement('button');trigger.type='button';trigger.className='bu-player-dropdown-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');const menu=document.createElement('div');menu.className='bu-player-dropdown-menu';menu.setAttribute('role','listbox');menu.hidden=true;const render=()=>{const selected=select.options[select.selectedIndex];trigger.textContent=(selected?selected.textContent:'Choose')+'  ▾';menu.replaceChildren();[...select.options].forEach((option,i)=>{const b=document.createElement('button');b.type='button';b.className='bu-player-dropdown-option';b.setAttribute('role','option');b.setAttribute('aria-selected',String(i===select.selectedIndex));b.textContent=option.textContent;b.disabled=option.disabled;b.addEventListener('click',()=>{select.selectedIndex=i;select.dispatchEvent(new Event('input',{bubbles:true}));select.dispatchEvent(new Event('change',{bubbles:true}));render();close();trigger.focus()});menu.appendChild(b)})};wrap.append(trigger,menu);trigger.addEventListener('click',()=>{const was=open&&open.trigger===trigger;close();if(!was){render();menu.hidden=false;trigger.setAttribute('aria-expanded','true');open={trigger,menu};const selected=menu.querySelector('[aria-selected=true]');selected?.scrollIntoView({block:'nearest'})}});trigger.addEventListener('keydown',e=>{if(e.key==='Escape'){close();e.preventDefault()}});render();new MutationObserver(render).observe(select,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','selected']});select.addEventListener('change',render)}
+function scan(){const title=[...document.querySelectorAll('h1,h2,h3,h4')].find(x=>/who.s playing\?/i.test(x.textContent||''));if(!title)return;let hero=title.parentElement;for(let i=0;i<3&&hero?.parentElement;i++){if((hero.innerText||'').includes('One person can chase a score'))break;hero=hero.parentElement}if(hero&&hero!==document.body)hero.classList.add('bu-players-hero');const begin=[...document.querySelectorAll('button')].find(x=>/begin match/i.test(x.textContent||''));if(!begin)return;let panel=begin.parentElement;for(let i=0;i<6&&panel?.parentElement;i++){if((panel.innerText||'').includes('TURNS PER PLAYER')&&(panel.innerText||'').includes('LETTER CHALLENGE'))break;panel=panel.parentElement}if(!panel||panel===document.body)return;panel.classList.add('bu-players-panel');const playerSelects=[...panel.querySelectorAll('select')];playerSelects.forEach((sel,i)=>{enhance(sel);const wrap=sel.closest('.bu-player-dropdown');if(wrap)wrap.dataset.buArt=i===0?'scrolls':'tiles'});
+const intro=[...hero.querySelectorAll('p,div,span')].find(e=>e.children.length===0&&/One person can chase a score/i.test(e.textContent||''));if(intro)intro.classList.add('bu-players-intro-hidden');
+const help=[...panel.querySelectorAll('p,div,span')].find(e=>e.children.length===0&&/Letter challenge changes how racks are drawn/i.test(e.textContent||''));if(help&&!help.classList.contains('bu-players-help-hidden')){help.classList.add('bu-players-help-hidden');const info=document.createElement('button');info.type='button';info.className='bu-players-help-button';info.textContent='ⓘ';info.setAttribute('aria-label','Letter challenge instructions');const dialog=document.createElement('div');dialog.className='bu-players-help-dialog';dialog.hidden=true;const card=document.createElement('div');card.className='bu-players-help-card';const x=document.createElement('button');x.type='button';x.className='bu-players-help-close';x.textContent='×';x.setAttribute('aria-label','Close instructions');const h=document.createElement('h3');h.textContent='Letter Challenge';const p=document.createElement('p');p.textContent=help.textContent;card.append(x,h,p);dialog.append(card);panel.insertBefore(info,begin);document.body.append(dialog);info.addEventListener('click',()=>{dialog.hidden=false});x.addEventListener('click',()=>{dialog.hidden=true});dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.hidden=true})}
+}
+document.addEventListener('click',e=>{if(open&&!e.target.closest('.bu-player-dropdown'))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});let pending=false;new MutationObserver(()=>{if(!pending){pending=true;requestAnimationFrame(()=>{pending=false;scan()})}}).observe(document.documentElement,{childList:true,subtree:true});scan();
+})();
