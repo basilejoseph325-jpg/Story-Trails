@@ -1,0 +1,106 @@
+name: Publish approved Play Together from Visual Lab (one-time)
+on:
+  push:
+    paths:
+      - .github/workflows/publish-play-together-approved.yml
+
+permissions:
+  contents: write
+
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 2
+      - name: Check approved sources, version asset references and stage minimal files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import urllib.request, hashlib, subprocess
+          src_repo='https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/5409f44ed941e233311f0d2c18e458538047802b/'
+          src_sha={
+            'trivia-together-premium.js':'bf61d48f20864efb382a170e2d9ea1a2b7374481',
+            'trivia-together-premium.css':'5bcc6acb846cace11652b3c61e96e3264edd46db',
+            'play-together-cinematic.css':'a7db26f2b24e95a9cfe400cefa9f592f540b30bc'
+          }
+          live_sha={
+            'trivia-together-premium.js':'9122bcc46c9a8a79d80efce5763ff381a5eff9d2',
+            'trivia-together-premium.css':'5a08067af16e58a9364f5ee58abb46ccfca25a03',
+            'index.html':'263f4a002b66a2ad5664b5b40d3a0fab3e4c63ae'
+          }
+          def blob_sha(data):
+            return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\\0'+data).hexdigest()
+          # The first commit is the temporary workflow addition, so its parent
+          # must be exactly the production checkpoint we just saved.
+          parent=subprocess.check_output(['git','rev-parse','HEAD^'],text=True).strip()
+          assert parent=='fb2cc448da498f603fa6eebaa8ba09a9f8b21012',('Production changed unexpectedly',parent)
+          live={}
+          for file,expected in live_sha.items():
+            data=Path(file).read_bytes()
+            assert blob_sha(data)==expected,('Live base changed; abort',file)
+            live[file]=data.decode('utf-8')
+          test={}
+          for file,expected in src_sha.items():
+            with urllib.request.urlopen(src_repo+file,timeout=45) as response:
+              data=response.read()
+            assert blob_sha(data)==expected,('Source blob mismatch',file,blob_sha(data))
+            test[file]=data.decode('utf-8')
+          # Verify the approved test JS differs from live only by the small
+          # Play Together icon cleanup; preserve every existing core function.
+          old_js=live['trivia-together-premium.js']
+          new_js=test['trivia-together-premium.js']
+          marker='/* Play Together icon text cleanup v7'
+          assert marker in new_js and new_js.rstrip().startswith(old_js.rstrip())
+          assert new_js.index(marker)==len(old_js.rstrip())+1
+          # Verify presentation CSS differs ONLY in test/live import versions.
+          norm=test['trivia-together-premium.css']
+          norm=norm.replace('dd-visual-lab-20261102','dd-live-20261102').replace('behind-name-test-20261102','behind-name-live-20261102').replace('word-trails-test-20261102','word-trails-live-20261102')
+          test_import='@import url("./play-together-cinematic.css?v=play-together-clean-icons-v8");\\n'
+          assert norm.count(test_import)==1
+          assert norm.replace(test_import,'')==live['trivia-together-premium.css'], 'Unexpected CSS mismatch, abort'
+          live_import='@import url("./play-together-cinematic.css?v=play-together-live-20261102");\\n'
+          new_css=live['trivia-together-premium.css'].replace(
+            '@import url("./word-trails-cinematic.css?v=word-trails-live-20261102");\\n',
+            '@import url("./word-trails-cinematic.css?v=word-trails-live-20261102");\\n'+live_import
+          )
+          assert new_css.count('play-together-cinematic.css')==1
+          # Version the two top-level links too: the previous test had kept
+          # ?v=2, which could leave older JS/CSS cached in mobile Chrome.
+          html=live['index.html']
+          refs={
+            '<link rel="stylesheet" href="trivia-together-premium.css?v=2">':
+            '<link rel="stylesheet" href="trivia-together-premium.css?v=play-together-live-20261102">',
+            '<script src="trivia-together-premium.js?v=2"></script>':
+            '<script src="trivia-together-premium.js?v=play-together-live-20261102"></script>'
+          }
+          for old,new in refs.items():
+            assert html.count(old)==1,('Unexpected HTML link',old)
+            html=html.replace(old,new)
+          assert html.count('play-together-live-20261102')==2
+          Path('trivia-together-premium.js').write_text(new_js,encoding='utf-8')
+          Path('trivia-together-premium.css').write_text(new_css,encoding='utf-8')
+          Path('play-together-cinematic.css').write_text(test['play-together-cinematic.css'],encoding='utf-8')
+          Path('index.html').write_text(html,encoding='utf-8')
+          print('Verified approved test versions and preserved all other live content')
+          PY
+          git rm -- .github/workflows/publish-play-together-approved.yml
+          git add -- index.html trivia-together-premium.css trivia-together-premium.js play-together-cinematic.css
+          python3 - <<'PY'
+          import subprocess
+          staged=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+          expected={'index.html','trivia-together-premium.css','trivia-together-premium.js','play-together-cinematic.css','.github/workflows/publish-play-together-approved.yml'}
+          assert staged==expected,('Unexpected file changes',staged)
+          print('Atomic update: only four required website resources and temporary workflow removal')
+          PY
+      - name: Publish single approved update
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Live: sync approved Play Together hub and refresh script/style versions"
+          git push origin HEAD:main
