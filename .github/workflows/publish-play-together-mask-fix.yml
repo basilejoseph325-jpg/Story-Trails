@@ -1,0 +1,79 @@
+name: Publish approved Play Together mask correction (one-time)
+on:
+  push:
+    paths:
+      - .github/workflows/publish-play-together-mask-fix.yml
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify and apply exactly three corrected icon mask selectors
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          expected={
+            'play-together-cinematic.css':'a7db26f2b24e95a9cfe400cefa9f592f540b30bc',
+            'trivia-together-premium.css':'c58b31d04a267b5550c1761963737ffecb0068de',
+            'index.html':'9c08f2cca6b807e5b96e8c3b4b30f71071f5737b'
+          }
+          for file,sha in expected.items():
+            actual=subprocess.check_output(['git','hash-object',file],text=True).strip()
+            assert actual==sha,('Live site was modified; abort',file,actual)
+          p=Path('play-together-cinematic.css')
+          css=p.read_text(encoding='utf-8')
+          root='#bu35-family #bu35-body:has(> .bu35-hero #bu35-new)'
+          old='\n'.join([
+            root+'>.bu35-hero #bu35-new,',
+            root+'>.bu35-card #wb36-family-open,',
+            root+'>.bu35-card #bu3834-family-entry,',
+            root+'>.bu3844-card #bu3844-fam-ideas::before{'
+          ])
+          new='\n'.join([
+            root+'>.bu35-hero #bu35-new::before,',
+            root+'>.bu35-card #wb36-family-open::before,',
+            root+'>.bu35-card #bu3834-family-entry::before,',
+            root+'>.bu3844-card #bu3844-fam-ideas::before{'
+          ])
+          assert css.count(old)==1,'Expected one bad mask rule'
+          corrected=css.replace(old,new)
+          actual=subprocess.check_output(['git','hash-object','--stdin'],input=corrected.encode('utf-8')).decode().strip()
+          assert actual=='0567778f0e6cf6e7437912438a764628095e28a6',('Corrected CSS differs from validated Visual Lab',actual)
+          p.write_text(corrected,encoding='utf-8')
+          s=Path('trivia-together-premium.css')
+          contents=s.read_text(encoding='utf-8')
+          old='@import url("./play-together-cinematic.css?v=play-together-live-20261102");'
+          new='@import url("./play-together-cinematic.css?v=play-together-live-mask-fix-v2");'
+          assert contents.count(old)==1
+          s.write_text(contents.replace(old,new),encoding='utf-8')
+          h=Path('index.html')
+          content=h.read_text(encoding='utf-8')
+          old='<link rel="stylesheet" href="trivia-together-premium.css?v=play-together-live-20261102">'
+          new='<link rel="stylesheet" href="trivia-together-premium.css?v=play-together-live-mask-fix-v2">'
+          assert content.count(old)==1
+          h.write_text(content.replace(old,new),encoding='utf-8')
+          print('Applied validated mask fix and versioned stylesheet links')
+          PY
+          git rm -f .github/workflows/publish-play-together-mask-fix.yml
+          git add -- index.html trivia-together-premium.css play-together-cinematic.css
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+          expected={'index.html','trivia-together-premium.css','play-together-cinematic.css','.github/workflows/publish-play-together-mask-fix.yml'}
+          assert changed==expected,('Unexpected modifications',changed)
+          PY
+      - name: Commit verified fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Live: sync tested Play Together gold icon mask correction"
+          git push origin HEAD:main
