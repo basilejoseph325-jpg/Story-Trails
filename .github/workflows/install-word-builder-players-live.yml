@@ -1,0 +1,45 @@
+name: Install approved Word Builder Players redesign
+on:
+  push:
+    paths:
+      - '.github/workflows/install-word-builder-players-live.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve approved Visual Lab assets and script
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_base="https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/8fca51761d2d7ad4a79d6ce22dfb186affb56072"
+          curl -fLsS --retry 3 "$source_base/word-builder-players-visual.js" -o word-builder-players-visual.js
+          for name in hero panel scrolls tiles; do
+            curl -fLsS --retry 3 "$source_base/$name.jpg" -o "word-builder-players-$name.jpg"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('word-builder-players-visual.js')
+          s=p.read_text()
+          for name in ('hero','panel','scrolls','tiles'):
+              s=s.replace(f"url('{name}.jpg')",f"url('word-builder-players-{name}.jpg')")
+          p.write_text(s)
+          page=Path('index.html')
+          html=page.read_text(encoding='utf-8')
+          if 'word-builder-players-visual.js' not in html:
+              assert '</body>' in html, 'Missing closing body tag'
+              html=html.replace('</body>','<script defer src="word-builder-players-visual.js?v=live-20261103"></script>\n</body>',1)
+              page.write_text(html,encoding='utf-8')
+          PY
+      - name: Commit approved Players redesign
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html word-builder-players-visual.js word-builder-players-hero.jpg word-builder-players-panel.jpg word-builder-players-scrolls.jpg word-builder-players-tiles.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "Promote approved Word Builder Players redesign"
+            git push
+          fi
