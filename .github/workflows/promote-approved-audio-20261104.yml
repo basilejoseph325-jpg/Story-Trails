@@ -1,0 +1,25 @@
+name: Promote approved Visual Lab audio to LIVE (one-time)
+on:
+  push:
+    paths:
+      - '.github/workflows/promote-approved-audio-20261104.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check pinned sources and install only approved audio
+        run: |
+          python3 .github/scripts/promote_approved_audio_20261104.py
+      - name: Commit tested sound changes and remove one-time tools
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/promote-approved-audio-20261104.yml .github/scripts/promote_approved_audio_20261104.py
+          git add bible_unfolded_core_part3.js bible_unfolded_core_part5.js premium-sfx.js journey-progress-caption.js
+          git diff --cached --stat
+          git commit -m "LIVE: promote approved Visual Lab V6 sound system, preserve all non-audio changes"
+          git push origin HEAD:main
