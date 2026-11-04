@@ -1,0 +1,44 @@
+name: Inspect original Story Adventure card artwork
+on:
+  push:
+    paths:
+      - '.github/workflows/inspect-original-story-art.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Compare artwork rules before cinematic transfer
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess,re
+          old=subprocess.check_output(['git','show','463946b8386d^:index.html'],text=True)
+          now=Path('index.html').read_text(encoding='utf-8')
+          out=[]
+          for name,s in [('ORIGINAL',old),('CURRENT',now)]:
+              out.append('=== '+name+' ===')
+              for pat in ['.route-stop','journey-stops','journey-art/','--route','route-image','journey-intro']:
+                  out.append('SEARCH '+pat)
+                  matches=list(re.finditer(re.escape(pat),s,re.I))
+                  out.append('count='+str(len(matches)))
+                  for m in matches[:12]:
+                      out.append(s[max(0,m.start()-180):m.end()+300].replace('\n',' '))
+          out.append('=== ASSET CANDIDATES ===')
+          out.extend(subprocess.check_output(['git','ls-tree','-r','--name-only','463946b8386d^'],text=True).splitlines()[:500])
+          Path('original-story-art-inspection.txt').write_text('\n'.join(out))
+          PY
+      - name: Commit inspection only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add original-story-art-inspection.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Document original Story Adventure card imagery"
+            git push
+          fi
