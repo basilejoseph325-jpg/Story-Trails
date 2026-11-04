@@ -1,0 +1,21 @@
+name: Apply tested free Classic wheel to LIVE
+on:
+  push:
+    paths: ['.github/workflows/fix-classic-wheel-live-20261104.yml']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply identical Visual Lab wheel fix with tests
+        run: python3 .github/scripts/enable_classic_wheel.py
+      - name: Commit only verified wheel code
+        run: |
+          git add bible_unfolded_core_part5.js
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "LIVE: restore free Classic wheel and persist player selection"
+          git push origin HEAD:main
