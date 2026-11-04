@@ -17,7 +17,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 
 /* Shared, versioned audio loader — identical in TEST and LIVE. */
-(()=>{if(document.getElementById('bu-premium-sfx-test'))return;const s=document.createElement('script');s.id='bu-premium-sfx-test';s.src='premium-sfx.js?v=20261104-unified-audio-v1';document.head.appendChild(s)})();
+(()=>{if(document.getElementById('bu-premium-sfx-test'))return;const s=document.createElement('script');s.id='bu-premium-sfx-test';s.src='premium-sfx.js?v=20261104-live-approved-story-audio-v6';document.head.appendChild(s)})();
 
 
 /* Approved live Daily Discovery V3 stone-tablet visuals. Question/answers only. */
