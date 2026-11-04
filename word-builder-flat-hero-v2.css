@@ -1,0 +1,238 @@
+/* Bible Unfolded / Visual Lab — Word Builder hero, isolated decorative inset.
+   Actual landing DOM: #wb36 .wb-cinema-hub .wb-cinema-hero.
+   Original hero art remains unchanged; cards and controls are not selected. */
+#wb36 .wb-cinema-hub .wb-cinema-hero {
+  position:relative!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  isolation:isolate!important;
+}
+#wb36 .wb-cinema-hub .wb-cinema-hero::before {
+  content:none!important;
+  display:none!important;
+}
+#wb36 .wb-cinema-hub .wb-cinema-hero::after {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:-18px!important;
+  width:auto!important;
+  height:auto!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent url("word-builder-olive-overlay.png?v=1") center / 100% 100% no-repeat!important;
+  opacity:1!important;
+  filter:none!important;
+  pointer-events:none!important;
+  z-index:2!important;
+}
+/* The artwork retains its source colors: no tint, dark gradient or filter. */
+#wb36 .wb-cinema-hub .wb-cinema-hero img {
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+
+
+/* Submenu hero overlays only. Original Word Builder approved styling above is untouched.
+   The left-top quadrant is a separately scaled copy; the other three corners
+   remain pixel-identical to the approved PNG. Never target regular cards. */
+:is(#btn3926-home .btn3926-headline,#levels .book-intro,#journey .journey-intro) {
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:visible!important;
+}
+:is(#btn3926-home .btn3926-headline,#levels .book-intro,#journey .journey-intro)::after,
+:is(#btn3926-home .btn3926-headline,#levels .book-intro,#journey .journey-intro)::before {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:-18px!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent url("word-builder-olive-overlay.png?v=1") center / 100% 100% no-repeat!important;
+  opacity:1!important;
+  pointer-events:none!important;
+  z-index:3!important;
+}
+:is(#btn3926-home .btn3926-headline,#levels .book-intro,#journey .journey-intro)::after {
+  clip-path:polygon(43% 0,100% 0,100% 100%,0 100%,0 43%,43% 43%)!important;
+}
+:is(#btn3926-home .btn3926-headline,#levels .book-intro,#journey .journey-intro)::before {
+  clip-path:polygon(0 0,43% 0,43% 43%,0 43%)!important;
+  transform:scale(.78)!important;
+  transform-origin:top left!important;
+}
+/* Behind the Name: slightly less foliage at upper left. */
+#btn3926-home .btn3926-headline::before {transform:scale(.82)!important;}
+/* Bible Books: protect the original tree in the hero image. */
+#levels .book-intro::before {transform:scale(.64)!important;}
+/* Daily Discovery: explicit containing block fixes the giant page-height
+   overlay; its decoration must never reach the challenge cards. */
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero {
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:visible!important;
+}
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero::after {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:-8px!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  background:transparent url("word-builder-olive-overlay.png?v=1") center / 100% 100% no-repeat!important;
+  opacity:1!important;
+  pointer-events:none!important;
+  z-index:3!important;
+}
+
+/* Daily Discovery: preserve the approved three corners; shrink ONLY upper-left
+   foliage to keep the illustrated man's face unobstructed. */
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero::after {
+  clip-path:polygon(43% 0,100% 0,100% 100%,0 100%,0 43%,43% 43%)!important;
+}
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero::before {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:-8px!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent url("word-builder-olive-overlay.png?v=1") center / 100% 100% no-repeat!important;
+  clip-path:polygon(0 0,43% 0,43% 43%,0 43%)!important;
+  transform:scale(.55)!important;
+  transform-origin:top left!important;
+  opacity:1!important;
+  pointer-events:none!important;
+  z-index:3!important;
+}
+
+/* Text-only adjustments approved from 12:58 screenshots.
+   Botanical assets, image position, and option cards remain untouched. */
+#btn3926-home .btn3926-headline .btn3926-subtitle {
+  display:none!important;
+}
+#btn3926-home .btn3926-headline {
+  justify-content:flex-end!important;
+  padding-bottom:12px!important;
+}
+#btn3926-home .btn3926-headline .btn3926-overline {
+  position:relative!important;
+  z-index:5!important;
+  font-family:Georgia,serif!important;
+  font-size:clamp(19px,4.5vw,27px)!important;
+  line-height:1.08!important;
+  margin:0 0 0 20px!important;
+  max-width:calc(100% - 40px)!important;
+  white-space:nowrap!important;
+}
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero {
+  font-size:clamp(21px,4.75vw,31px)!important;
+  line-height:1.06!important;
+  padding-left:36px!important;
+  padding-right:36px!important;
+  justify-content:center!important;
+  text-align:center!important;
+  position:relative!important;
+  z-index:1!important;
+}
+
+/* Screenshot correction 13:04: center titles in the clear opening between
+   bottom-left and bottom-right olive clusters. Do not move the foliage. */
+#btn3926-home .btn3926-headline {
+  align-items:center!important;
+  justify-content:flex-end!important;
+  padding:12px 16px 9px!important;
+  text-align:center!important;
+}
+#btn3926-home .btn3926-headline .btn3926-overline {
+  box-sizing:border-box!important;
+  display:block!important;
+  align-self:center!important;
+  width:auto!important;
+  max-width:calc(100% - 94px)!important;
+  margin:0 auto!important;
+  padding:0!important;
+  font-size:clamp(17px,4.15vw,24px)!important;
+  line-height:1.1!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero {
+  box-sizing:border-box!important;
+  align-items:flex-end!important;
+  justify-content:center!important;
+  padding:12px 64px 8px!important;
+  font-size:clamp(17px,4.1vw,24px)!important;
+  line-height:1.08!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+@media(max-width:390px) {
+  #btn3926-home .btn3926-headline .btn3926-overline {font-size:clamp(15px,4vw,19px)!important;}
+  #bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero {font-size:clamp(15px,4vw,19px)!important;padding-left:54px!important;padding-right:54px!important;}
+}
+
+/* 2026-11-03 targeted screenshot repair: eliminate the disconnected top-center
+   foliage in three submenu heroes. Retain all four perimeter corner clusters. */
+:is(#btn3926-home .btn3926-headline,#journey .journey-intro,#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero)::after {
+  clip-path:polygon(0 0,32% 0,32% 20%,68% 20%,68% 0,100% 0,100% 100%,0 100%,0 43%,43% 43%,43% 0)!important;
+}
+/* Behind the Name: preserve its centered baseline and font family/color,
+   but use title case and the available clear horizontal width. */
+#btn3926-home .btn3926-headline .btn3926-overline {
+  text-transform:capitalize!important;
+  font-size:clamp(24px,6.7vw,32px)!important;
+  max-width:calc(100% - 82px)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  letter-spacing:-.025em!important;
+}
+@media(max-width:390px) {
+  #btn3926-home .btn3926-headline .btn3926-overline {
+    font-size:clamp(23px,6.4vw,29px)!important;
+  }
+}
+
+/* Daily Discovery only: replace the hard, disconnected center-top cut with
+   a soft botanical fade. The separately scaled upper-left corner remains rooted
+   at the left edge; right and both lower corners retain their existing artwork.
+   No photo, title, or card is modified. */
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero::after {
+  clip-path:none!important;
+  -webkit-mask-image:radial-gradient(ellipse 27% 30% at 49% 8%,transparent 0%,transparent 35%,rgba(0,0,0,.18) 63%,#000 100%)!important;
+  mask-image:radial-gradient(ellipse 27% 30% at 49% 8%,transparent 0%,transparent 35%,rgba(0,0,0,.18) 63%,#000 100%)!important;
+}
+
+/* Daily Discovery ONLY: remove the entire upper-left foliage quadrant.
+   The original hero artwork is untouched. Other corners retain their
+   existing overlay and fading treatment. No shared PNG is modified. */
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero::before {
+  content:none!important;
+  display:none!important;
+}
+#bu375-daily #bu375-body:has(.bu375-mode-list) .bu375-hero::after {
+  clip-path:polygon(43% 0,100% 0,100% 100%,0 100%,0 43%,43% 43%)!important;
+}
