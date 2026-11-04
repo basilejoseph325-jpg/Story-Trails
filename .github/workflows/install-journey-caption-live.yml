@@ -1,0 +1,41 @@
+name: Install approved Journey caption in LIVE
+on:
+  push:
+    paths:
+      - '.github/workflows/install-journey-caption-live.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and add only approved Journey caption links
+        run: |
+          node --check journey-progress-caption.js
+          test -s journey-progress-caption.css
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          assert 'id="journey-progress-label"' in s, 'Missing original Journey label'
+          css='<link rel="stylesheet" href="journey-progress-caption.css?v=approved-20261104">'
+          js='<script defer src="journey-progress-caption.js?v=approved-20261104"></script>'
+          if 'journey-progress-caption.css' not in s:
+              assert s.count('</head>')==1
+              s=s.replace('</head>',css+'\n</head>',1)
+          if 'journey-progress-caption.js' not in s:
+              assert s.count('</body>')==1
+              s=s.replace('</body>',js+'\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit only approved loader
+        run: |
+          if ! git diff --quiet -- index.html; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add index.html
+            git commit -m "Load approved centered Journey caption in live game"
+            git push
+          fi
