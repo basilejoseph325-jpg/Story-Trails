@@ -17,4 +17,4 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 
 /* Approved audio adapter; isolated so main game scripts stay unchanged. */
-(()=>{if(document.getElementById('bu-premium-sfx-test'))return;const s=document.createElement('script');s.id='bu-premium-sfx-test';s.src='premium-sfx.js?v=20261104-soft-back-approved';document.head.appendChild(s)})();
+(()=>{if(document.getElementById('bu-premium-sfx-test'))return;const s=document.createElement('script');s.id='bu-premium-sfx-test';s.src='premium-sfx.js?v=20261104-word-trails-quiet-swipe-v1';document.head.appendChild(s)})();
