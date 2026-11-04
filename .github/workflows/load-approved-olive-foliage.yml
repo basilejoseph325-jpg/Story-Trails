@@ -1,0 +1,44 @@
+name: Load approved per-hero olive foliage CSS
+on:
+  push:
+    paths:
+      - '.github/workflows/load-approved-olive-foliage.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate artwork and exact approved stylesheet
+        run: |
+          test -s word-builder-olive-overlay.png
+          test -s word-builder-flat-hero-v2.css
+          grep -Fq 'word-builder-olive-overlay.png?v=1' word-builder-flat-hero-v2.css
+          grep -Fq 'Daily Discovery ONLY: remove the entire upper-left foliage quadrant' word-builder-flat-hero-v2.css
+      - name: Insert only the approved stylesheet link
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          tag='<link rel="stylesheet" href="word-builder-flat-hero-v2.css?v=approved-20261103">'
+          if 'word-builder-flat-hero-v2.css' in s:
+              raise SystemExit('Existing olive stylesheet reference detected; refusing automatic change')
+          if s.count('</head>')!=1:
+              raise SystemExit('Unexpected HTML head structure; refusing automatic change')
+          updated=s.replace('</head>',tag+'\n</head>',1)
+          assert updated.replace(tag+'\n','',1)==s
+          p.write_text(updated,encoding='utf-8')
+          PY
+      - name: Commit only HTML stylesheet loader
+        run: |
+          if ! git diff --quiet -- index.html; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add index.html
+            git commit -m "Load approved olive foliage CSS without changing gameplay"
+            git push
+          fi
