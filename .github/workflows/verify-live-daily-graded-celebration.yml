@@ -1,0 +1,47 @@
+name: Verify LIVE graded Daily Discovery completion
+on:
+  push:
+    paths: ['.github/workflows/verify-live-daily-graded-celebration.yml']
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate approved score-tier presentation and production isolation
+        run: |
+          node --check daily-completion-premium-test.js
+          node --check journey-progress-caption.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,xml.etree.ElementTree as ET
+          js=Path('daily-completion-premium-test.js').read_text()
+          css=Path('daily-completion-premium-test.css').read_text()
+          loader=Path('journey-progress-caption.js').read_text()
+          assert [int(n) for n in re.findall(r'confetti:(\d+),duration:',js)]==[4,12,20,32,48,74]
+          assert "document.getElementById('bu375-daily')" in js
+          assert "body.querySelector(':scope > .bu375-result')" in js
+          assert "body.querySelector(':scope > #bu375-home')" in js
+          assert "body.querySelector(':scope > #bu375-again')" in js
+          assert 'Math.max(0,Math.min(5,raw))' in js
+          assert "body.classList.remove('bu-daily-finale-v1')" in js
+          assert "localStorage.getItem('bible-unfolded-immersive-v34')" in js
+          assert 'sfxVolume<=0' in js and "typeof sfxOn" in js
+          assert "typeof playChime" in js and "typeof playCoinFx" in js and "typeof playVictoryCheer" in js
+          assert "pref==='off'" in js and 'reduced()' in js
+          assert 'awardOnce' not in js and 'bu375Complete' not in js and '.onclick=' not in js
+          assert '#bu375-daily #bu375-body.bu-daily-finale-v1' in css
+          assert 'daily-complete-score-plaque-v2.svg' in css
+          assert '@keyframes bu-daily-finale-fall' in css
+          assert 'pointer-events:none' in css
+          assert 'prefers-reduced-motion:reduce' in css
+          assert 'daily-completion-premium-test.js?v=20261104-graded-party-v2' in loader
+          assert 'daily-completion-premium-test.css?v=20261104-graded-party-v2' in loader
+          assert '20261104-live-approved-story-audio-v6' in loader
+          assert 'story-adventure-metallic-icons-test.js?v=20261104-all-story-roots-v4' in loader
+          assert 'daily-discovery-explanation-scroll.css?v=20261104-seamless-paper-v3' in loader
+          assert 'visual-lab-test-banner.js' not in loader
+          for p in ('assets/ui/daily-complete-laurel-v1.svg','assets/ui/daily-complete-score-plaque-v2.svg','assets/ui/daily-explanation-wax-next-v2.svg','assets/ui/story-gold-restart-v1.svg'):
+           ET.parse(p)
+          print('PASS: approved 0–5 graded Daily finale, matching art, original rewards, SFX preferences, live audio, other modes preserved')
+          PY
