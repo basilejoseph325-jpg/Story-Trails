@@ -26,5 +26,5 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 /* Approved Daily Discovery-only polish, promoted from visually accepted Visual Lab.
    Preserve production audio and do not install Visual Lab's TEST banner. */
-(()=>{if(document.getElementById('bu-daily-polish-test'))return;const l=document.createElement('link');l.id='bu-daily-polish-test';l.rel='stylesheet';l.href='daily-discovery-polish-test.css?v=20261104-gold-icon-capsule-fix-v2';document.head.appendChild(l)})();
-(()=>{if(document.getElementById('bu-daily-gold-icons-test'))return;const s=document.createElement('script');s.id='bu-daily-gold-icons-test';s.src='daily-discovery-gold-icons-test.js?v=20261104-approved-preview-v1';s.defer=true;document.head.appendChild(s)})();
+(()=>{if(document.getElementById('bu-daily-polish-test'))return;const l=document.createElement('link');l.id='bu-daily-polish-test';l.rel='stylesheet';l.href='daily-discovery-polish-test.css?v=20261104-metallic-art-v3';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-daily-gold-icons-test'))return;const s=document.createElement('script');s.id='bu-daily-gold-icons-test';s.src='daily-discovery-gold-icons-test.js?v=20261104-metallic-art-v3';s.defer=true;document.head.appendChild(s)})();
