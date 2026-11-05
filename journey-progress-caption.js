@@ -77,3 +77,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (()=>{if(document.getElementById('wt-completion-cinema-v2'))return;const l=document.createElement('link');l.id='wt-completion-cinema-v2';l.rel='stylesheet';l.href='word-trails-cinematic-completion-v2-test.css?v=20261105-live-wt-approved-v3';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('wt-star-v3-css'))return;const l=document.createElement('link');l.id='wt-star-v3-css';l.rel='stylesheet';l.href='word-trails-starfield-v3-test.css?v=20261105-live-wt-approved-v3';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('wt-star-v3-js'))return;const s=document.createElement('script');s.id='wt-star-v3-js';s.src='word-trails-starfield-v3-test.js?v=20261105-live-wt-approved-v3';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE owner-approved Mixed Trivia renovation: exact Visual Lab foliage art,
+   descriptive nonbutton topics and refined compass-panel typography.
+   November 5, 2026. Native trivia questions, handlers, score and all other
+   modes remain unchanged. */
+(()=>{if(document.getElementById('bu-mixed-nonbutton-v1'))return;const l=document.createElement('link');l.id='bu-mixed-nonbutton-v1';l.rel='stylesheet';l.href='mixed-trivia-noninteractive-visual-v1.css?v=20261105-live-approved-trivia-v2';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-mixed-editorial-v2-css'))return;const l=document.createElement('link');l.id='bu-mixed-editorial-v2-css';l.rel='stylesheet';l.href='mixed-trivia-compass-editorial-v2.css?v=20261105-live-approved-trivia-v2';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-mixed-editorial-v2-js'))return;const s=document.createElement('script');s.id='bu-mixed-editorial-v2-js';s.src='mixed-trivia-compass-editorial-v2.js?v=20261105-live-approved-trivia-v2';s.defer=true;document.head.appendChild(s)})();
