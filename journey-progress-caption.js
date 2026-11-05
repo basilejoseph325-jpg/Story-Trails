@@ -41,3 +41,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    Preserve live music/SFX, game wheel, scoring, chapter art and all other modes. */
 (()=>{if(document.getElementById('bu-story-metal-icons-css'))return;const l=document.createElement('link');l.id='bu-story-metal-icons-css';l.rel='stylesheet';l.href='story-adventure-metallic-icons-test.css?v=20261104-all-story-roots-v4';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-story-metal-icons-js'))return;const s=document.createElement('script');s.id='bu-story-metal-icons-js';s.src='story-adventure-metallic-icons-test.js?v=20261104-all-story-roots-v4';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE: owner-approved graded Daily Discovery completion celebration (0–5).
+   Copy exact Visual Lab version. No modifications to game score, reward,
+   chapter, wheel, audio settings or other modes. */
+(()=>{if(document.getElementById('bu-daily-completion-premium-css'))return;const l=document.createElement('link');l.id='bu-daily-completion-premium-css';l.rel='stylesheet';l.href='daily-completion-premium-test.css?v=20261104-graded-party-v2';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-daily-completion-premium-js'))return;const s=document.createElement('script');s.id='bu-daily-completion-premium-js';s.src='daily-completion-premium-test.js?v=20261104-graded-party-v2';s.defer=true;document.head.appendChild(s)})();
