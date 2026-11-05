@@ -1,0 +1,43 @@
+name: Verify LIVE Daily Discovery approved V3 scroll
+on:
+  push:
+    paths: ['.github/workflows/verify-live-daily-scroll-v3.yml']
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exact files, native controls, test scope, and preserved audio
+        run: |
+          set -eu
+          node --check daily-discovery-explanation-scroll.js
+          node --check journey-progress-caption.js
+          test "$(git hash-object assets/ui/daily-discovery-explanation-scroll-v3.webp)" = '4e25223d5666397a3a9dc9b446e4262d12fc41a2'
+          test "$(git hash-object assets/ui/daily-explanation-wax-next-v2.svg)" = '103af90347ddb90bcd23cbe0013563373dbc4fde'
+          test "$(git hash-object daily-discovery-explanation-scroll.css)" = '8d55b2aed0f1868e55432f9510cbd4e904be66a2'
+          test "$(git hash-object daily-discovery-explanation-scroll.js)" = 'ada0ee74fe4b691764e76406337e82d98d00369b'
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          css=Path('daily-discovery-explanation-scroll.css').read_text()
+          js=Path('daily-discovery-explanation-scroll.js').read_text()
+          loader=Path('journey-progress-caption.js').read_text()
+          doc=Path('docs/design-system/APPROVED_EXPLANATION_SCROLL_RULES.md').read_text()
+          assert 'daily-discovery-explanation-scroll-v3.webp' in css
+          assert 'daily-explanation-wax-next-v2.svg' in css
+          assert 'overflow-y:auto' in css
+          assert "document.getElementById('bu375-daily')" in js
+          assert "overlay.classList.add('bu-daily-explanation-scroll')" in js
+          assert 'Next Question|Finish Discovery' in js
+          assert 'Correct!|^Answer:' in js
+          assert 'daily-discovery-explanation-scroll.css?v=20261104-seamless-paper-v3' in loader
+          assert 'daily-discovery-explanation-scroll.js?v=20261104-clean-art-wax-v2' in loader
+          assert '20261104-live-approved-story-audio-v6' in loader
+          assert 'visual-lab-test-banner.js' not in loader
+          assert 'APPROVED PHOTOREALISTIC EXPLANATION SCROLL MASTER' in doc
+          assert 'Long-explanation overflow' in doc or 'extreme-long-explanation' in doc
+          ET.fromstring(Path('assets/ui/daily-explanation-wax-next-v2.svg').read_text())
+          assert 'journey-progress-caption.js' in Path('index.html').read_text()
+          print('PASS: exact approved scroll/wax/CSS/JS files; Daily-only loader; audio unchanged; master rules preserved')
+          PY
