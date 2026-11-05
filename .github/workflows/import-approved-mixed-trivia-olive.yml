@@ -1,0 +1,35 @@
+name: Import approved Mixed Trivia olive image into LIVE (one time)
+on:
+  push:
+    paths:
+      - '.github/workflows/import-approved-mixed-trivia-olive.yml'
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch exact tested Visual Lab artwork and verify Git blob SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --retry-delay 2 --silent --show-error \
+            'https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/3698db892e87e2c5892f392a3ca6c8a9c2937023/word-builder-olive-overlay.png' \
+            --output mixed-trivia-approved-olive-overlay.png
+          actual="$(git hash-object mixed-trivia-approved-olive-overlay.png)"
+          expected='790342633888d9ff0be9f5dd60e3c100dd90f858'
+          echo "Artwork SHA: $actual"
+          test "$actual" = "$expected"
+          test "$(stat -c %s mixed-trivia-approved-olive-overlay.png)" -eq 1081033
+          file mixed-trivia-approved-olive-overlay.png
+      - name: Commit ONLY the Trivia-specific approved artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add mixed-trivia-approved-olive-overlay.png
+          if git diff --cached --quiet; then echo "Approved artwork already installed"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "LIVE preparation: import isolated approved Mixed Trivia foliage"
+          git push origin HEAD:main
