@@ -62,14 +62,14 @@ jobs:
           assert 'story-finale-structural-parity-v11.css' not in s
           s+="""
 
-/* LIVE: owner-approved Story Adventure chapter-completion V11.
-   Imports exact tested modern+legacy components, approved sound, cinematic art,
-   custom chapter story, and centered modern achievement section.
-   No Visual Lab TEST banner, no change to Daily Discovery or other modes. */
-(()=>{if(document.getElementById('bu-story-chapter-complete-v2-css'))return;const l=document.createElement('link');l.id='bu-story-chapter-complete-v2-css';l.rel='stylesheet';l.href='story-chapter-complete-v2-test.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
-(()=>{if(document.getElementById('bu-story-finale-stage-v11-css'))return;const l=document.createElement('link');l.id='bu-story-finale-stage-v11-css';l.rel='stylesheet';l.href='story-finale-structural-parity-v11.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
-(()=>{if(document.getElementById('bu-story-chapter-complete-v2-js'))return;const s=document.createElement('script');s.id='bu-story-chapter-complete-v2-js';s.src='story-chapter-complete-v2-test.js?v=20261105-live-v11-approved';s.defer=true;document.head.appendChild(s)})();
-"""
+          /* LIVE: owner-approved Story Adventure chapter-completion V11.
+             Imports exact tested modern+legacy components, approved sound, cinematic art,
+             custom chapter story, and centered modern achievement section.
+             No Visual Lab TEST banner, no change to Daily Discovery or other modes. */
+          (()=>{if(document.getElementById('bu-story-chapter-complete-v2-css'))return;const l=document.createElement('link');l.id='bu-story-chapter-complete-v2-css';l.rel='stylesheet';l.href='story-chapter-complete-v2-test.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
+          (()=>{if(document.getElementById('bu-story-finale-stage-v11-css'))return;const l=document.createElement('link');l.id='bu-story-finale-stage-v11-css';l.rel='stylesheet';l.href='story-finale-structural-parity-v11.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
+          (()=>{if(document.getElementById('bu-story-chapter-complete-v2-js'))return;const s=document.createElement('script');s.id='bu-story-chapter-complete-v2-js';s.src='story-chapter-complete-v2-test.js?v=20261105-live-v11-approved';s.defer=true;document.head.appendChild(s)})();
+          """
           loader.write_text(s)
           html=Path('index.html')
           assert 'journey-progress-caption.js' in html.read_text()
