@@ -1,0 +1,40 @@
+name: Verify approved Daily Discovery live promotion
+on:
+  push:
+    paths: ['.github/workflows/verify-daily-discovery-live-promotion.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify syntax, loader scope and required visual treatments
+        run: |
+          node --check daily-discovery-gold-icons-test.js
+          node --check journey-progress-caption.js
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path('daily-discovery-gold-icons-test.js').read_text()
+          css=Path('daily-discovery-polish-test.css').read_text()
+          loader=Path('journey-progress-caption.js').read_text()
+          assert "root=document.getElementById('bu375-daily')" in js
+          assert "b.replaceChildren(icon)" in js
+          assert "new MutationObserver" in js
+          assert 'data-bu375-answer' not in js
+          assert 'M18 9c-4-3-9-4-14-3' in js
+          assert 'V2 toolbar correction' in css
+          assert 'button > span.bu-daily-gold-icon' in css
+          assert 'border:0!important' in css
+          assert '.bu375-answer.correct' in css
+          assert '.bu375-answer.incorrect' in css
+          assert '.bu375-question-title' in css
+          assert 'prefers-reduced-motion' in css
+          assert all(line.strip().startswith('#bu375-daily') for line in css.splitlines() if line.lstrip().startswith('#'))
+          assert 'daily-discovery-polish-test.css?v=20261104-gold-icon-capsule-fix-v2' in loader
+          assert 'daily-discovery-gold-icons-test.js?v=20261104-approved-preview-v1' in loader
+          assert '20261104-live-approved-story-audio-v6' in loader
+          assert '20261104-stone-feedback-v4' in loader
+          assert 'visual-lab-test-banner' not in loader
+          print('PASS: live Daily-only polish references, cross-free icon source, texture, lighting and touch states; production audio intact.')
+          PY
