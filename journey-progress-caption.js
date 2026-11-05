@@ -17,7 +17,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 
 /* Shared, versioned audio loader — identical in TEST and LIVE. */
-(()=>{if(document.getElementById('bu-premium-sfx-test'))return;const s=document.createElement('script');s.id='bu-premium-sfx-test';s.src='premium-sfx.js?v=20261104-live-approved-story-audio-v6';document.head.appendChild(s)})();
+(()=>{if(document.getElementById('bu-premium-sfx-test'))return;const s=document.createElement('script');s.id='bu-premium-sfx-test';s.src='premium-sfx.js?v=20261105-live-approved-story-next-v9';document.head.appendChild(s)})();
 
 
 /* Approved live Daily Discovery V3 stone-tablet visuals. Question/answers only. */
@@ -48,3 +48,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    chapter, wheel, audio settings or other modes. */
 (()=>{if(document.getElementById('bu-daily-completion-premium-css'))return;const l=document.createElement('link');l.id='bu-daily-completion-premium-css';l.rel='stylesheet';l.href='daily-completion-premium-test.css?v=20261104-graded-party-v2';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-daily-completion-premium-js'))return;const s=document.createElement('script');s.id='bu-daily-completion-premium-js';s.src='daily-completion-premium-test.js?v=20261104-graded-party-v2';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE: owner-approved Story Adventure chapter-completion V11.
+   Imports exact tested modern+legacy components, approved sound, cinematic art,
+   custom chapter story, and centered modern achievement section.
+   No Visual Lab TEST banner, no change to Daily Discovery or other modes. */
+(()=>{if(document.getElementById('bu-story-chapter-complete-v2-css'))return;const l=document.createElement('link');l.id='bu-story-chapter-complete-v2-css';l.rel='stylesheet';l.href='story-chapter-complete-v2-test.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-story-finale-stage-v11-css'))return;const l=document.createElement('link');l.id='bu-story-finale-stage-v11-css';l.rel='stylesheet';l.href='story-finale-structural-parity-v11.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-story-chapter-complete-v2-js'))return;const s=document.createElement('script');s.id='bu-story-chapter-complete-v2-js';s.src='story-chapter-complete-v2-test.js?v=20261105-live-v11-approved';s.defer=true;document.head.appendChild(s)})();
