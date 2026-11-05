@@ -24,3 +24,7 @@ Whenever the owner mentions Bible Unfolded, the Bible game, Story-Trails, Visual
 The November 3 Word Builder landing-banner experiment was committed without sufficient verification. It did not visibly remove the hero border on the user's test screenshot. Treat that experiment as **unapproved and unverified**; do not promote to LIVE. Inspect the real DOM and test before revising it.
 
 **Definition of done:** The intended behavior has been verified at every available gate, unrelated features are preserved, and the owner has approved LIVE promotion when required. If any gate cannot be run, report the gap and never represent it as passed.
+
+
+### Binding visual-design reference — answer tablets and game icons (owner approved November 4, 2026)
+**Mandatory before every answer-box, question-panel, or icon visual edit:** read [ANSWER_TABLETS_AND_GOLD_ICONS_RULES.md](docs/design-system/ANSWER_TABLETS_AND_GOLD_ICONS_RULES.md). This version-controlled addendum defines the approved carved sandstone material, per-tablet light variations, dimensional bevels, red/green feedback and press states, the cross-free antique-gold Bible/hint/eye icon family, and the prohibition against nested icon capsules. Inspect actual rendered output, CSS cascade and handlers. It does **not** authorize global rollout: apply new designs to Visual Lab and only to owner-approved modes; live promotion requires explicit approval. Maintain this addendum in both repositories.
