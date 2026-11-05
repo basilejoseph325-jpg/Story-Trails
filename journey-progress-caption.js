@@ -21,4 +21,4 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 
 /* Approved live Daily Discovery V3 stone-tablet visuals. Question/answers only. */
-(()=>{if(document.getElementById('bu-daily-question-visual'))return;const l=document.createElement('link');l.id='bu-daily-question-visual';l.rel='stylesheet';l.href='daily-discovery-question-premium.css?v=20261104-weathered-sandstone-v3';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-daily-question-visual'))return;const l=document.createElement('link');l.id='bu-daily-question-visual';l.rel='stylesheet';l.href='daily-discovery-question-premium.css?v=20261104-stone-feedback-v4';document.head.appendChild(l)})();
