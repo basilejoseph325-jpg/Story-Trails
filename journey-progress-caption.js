@@ -34,3 +34,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    Do not enable this scroll in Trivia, Word Builder or any other game mode. */
 (()=>{if(document.getElementById('bu-daily-explanation-scroll-css'))return;const l=document.createElement('link');l.id='bu-daily-explanation-scroll-css';l.rel='stylesheet';l.href='daily-discovery-explanation-scroll.css?v=20261104-seamless-paper-v3';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-daily-explanation-scroll-js'))return;const s=document.createElement('script');s.id='bu-daily-explanation-scroll-js';s.src='daily-discovery-explanation-scroll.js?v=20261104-clean-art-wax-v2';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE Story Adventure only — owner-approved antique metallic gold icons.
+   Same assets and behavior as approved Visual Lab, including Genesis 7–9.
+   Preserve live music/SFX, game wheel, scoring, chapter art and all other modes. */
+(()=>{if(document.getElementById('bu-story-metal-icons-css'))return;const l=document.createElement('link');l.id='bu-story-metal-icons-css';l.rel='stylesheet';l.href='story-adventure-metallic-icons-test.css?v=20261104-all-story-roots-v4';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-story-metal-icons-js'))return;const s=document.createElement('script');s.id='bu-story-metal-icons-js';s.src='story-adventure-metallic-icons-test.js?v=20261104-all-story-roots-v4';s.defer=true;document.head.appendChild(s)})();
