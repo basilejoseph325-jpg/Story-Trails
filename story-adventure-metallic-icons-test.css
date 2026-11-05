@@ -1,0 +1,104 @@
+/* Story Adventure ONLY — matching November 4 approved metallic icon master.
+   Icon directly inside existing button: never insert an inner capsule.
+   Existing wheel size/position, letter interaction, header and scores remain unchanged. */
+#play :is(#scene-scripture,#scene-context,#scene-hint,#scene-shuffle,
+#scene-clear,#scene-reveal,#scene-restart,#to-home,#play-menu) > img.bu-story-metal-icon{
+ display:block!important;
+ width:clamp(25px,7.7vw,39px)!important;
+ height:clamp(25px,7.7vw,39px)!important;
+ max-width:100%!important;
+ max-height:100%!important;
+ min-width:0!important;min-height:0!important;
+ margin:auto!important;padding:0!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ object-fit:contain!important;pointer-events:none!important;
+ filter:drop-shadow(0 1px 2px rgba(0,9,17,.68))
+        drop-shadow(0 0 2px rgba(251,193,91,.25))!important;
+}
+#play :is(#to-home,#play-menu) > img.bu-story-metal-icon {
+ width:clamp(22px,6vw,32px)!important;
+ height:clamp(22px,6vw,32px)!important;
+}
+#play #story-quick-actions > button:has(>img.bu-story-metal-icon){
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+}
+#play #story-quick-actions > button[hidden],
+#play button[hidden]{display:none!important;}
+@media(prefers-reduced-motion:reduce){
+ #play .bu-story-metal-icon {transition:none!important;animation:none!important;}
+}
+
+/* Both chapter engines: same original toolbar boxes, no nested frames.
+   The bu3863 buttons are dynamically recreated when discoveries change. */
+#play .bu3863-toolbar button > img.bu-story-metal-icon{
+ display:block!important;
+ width:clamp(24px,7.3vw,35px)!important;
+ height:clamp(24px,7.3vw,35px)!important;
+ max-width:100%!important;max-height:100%!important;
+ margin:auto!important;padding:0!important;border:0!important;
+ background:none!important;box-shadow:none!important;
+ object-fit:contain!important;pointer-events:none!important;
+ filter:drop-shadow(0 1px 2px rgba(0,8,14,.72))
+        drop-shadow(0 0 2px rgba(246,193,83,.22))!important;
+}
+/* Finale: preserve readable label, button dimensions and native click action. */
+#play :is(#playAgain,#read-story) > img.bu-story-metal-icon{
+ display:inline-block!important;
+ width:clamp(19px,5vw,25px)!important;height:clamp(19px,5vw,25px)!important;
+ min-width:0!important;min-height:0!important;
+ vertical-align:middle!important;margin:0 5px 0 0!important;
+ padding:0!important;border:0!important;background:none!important;
+ box-shadow:none!important;object-fit:contain!important;pointer-events:none!important;
+ filter:drop-shadow(0 1px 2px rgba(0,9,17,.58))!important;
+}
+
+
+/* Actual newer Genesis episode engine (7–9), and later chapter renderer.
+   Earlier V2 styling targeted #play only; these buttons live in #bu3857-screen.
+   Match approved metallic artwork without changing any geometry or tap logic. */
+#bu3857-screen .bu3863-toolbar button > img.bu-story-metal-icon {
+ display:block!important;
+ width:clamp(24px,7.3vw,35px)!important;
+ height:clamp(24px,7.3vw,35px)!important;
+ max-width:100%!important;max-height:100%!important;
+ min-width:0!important;min-height:0!important;
+ margin:auto!important;padding:0!important;border:0!important;
+ border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ object-fit:contain!important;pointer-events:none!important;
+ filter:drop-shadow(0 1px 2px rgba(0,8,14,.72))
+        drop-shadow(0 0 2px rgba(246,193,83,.22))!important;
+}
+#bu3857-screen .bu3863-toolbar button:has(> img.bu-story-metal-icon) {
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+}
+#bu3857-screen #bu3857-replay > img.bu-story-metal-icon{
+ display:inline-block!important;
+ width:clamp(19px,5vw,25px)!important;
+ height:clamp(19px,5vw,25px)!important;
+ vertical-align:middle!important;
+ margin:0 6px 0 0!important;
+ padding:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ object-fit:contain!important;pointer-events:none!important;
+}
+
+
+#bu3857-screen :is(#bu3857-back,#bu3857-menu) > img.bu-story-metal-icon {
+ display:block!important;
+ width:clamp(22px,6vw,32px)!important;
+ height:clamp(22px,6vw,32px)!important;
+ max-width:100%!important;max-height:100%!important;
+ min-width:0!important;min-height:0!important;
+ margin:auto!important;padding:0!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ object-fit:contain!important;pointer-events:none!important;
+ filter:drop-shadow(0 1px 2px rgba(0,8,14,.72))
+        drop-shadow(0 0 2px rgba(246,193,83,.22))!important;
+}
