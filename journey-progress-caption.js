@@ -86,3 +86,19 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (()=>{if(document.getElementById('bu-mixed-nonbutton-v1'))return;const l=document.createElement('link');l.id='bu-mixed-nonbutton-v1';l.rel='stylesheet';l.href='mixed-trivia-noninteractive-visual-v1.css?v=20261105-live-approved-trivia-v2';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-mixed-editorial-v2-css'))return;const l=document.createElement('link');l.id='bu-mixed-editorial-v2-css';l.rel='stylesheet';l.href='mixed-trivia-compass-editorial-v2.css?v=20261105-live-approved-trivia-v2';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-mixed-editorial-v2-js'))return;const s=document.createElement('script');s.id='bu-mixed-editorial-v2-js';s.src='mixed-trivia-compass-editorial-v2.js?v=20261105-live-approved-trivia-v2';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE: owner-approved Bible Trivia gameplay, explanation, and results,
+   November 5, 2026. Exact Visual Lab V4 photographic limestone questions,
+   V1 antique gold toolbar + trophy/laurel score ring, and approved master
+   Daily Discovery V3 scroll art for Trivia-only explanations. Original LIVE
+   script/audio/menu/hint/score/reward code remains fully intact. */
+(()=>{if(document.getElementById('bu-trivia-scholar-css-v1'))return;const l=document.createElement('link');l.id='bu-trivia-scholar-css-v1';l.rel='stylesheet';l.href='trivia-scholar-treasury-v1.css?v=20261105-live-trivia-approved-v1';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-trivia-scholar-js-v1'))return;const s=document.createElement('script');s.id='bu-trivia-scholar-js-v1';s.src='trivia-scholar-treasury-v1.js?v=20261105-live-trivia-approved-v1';s.defer=true;document.head.appendChild(s)})();
+/* The V4 real stone photo and 27px score-footer clearance intentionally load
+   AFTER the V1 question and score materials; do not load discarded V2/V3 art. */
+(()=>{if(document.getElementById('bu-trivia-photo-stone-v4'))return;const l=document.createElement('link');l.id='bu-trivia-photo-stone-v4';l.rel='stylesheet';l.href='trivia-photo-stone-tablets-v4.css?v=20261105-live-trivia-approved-v1';document.head.appendChild(l)})();
+/* Only Trivia's actual post-answer dialog (Next Question / Finish Round).
+   No change to Daily Discovery, Behind the Name, hint or scripture popups. */
+(()=>{if(document.getElementById('bu-trivia-answer-scroll-css-v1'))return;const l=document.createElement('link');l.id='bu-trivia-answer-scroll-css-v1';l.rel='stylesheet';l.href='trivia-answer-scroll-v1.css?v=20261105-live-trivia-approved-v1';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-trivia-answer-scroll-js-v1'))return;const s=document.createElement('script');s.id='bu-trivia-answer-scroll-js-v1';s.src='trivia-answer-scroll-v1.js?v=20261105-live-trivia-approved-v1';s.defer=true;document.head.appendChild(s)})();

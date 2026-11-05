@@ -1,0 +1,120 @@
+name: QA LIVE approved Trivia three-screen promotion
+on:
+  push:
+    paths:
+      - 'trivia-scholar-treasury-v1.css'
+      - 'trivia-scholar-treasury-v1.js'
+      - 'trivia-photo-stone-tablets-v4.css'
+      - 'trivia-answer-scroll-v1.css'
+      - 'trivia-answer-scroll-v1.js'
+      - 'assets/ui/trivia-real-rock-v4.jpg'
+      - 'assets/ui/trivia-real-rock-v4-LICENSE.txt'
+      - 'journey-progress-caption.js'
+      - '.github/workflows/qa-live-trivia-3-screens.yml'
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 2}
+      - name: Verify native JS syntax and exact approved artwork/codes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check journey-progress-caption.js
+          node --check trivia-scholar-treasury-v1.js
+          node --check trivia-answer-scroll-v1.js
+          python3 - <<'PY'
+          import subprocess
+          from pathlib import Path
+          expected={
+          "trivia-scholar-treasury-v1.css":"361b1638f205224bb413040b94f1f45bbe3fa1c6",
+          "trivia-scholar-treasury-v1.js":"c7625d6b65eed77ad3a396ce127d05f52a9a86fd",
+          "trivia-photo-stone-tablets-v4.css":"37230c850e556a5d7d7f38a83404532e93574bd0",
+          "trivia-answer-scroll-v1.css":"80b66cad8228349446a5a3854c7714c7d51ff425",
+          "trivia-answer-scroll-v1.js":"565036af81d2638afc30f02beae75dccd7ffad1d",
+          "assets/ui/trivia-real-rock-v4.jpg":"416b9f835beeaaf0773d9814e35414eeed81dce5",
+          "assets/ui/trivia-real-rock-v4-LICENSE.txt":"6f4742fef9a335656609554ac20a6f19f4376ed3",
+          "assets/ui/daily-gold-bible-v3.svg":"f46ca99d46b26a48a17621d40e363b1128cf2a12",
+          "assets/ui/daily-gold-hint-v3.svg":"7aa3acf79e53aacc07d1a9331e69ccd929c26a09",
+          "assets/ui/daily-gold-eye-v3.svg":"349b69ecd42c394f6a524d928d4915944caae72f",
+          "assets/ui/daily-complete-laurel-v1.svg":"730d80a8f11ab38a73465bd1fe2989a8f9d4503f",
+          "assets/ui/story-gold-back-v1.svg":"7792823d4f50689dfcdcc105efd9c4c24e5a579d",
+          "assets/ui/daily-discovery-explanation-scroll-v3.webp":"4e25223d5666397a3a9dc9b446e4262d12fc41a2",
+          "assets/ui/daily-explanation-wax-next-v2.svg":"103af90347ddb90bcd23cbe0013563373dbc4fde",
+          }
+          for path,sha in expected.items():
+            assert Path(path).is_file(),f"Missing asset: {path}"
+            actual=subprocess.check_output(['git','hash-object',path],text=True).strip()
+            assert actual==sha,f"Approved file differs: {path}: {actual}"
+          loader=Path('journey-progress-caption.js').read_text()
+          old=subprocess.check_output(['git','show','HEAD^:journey-progress-caption.js'],text=True)
+          assert loader.startswith(old),"LIVE loader was replaced or edited, instead of appended"
+          for asset in expected:
+            assert Path(asset).exists()
+          for name in ['trivia-scholar-treasury-v1.css','trivia-scholar-treasury-v1.js',
+            'trivia-photo-stone-tablets-v4.css','trivia-answer-scroll-v1.css','trivia-answer-scroll-v1.js']:
+            assert f'{name}?v=20261105-live-trivia-approved-v1' in loader,name
+          assert loader.index('trivia-scholar-treasury-v1.css?v=')<loader.index('trivia-photo-stone-tablets-v4.css?v=')
+          assert loader.index('trivia-photo-stone-tablets-v4.css?v=')<loader.index('trivia-answer-scroll-v1.css?v=')
+          assert 'word-trails-premium-game-and-finale-test.css?v=20261105-live-wt-approved-v3' in old
+          assert 'mixed-trivia-compass-editorial-v2.css?v=20261105-live-approved-trivia-v2' in old
+          assert 'daily-discovery-explanation-scroll.css?v=20261104-seamless-paper-v3' in old
+          assert 'story-finale-structural-parity-v11.css?v=20261105-live-paired-v11b' in old
+          index=Path('index.html').read_text()
+          assert 'journey-progress-caption.js' in index,'Loader not referenced in LIVE index'
+          assert 'bu34-trivia' in index and 'bu34-body' in index,'Trivia core markup missing'
+          q=Path('trivia-scholar-treasury-v1.css').read_text()
+          s=Path('trivia-photo-stone-tablets-v4.css').read_text()
+          a=Path('trivia-answer-scroll-v1.css').read_text()
+          assert 'bu34-body.bu65-playing' in q and '.bu34-summary' in q
+          assert '.bu34-answer.correct' in q and '.bu34-answer.wrong' in q
+          assert '--stone-y:' in s and s.count('--stone-y:')==4
+          assert 'flex:0 0 clamp(27px,3dvh,31px)!important' in s
+          assert 'assets/ui/trivia-real-rock-v4.jpg?v=1' in s
+          assert '.bu65-info-overlay.bu-trivia-answer-scroll' in a
+          for sheet in (q,s,a):assert sheet.count('{')==sheet.count('}'),'Unbalanced CSS'
+          print('PASS: all 14 exact approved hashes, real stone, live-loader preservation, 3 scoped screens')
+          PY
+      - name: Modal and result behavior smoke test without changing game state
+        shell: bash
+        run: |
+          node <<'JS'
+          const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+          function modal(title,label,visible=true){
+            const classes=new Set();
+            const button={textContent:label,dataset:{},onclick:()=>73};
+            const heading={textContent:title},body={textContent:'original explanation'};
+            const card={querySelector:s=>s.includes('> h2')?heading:s.includes('.bu65-info-body')?body:s.includes('bu65-confirm')?button:null};
+            const layer={querySelector:s=>s.includes('.bu65-info-card')?card:null,classList:{
+              add:x=>classes.add(x),toggle:(x,v)=>{if(v)classes.add(x);else classes.delete(x);}
+            }};
+            const screen={getClientRects:()=>visible?[{}]:[],querySelector:s=>s.includes('#bu34-body')?{}:null};
+            const document={readyState:'complete',getElementById:k=>k==='bu34-trivia'?screen:null,
+              querySelectorAll:()=>[layer],body:{}};
+            vm.runInNewContext(fs.readFileSync('trivia-answer-scroll-v1.js','utf8'),
+              {document,window:{},MutationObserver:class{observe(){}},console});
+            return {classes,button,body};
+          }
+          let x=modal('Correct answer: Many were taken or killed','Next Question →');
+          assert(x.classes.has('bu-trivia-answer-scroll'));
+          assert.equal(x.button.textContent,'Next Question');
+          assert.equal(x.button.onclick(),73);
+          assert.equal(x.body.textContent,'original explanation');
+          x=modal('✓ Correct! +20 Points','Finish Round →');
+          assert(x.classes.has('bu-trivia-answer-scroll'));
+          assert.equal(x.button.textContent,'Finish Round');
+          for(const title of ['Helpful hints','Bible passage','Full Bible question']){
+            x=modal(title,'Next Question →');
+            assert(!x.classes.has('bu-trivia-answer-scroll'));
+          }
+          x=modal('Correct answer: X','Next Question →',false);
+          assert(!x.classes.has('bu-trivia-answer-scroll'));
+          // Score-ring adapter reads actual DOM and adds no duplicate score/controls.
+          const summaryJS=fs.readFileSync('trivia-scholar-treasury-v1.js','utf8');
+          assert(summaryJS.includes('panel.style.setProperty'));
+          assert(!summaryJS.includes('localStorage')&&!summaryJS.includes('onClick='));
+          console.log('PASS: success/reveal, next/finish, non-Trivia exclusion, original handler preserved');
+          JS
