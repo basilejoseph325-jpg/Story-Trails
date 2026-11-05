@@ -57,3 +57,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (()=>{if(document.getElementById('bu-story-chapter-complete-v2-css'))return;const l=document.createElement('link');l.id='bu-story-chapter-complete-v2-css';l.rel='stylesheet';l.href='story-chapter-complete-v2-test.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-story-finale-stage-v11-css'))return;const l=document.createElement('link');l.id='bu-story-finale-stage-v11-css';l.rel='stylesheet';l.href='story-finale-structural-parity-v11.css?v=20261105-live-paired-v11b';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-story-chapter-complete-v2-js'))return;const s=document.createElement('script');s.id='bu-story-chapter-complete-v2-js';s.src='story-chapter-complete-v2-test.js?v=20261105-live-paired-v11b';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE owner-approved Behind the Name: bronze/enamel answer screen and
+   photographic V3 parchment explanation. Exact tested Visual Lab components.
+   Do not load TEST banner or alter the existing live SFX/music. */
+(()=>{if(document.getElementById('bn-stone-material-v3'))return;const l=document.createElement('link');l.id='bn-stone-material-v3';l.rel='stylesheet';l.href='behind-name-question-premium-test.css?v=20261105-live-name-enamel-v1';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bn-enamel-material-v1'))return;const l=document.createElement('link');l.id='bn-enamel-material-v1';l.rel='stylesheet';l.href='behind-name-bronze-enamel-test.css?v=20261105-live-name-enamel-v1';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bn-live-visual-skin-v1'))return;const s=document.createElement('script');s.id='bn-live-visual-skin-v1';s.src='behind-name-visual-preview.js?v=20261105-live-name-enamel-v1';document.body.appendChild(s)})();
+(()=>{if(document.getElementById('bn-answer-scroll-css-v1'))return;const l=document.createElement('link');l.id='bn-answer-scroll-css-v1';l.rel='stylesheet';l.href='behind-name-explanation-scroll-test.css?v=20261105-live-name-scroll-v1';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bn-answer-scroll-js-v1'))return;const s=document.createElement('script');s.id='bn-answer-scroll-js-v1';s.src='behind-name-explanation-scroll-test.js?v=20261105-live-name-scroll-v1';s.defer=true;document.head.appendChild(s)})();
