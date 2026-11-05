@@ -1,0 +1,41 @@
+name: Verify LIVE Story Adventure gold icons
+on:
+  push:
+    paths: ['.github/workflows/verify-live-story-gold-icons.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check code, assets, engine roots and existing production loaders
+        run: |
+          node --check story-adventure-metallic-icons-test.js
+          node --check journey-progress-caption.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,xml.etree.ElementTree as ET
+          js=Path('story-adventure-metallic-icons-test.js').read_text()
+          css=Path('story-adventure-metallic-icons-test.css').read_text()
+          loader=Path('journey-progress-caption.js').read_text()
+          html=Path('index.html').read_text()
+          assert "for(const rootId of ['play','bu3857-screen'])" in js
+          assert "new MutationObserver(refresh).observe(root" in js
+          assert 'btn.replaceChildren(icon)' in js
+          entries=re.findall(r"\['(scene-[\w-]+|to-home|play-menu|bu3857-[\w-]+|bu3863-[\w-]+)','(assets/ui/[^']+)'\]",js)
+          assert len(entries)==19,len(entries)
+          for ident,path in entries:
+            assert Path(path).exists(),(ident,path)
+            ET.parse(path)
+          assert '#bu3857-screen .bu3863-toolbar button > img.bu-story-metal-icon' in css
+          assert '#bu3857-screen :is(#bu3857-back,#bu3857-menu)' in css
+          assert 'id="play"' in html and 'id="bu3857-screen"' in html
+          assert 'story-adventure-metallic-icons-test.css?v=20261104-all-story-roots-v4' in loader
+          assert 'story-adventure-metallic-icons-test.js?v=20261104-all-story-roots-v4' in loader
+          assert '20261104-live-approved-story-audio-v6' in loader
+          assert 'daily-discovery-explanation-scroll.css?v=20261104-seamless-paper-v3' in loader
+          assert 'visual-lab-test-banner.js' not in loader
+          assert '## H. Game-wide master icon style approved' in Path('docs/design-system/ANSWER_TABLETS_AND_GOLD_ICONS_RULES.md').read_text()
+          print('PASS: gold Story icons for both episode engines, original music/SFX, other modes and rulebook preserved')
+          PY
