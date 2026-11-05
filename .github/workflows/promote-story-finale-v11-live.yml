@@ -1,0 +1,90 @@
+name: Promote approved Story Adventure V11 completion to LIVE
+on:
+  push:
+    paths: ['.github/workflows/promote-story-finale-v11-live.yml']
+permissions: {contents: write}
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import verified TEST Story finale files and EXACT audio corrections
+        run: |
+          set -eu
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,subprocess,urllib.request
+          source="https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/22e3ea71d9e7478b2c7941f9628094fcbe6c2cd4/"
+          files={
+            "assets/ui/story-complete-book-laurel-v2.svg":"4f19d804e5cd414266860f66bab7a8f51bc070da",
+            "assets/ui/story-complete-inscription-plaque-v2.svg":"4c79f0ffbfafb0d73643ccc96bd491e35508b08c",
+            "assets/ui/story-complete-inscription-plaque-v3.svg":"914c44561859fcc806578d81c851d210d00670d1",
+            "story-chapter-complete-v2-test.js":"4c19f7aa56a382e4b233ab3a751f4887ecaa8326",
+            "story-chapter-complete-v2-test.css":"8aaa9f7c7b0a9aa09632f9008ea2a55034156e8e",
+            "story-finale-structural-parity-v11.css":"a1325a729762c98293d5aa0f50203b426fea9ded"
+          }
+          def sha(path):return subprocess.check_output(['git','hash-object',str(path)],text=True).strip()
+          for rel,expected in files.items():
+            dst=Path(rel)
+            assert not dst.exists(),f'Abort: do not overwrite live original: {rel}'
+            dst.parent.mkdir(parents=True,exist_ok=True)
+            data=urllib.request.urlopen(source+rel,timeout=30).read()
+            dst.write_bytes(data)
+            assert sha(dst)==expected,(rel,sha(dst),expected)
+            print('VERIFIED ASSET',rel,expected)
+          core=Path('bible_unfolded_core_part5.js')
+          assert sha(core)=='1eb58df76a40044bdf061ba59464a734f75a205b','Core LIVE baseline unexpected'
+          raw=core.read_text()
+          changes=[
+            ("if(!$('play').hidden)return 'story';",
+             "if(!$('play').hidden||!$('bu3857-screen').hidden)return 'story';"),
+            ("if(el.closest('#episode-list [data-episode],#episodes .episode-card,#bu3857-replay,#bu3857-next-episode'))return 'entry';",
+             "if(el.closest('#episode-list [data-episode],#episodes .episode-card,#bu3857-replay'))return 'entry';")
+          ]
+          for old,new in changes:
+            assert raw.count(old)==1,(old,raw.count(old))
+            raw=raw.replace(old,new,1)
+          core.write_text(raw)
+          assert sha(core)=='225e0a3e530c56f01d0d09aa51d0e3ae7542590c','Core patch must equal exactly tested V9'
+          audio=Path('premium-sfx.js')
+          assert sha(audio)=='7c0b54dbc23be15a43d27dd5c5a544dcb21dc1c7','Audio LIVE baseline unexpected'
+          old="#episode-list [data-episode],#bu3857-replay,#bu3857-next-episode')"
+          new="#episode-list [data-episode],#bu3857-replay')"
+          s=audio.read_text()
+          assert s.count(old)==1
+          audio.write_text(s.replace(old,new,1))
+          assert sha(audio)=='2e4845d6d139deaa4d956e88d1acd94e1647c59b','Audio file must equal tested and owner-approved V9'
+          loader=Path('journey-progress-caption.js')
+          assert sha(loader)=='935c09bd65deac2372802f88ba1649c203e2d329','Never overwrite a changed production loader'
+          s=loader.read_text()
+          assert s.count('premium-sfx.js?v=20261104-live-approved-story-audio-v6')==1
+          s=s.replace('premium-sfx.js?v=20261104-live-approved-story-audio-v6','premium-sfx.js?v=20261105-live-approved-story-next-v9')
+          assert 'story-finale-structural-parity-v11.css' not in s
+          s+="""
+
+/* LIVE: owner-approved Story Adventure chapter-completion V11.
+   Imports exact tested modern+legacy components, approved sound, cinematic art,
+   custom chapter story, and centered modern achievement section.
+   No Visual Lab TEST banner, no change to Daily Discovery or other modes. */
+(()=>{if(document.getElementById('bu-story-chapter-complete-v2-css'))return;const l=document.createElement('link');l.id='bu-story-chapter-complete-v2-css';l.rel='stylesheet';l.href='story-chapter-complete-v2-test.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-story-finale-stage-v11-css'))return;const l=document.createElement('link');l.id='bu-story-finale-stage-v11-css';l.rel='stylesheet';l.href='story-finale-structural-parity-v11.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-story-chapter-complete-v2-js'))return;const s=document.createElement('script');s.id='bu-story-chapter-complete-v2-js';s.src='story-chapter-complete-v2-test.js?v=20261105-live-v11-approved';s.defer=true;document.head.appendChild(s)})();
+"""
+          loader.write_text(s)
+          html=Path('index.html')
+          assert 'journey-progress-caption.js' in html.read_text()
+          print('PASS: exact Story TEST assets, V9 audio byte-equivalence, live loader preserved plus scoped V11 CSS/JS')
+          PY
+          node --check bible_unfolded_core_part5.js
+          node --check premium-sfx.js
+          node --check journey-progress-caption.js
+          node --check story-chapter-complete-v2-test.js
+          git diff --check
+      - name: Commit one atomic owner-approved LIVE Story finale promotion
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- assets/ui/story-complete-book-laurel-v2.svg assets/ui/story-complete-inscription-plaque-v2.svg assets/ui/story-complete-inscription-plaque-v3.svg story-chapter-complete-v2-test.js story-chapter-complete-v2-test.css story-finale-structural-parity-v11.css bible_unfolded_core_part5.js premium-sfx.js journey-progress-caption.js
+          git diff --cached --check
+          git commit -m "LIVE owner approved: Story Adventure cinematic chapter completion V11 and matching next sound"
+          git push origin HEAD:main
