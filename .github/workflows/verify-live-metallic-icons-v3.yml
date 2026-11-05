@@ -1,0 +1,43 @@
+name: Verify approved V3 metallic icon live promotion
+on:
+  push:
+    paths: ['.github/workflows/verify-live-metallic-icons-v3.yml']
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check syntax assets live loader isolation and approved master rulebook
+        run: |
+          node --check daily-discovery-gold-icons-test.js
+          node --check journey-progress-caption.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          names=['daily-gold-bible-v3.svg','daily-gold-hint-v3.svg','daily-gold-eye-v3.svg']
+          for name in names:
+            s=(Path('assets/ui')/name).read_text()
+            node=ET.fromstring(s)
+            assert node.tag.endswith('svg') and node.attrib.get('viewBox')=='0 0 64 64'
+            assert 'linearGradient' in s and 'shadow' in s
+            assert '<rect' not in s
+          assert 'cross' not in Path('assets/ui/daily-gold-bible-v3.svg').read_text().lower()
+          js=Path('daily-discovery-gold-icons-test.js').read_text()
+          for name in names:assert name in js
+          assert "root=document.getElementById('bu375-daily')" in js
+          assert 'b.replaceChildren(icon)' in js
+          css=Path('daily-discovery-polish-test.css').read_text()
+          assert 'V3: individual premium metallic artwork' in css
+          assert 'bu-daily-gold-icon > img' in css
+          assert 'bu375-answer.correct' in css and 'bu375-answer.incorrect' in css
+          loader=Path('journey-progress-caption.js').read_text()
+          assert 'daily-discovery-polish-test.css?v=20261104-metallic-art-v3' in loader
+          assert 'daily-discovery-gold-icons-test.js?v=20261104-metallic-art-v3' in loader
+          assert '20261104-live-approved-story-audio-v6' in loader
+          assert 'visual-lab-test-banner' not in loader
+          rules=Path('docs/design-system/ANSWER_TABLETS_AND_GOLD_ICONS_RULES.md').read_text()
+          assert '## G. Final approved icon master' in rules
+          for name in names:assert name in rules
+          print('PASS: owner-approved V3 icons, cross-free Bible, Daily-only behavior, live audio preserved, master standards')
+          PY
