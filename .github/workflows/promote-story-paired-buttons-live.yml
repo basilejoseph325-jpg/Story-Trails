@@ -1,0 +1,58 @@
+name: Promote approved paired Story Chapters button LIVE
+on:
+  push:
+    paths: ['.github/workflows/promote-story-paired-buttons-live.yml']
+permissions: {contents: write}
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Promote verified V11B Story action row without touching audio or core
+        run: |
+          set -eu
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess,urllib.request
+          source="https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/6df85d255d53fd0c95b65a57a39daa15afc8b7a6/"
+          expected={
+            "story-chapter-complete-v2-test.js":("4c19f7aa56a382e4b233ab3a751f4887ecaa8326","a6a40cea7ddd7df5674529f0ff8399dd50de6bf2"),
+            "story-finale-structural-parity-v11.css":("a1325a729762c98293d5aa0f50203b426fea9ded","b2fa727020164a81b93810f333d3023ed4b6cf3f"),
+          }
+          def sha(path):return subprocess.check_output(['git','hash-object',str(path)],text=True).strip()
+          for name,(old,new) in expected.items():
+            p=Path(name)
+            assert sha(p)==old,('LIVE changed; stop',name,sha(p))
+            p.write_bytes(urllib.request.urlopen(source+name,timeout=30).read())
+            assert sha(p)==new,('TEST hash mismatch',name,sha(p))
+          loader=Path('journey-progress-caption.js')
+          assert sha(loader)=='646a1f45e22ace782e456b17168371f0a2882e8b','LIVE loader changed; stop'
+          s=loader.read_text()
+          changes=[
+            ('story-chapter-complete-v2-test.js?v=20261105-live-v11-approved','story-chapter-complete-v2-test.js?v=20261105-live-paired-v11b'),
+            ('story-finale-structural-parity-v11.css?v=20261105-live-v11-approved','story-finale-structural-parity-v11.css?v=20261105-live-paired-v11b')
+          ]
+          for old,new in changes:
+            assert s.count(old)==1,old
+            s=s.replace(old,new)
+          assert 'premium-sfx.js?v=20261105-live-approved-story-next-v9' in s
+          assert 'visual-lab-test-banner.js' not in s
+          loader.write_text(s)
+          assert sha(Path('premium-sfx.js'))=='2e4845d6d139deaa4d956e88d1acd94e1647c59b'
+          assert sha(Path('bible_unfolded_core_part5.js'))=='225e0a3e530c56f01d0d09aa51d0e3ae7542590c'
+          script=Path('story-chapter-complete-v2-test.js').read_text()
+          assert "chapters.addEventListener('click',()=>nativeBack.click());" in script
+          assert "row.appendChild(replay);" in script
+          print('PASS: V11B paired Replay + Chapters imported; 2-column layout, original navigation/audio and other modes preserved')
+          PY
+          node --check story-chapter-complete-v2-test.js
+          node --check journey-progress-caption.js
+          git diff --check
+      - name: Commit paired navigation as one scoped LIVE update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- story-chapter-complete-v2-test.js story-finale-structural-parity-v11.css journey-progress-caption.js
+          git diff --cached --check
+          git commit -m "LIVE: approved Replay and Chapters side by side for later Story chapters"
+          git push origin HEAD:main
