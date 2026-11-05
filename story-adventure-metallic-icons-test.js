@@ -1,0 +1,76 @@
+/* TEST ONLY — Story Adventure icons from the approved metallic-gold design family.
+   Scope: #play ONLY. Reuse the exact cross-free Bible/hint/eye SVG masters.
+   Preserve original <button> nodes, titles, handlers, hit targets and toolbar logic.
+   Native Story code can reset its hint text; observer restores the art safely. */
+(()=>{'use strict';
+ const items=[
+  ['scene-scripture','assets/ui/daily-gold-bible-v3.svg'],
+  ['scene-context','assets/ui/story-gold-context-v1.svg'],
+  ['scene-hint','assets/ui/daily-gold-hint-v3.svg'],
+  ['scene-shuffle','assets/ui/story-gold-shuffle-v1.svg'],
+  ['scene-clear','assets/ui/story-gold-clear-v1.svg'],
+  ['scene-reveal','assets/ui/daily-gold-eye-v3.svg'],
+  ['scene-restart','assets/ui/story-gold-restart-v1.svg'],
+  ['to-home','assets/ui/story-gold-back-v1.svg'],
+  ['play-menu','assets/ui/story-gold-menu-v1.svg'],
+  // Newer chapter engines render their own toolbar and must share the same family.
+  ['bu3863-scripture','assets/ui/daily-gold-bible-v3.svg'],
+  ['bu3863-story','assets/ui/story-gold-context-v1.svg'],
+  ['bu3857-hint','assets/ui/daily-gold-hint-v3.svg'],
+  ['bu3863-shuffle','assets/ui/story-gold-shuffle-v1.svg'],
+  ['bu3863-clear','assets/ui/story-gold-clear-v1.svg'],
+  ['bu3857-clear','assets/ui/story-gold-clear-v1.svg'],
+  ['bu3857-check','assets/ui/story-gold-check-v1.svg'],
+  ['bu3857-reveal','assets/ui/daily-gold-eye-v3.svg'],
+  ['bu3857-back','assets/ui/story-gold-back-v1.svg'],
+  ['bu3857-menu','assets/ui/story-gold-menu-v1.svg']
+ ];
+ function start(){
+  // The original episode engine uses #play; Genesis episodes 7–9
+  // (Abraham/Lot, Isaac, Rebekah) and later chapters use #bu3857-screen.
+  // Observe BOTH independently because the newer engine re-renders its toolbar.
+  for(const rootId of ['play','bu3857-screen']){
+   const root=document.getElementById(rootId);
+   if(!root)continue;
+   let running=false;
+   const rootsItems=items.filter(([id])=>
+    rootId==='play' ? !id.startsWith('bu3857-')&&!id.startsWith('bu3863-')
+                    : id.startsWith('bu3857-')||id.startsWith('bu3863-'));
+   function refresh(){
+    if(running)return;running=true;
+    try{
+     for(const [id,path] of rootsItems){
+      const btn=root.querySelector('#'+id);
+      if(!btn||btn.querySelector(':scope > img.bu-story-metal-icon'))continue;
+      const icon=document.createElement('img');
+      icon.className='bu-story-metal-icon';
+      icon.src=path;icon.alt='';icon.draggable=false;
+      icon.setAttribute('aria-hidden','true');
+      btn.replaceChildren(icon);
+     }
+     // Finale actions keep readable labels and native event listeners.
+     const finale=rootId==='play' ? [
+      ['playAgain','assets/ui/story-gold-restart-v1.svg',/^(?:↻|⟲)\s*/u],
+      ['read-story','assets/ui/daily-gold-bible-v3.svg',/^📖\s*/u]
+     ] : [
+      ['bu3857-replay','assets/ui/story-gold-restart-v1.svg',/^(?:↻|⟲)\s*/u]
+     ];
+     for(const [id,path,strip] of finale){
+      const btn=root.querySelector('#'+id);
+      if(!btn||btn.querySelector(':scope > img.bu-story-metal-icon'))continue;
+      const label=(btn.textContent||'').replace(strip,'').trim();
+      if(!label)continue;
+      const icon=document.createElement('img');
+      icon.className='bu-story-metal-icon';
+      icon.src=path;icon.alt='';icon.draggable=false;
+      icon.setAttribute('aria-hidden','true');
+      btn.replaceChildren(icon,document.createTextNode(' '+label));
+     }
+    }finally{running=false}
+   }
+   new MutationObserver(refresh).observe(root,{childList:true,subtree:true});
+   refresh();
+  }
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
