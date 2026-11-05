@@ -1,0 +1,53 @@
+name: LIVE promote approved no-ducking announcer fix
+on:
+  push:
+    paths: ['.github/workflows/promote-announcer-no-ducking-live.yml']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm baseline and apply exact TEST-approved two-line fix
+        run: |
+          set -eu
+          test "$(git hash-object bible_unfolded_core_part5.js)" = "a968430bfef506e3a45def87d3602f1524bf0944"
+          python3 .github/scripts/disable_announcer_ducking_20261104.py
+      - name: Verify byte-for-byte same approved TEST output and exact scope
+        run: |
+          set -eu
+          actual="$(git hash-object bible_unfolded_core_part5.js)"
+          expected="1eb58df76a40044bdf061ba59464a734f75a205b"
+          echo "LIVE output $actual ; approved TEST output $expected"
+          test "$actual" = "$expected"
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re,subprocess
+          p=Path('bible_unfolded_core_part5.js')
+          now=p.read_text()
+          old=subprocess.check_output(['git','show','HEAD:bible_unfolded_core_part5.js'],text=True)
+          a='const goal=bu381Voice.active?0.30:1;'
+          b='const goal=1; // Announcer voice no longer lowers background music.'
+          c='const duckGoal=(canPlay&&bu381Voice.active)?0.32:1;'
+          d="const duckGoal=1; // Preserve the user's selected soundtrack level during speech."
+          assert now==old.replace(a,b).replace(c,d)
+          match=re.search(r'__BU_STAGE41_CORE_PARTS__\[\d+\] = (".*");',now,re.S)
+          assert match
+          src=json.loads(match.group(1))
+          assert 'function bu381Play(' in src
+          assert 'bu381Voice.active=true;' in src
+          assert 'bu25AudioPulse=function(){' in src
+          assert 'musicVolume/100*.72' in src
+          assert 'if(!selected&&!player.paused)player.pause();' in src
+          assert a not in src and c not in src and b in src and d in src
+          print('PASS: output identical to approved Visual Lab, no change except two soundtrack duck multipliers')
+          PY
+      - name: Commit approved game-core patch only
+        run: |
+          git add bible_unfolded_core_part5.js
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "LIVE: announcers no longer duck music, approved TEST exact patch"
+          git push origin HEAD:main
