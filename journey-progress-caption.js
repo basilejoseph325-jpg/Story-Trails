@@ -67,3 +67,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (()=>{if(document.getElementById('bn-live-visual-skin-v1'))return;const s=document.createElement('script');s.id='bn-live-visual-skin-v1';s.src='behind-name-visual-preview.js?v=20261105-live-name-enamel-v1';document.body.appendChild(s)})();
 (()=>{if(document.getElementById('bn-answer-scroll-css-v1'))return;const l=document.createElement('link');l.id='bn-answer-scroll-css-v1';l.rel='stylesheet';l.href='behind-name-explanation-scroll-test.css?v=20261105-live-name-scroll-v1';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bn-answer-scroll-js-v1'))return;const s=document.createElement('script');s.id='bn-answer-scroll-js-v1';s.src='behind-name-explanation-scroll-test.js?v=20261105-live-name-scroll-v1';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE owner-approved Word Trails visual promotion — November 5, 2026.
+   These are the exact tested Visual Lab Word Trails V1 game + V2 finale +
+   V3 authentic star effect. This adds only the four isolated components.
+   Preserve existing LIVE sound, handlers, saving, and all unrelated modes. */
+(()=>{if(document.getElementById('wt-premium-visual-v1'))return;const l=document.createElement('link');l.id='wt-premium-visual-v1';l.rel='stylesheet';l.href='word-trails-premium-game-and-finale-test.css?v=20261105-live-wt-approved-v3';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('wt-completion-cinema-v2'))return;const l=document.createElement('link');l.id='wt-completion-cinema-v2';l.rel='stylesheet';l.href='word-trails-cinematic-completion-v2-test.css?v=20261105-live-wt-approved-v3';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('wt-star-v3-css'))return;const l=document.createElement('link');l.id='wt-star-v3-css';l.rel='stylesheet';l.href='word-trails-starfield-v3-test.css?v=20261105-live-wt-approved-v3';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('wt-star-v3-js'))return;const s=document.createElement('script');s.id='wt-star-v3-js';s.src='word-trails-starfield-v3-test.js?v=20261105-live-wt-approved-v3';s.defer=true;document.head.appendChild(s)})();
