@@ -1,0 +1,32 @@
+name: Import approved Daily Discovery scroll V3 image into LIVE
+on:
+  push:
+    paths: ['.github/workflows/import-approved-daily-scroll-image.yml']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch exact owner-approved image and verify Git blob SHA
+        run: |
+          set -eu
+          mkdir -p assets/ui
+          curl --fail --location --retry 3 --silent --show-error \
+            'https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/8f17ecd371700e22b252d65988084e97bc449572/assets/ui/daily-discovery-explanation-scroll-v3.webp' \
+            --output assets/ui/daily-discovery-explanation-scroll-v3.webp
+          actual="$(git hash-object assets/ui/daily-discovery-explanation-scroll-v3.webp)"
+          expected='4e25223d5666397a3a9dc9b446e4262d12fc41a2'
+          echo "Actual $actual Expected $expected"
+          test "$actual" = "$expected"
+          file assets/ui/daily-discovery-explanation-scroll-v3.webp
+          test "$(stat -c %s assets/ui/daily-discovery-explanation-scroll-v3.webp)" -gt 80000
+      - name: Commit ONLY approved original image
+        run: |
+          git add assets/ui/daily-discovery-explanation-scroll-v3.webp
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "LIVE Daily Discovery: install exact approved V3 scroll image"
+          git push origin HEAD:main
