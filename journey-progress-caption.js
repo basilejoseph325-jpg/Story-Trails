@@ -102,3 +102,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    No change to Daily Discovery, Behind the Name, hint or scripture popups. */
 (()=>{if(document.getElementById('bu-trivia-answer-scroll-css-v1'))return;const l=document.createElement('link');l.id='bu-trivia-answer-scroll-css-v1';l.rel='stylesheet';l.href='trivia-answer-scroll-v1.css?v=20261105-live-trivia-approved-v1';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-trivia-answer-scroll-js-v1'))return;const s=document.createElement('script');s.id='bu-trivia-answer-scroll-js-v1';s.src='trivia-answer-scroll-v1.js?v=20261105-live-trivia-approved-v1';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE owner-approved Bible Trivia audio V5 — promoted from Visual Lab.
+   Original correct chime preserved and boosted during Trivia only; the
+   gentle wrong-answer two-note cue uses richer harmonics for phone speakers.
+   Existing Effects toggle/slider, answer handlers, retries and other modes
+   remain untouched. */
+(()=>{if(document.getElementById('bu-trivia-wrong-tone-v1'))return;const s=document.createElement('script');s.id='bu-trivia-wrong-tone-v1';s.src='trivia-wrong-tone-repair-v1.js?v=20261106-live-approved-rich-negative-v5';s.defer=true;document.head.appendChild(s)})();
