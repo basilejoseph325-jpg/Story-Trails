@@ -1,0 +1,174 @@
+name: Promote owner-approved Family Worship gallery V7 to live
+on:
+  push:
+    paths:
+      - '.github/workflows/promote-approved-family-worship-v7.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: promote-approved-family-worship-v7-live
+  cancel-in-progress: false
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - name: Checkout original live game, without replacing its core
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Copy SHA-verified isolated Family Worship artwork and component files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+          from urllib.request import Request, urlopen
+          from urllib.parse import quote
+          from urllib.error import HTTPError, URLError
+          import hashlib, time
+          base="https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/8a4eef54fbe538ee74bc512e2e53b5b8eba08dae/"
+          manifest="""\
+          9065314bccfc424e0c024e1a3016423c5bc8fa79  family-worship-gathering-v1.css
+          73cf2dce4a255b562fbd64a671365f17a6930bc9  family-worship-gathering-v1.js
+          b1e7f0dde923a8cb7d4efca5e3b70a8414250abe  family-worship-gathering-outer-v2.css
+          46ab0186c6c85e23e22492b0bec19e2f2defe590  family-worship-picker-gallery-v3.css
+          36f426ea6136de476ce1cf036910c81b4f2b3e79  family-worship-picker-gallery-v3.js
+          a45c8958f996e540a2af1bf1f7a2c3539f55d770  family-worship-gallery-crop-v4.css
+          7f607342b53a6ed9734347c647e07f1cc49c1299  family-worship-menu-art/v1/topic-01-all-bible-fresh-mix.webp
+          3d51caf5d3bd21e9bc84f02b8d595ca0aab8023e  family-worship-menu-art/v1/topic-02-bible-people-events.jpg
+          9ddbb910199a7574460fa924d1e49e22612954c9  family-worship-menu-art/v1/topic-03-jesus-his-teachings.jpg
+          e64c3d2ce5a0986eea49d1b51e0bdbcb5dbabab8  family-worship-menu-art/v1/topic-04-wisdom-kingdom-prophecy.jpg
+          bb261d250c281e9e4576a97a0c95e9a98e16ca7d  family-worship-menu-art/v1/topic-05-early-congregation.jpg
+          c65082361c62f592b7dd13a558fa2cf887fd3e98  family-worship-menu-art/v1/topic-06-creation.jpg
+          c272918b63010ebc8732945d3402afec9ed10dfb  family-worship-menu-art/v1/topic-07-eden.webp
+          923f4635e1b6714d59427ed1bbdd7a740cd5102c  family-worship-menu-art/v7/topic-08-cain-and-abel.jpg
+          423b88ef60cd71b5b1180144c686e0c9344e2cda  family-worship-menu-art/v1/topic-09-noah-and-the-ark.jpg
+          06ac3883cf8dcf169924bd01fccb1a0de5adcb5d  family-worship-menu-art/v6/topic-10-tower-of-babel.jpg
+          d51148f69e6529e0739da7af4603960b52969175  family-worship-menu-art/v1/topic-11-abram-s-journey.jpg
+          f07f6b99754fee2ec1cae14378b53c44bae3e5f0  family-worship-menu-art/v1/topic-12-baby-moses.webp
+          b0e7b4e80a5bc10d6d72dea8a7d9451f3295e537  family-worship-menu-art/v1/topic-13-joshua-jericho.webp
+          8dab4a8dff2e001af91ea75413553c58dba1a6c8  family-worship-menu-art/v1/topic-14-gideon.webp
+          a096b5e85c5bb22c3ae6420a18dd94b1116103d4  family-worship-menu-art/v1/topic-15-ruth-naomi.webp
+          a2fbcf8eab2bb65944bcd581a303f4b31065eddd  family-worship-menu-art/v1/topic-16-david.webp
+          1436c53556968fb0a8a53b6d9d291b0c67d04367  family-worship-menu-art/v1/topic-17-solomon.webp
+          feda1c1a7dd0f801e73b19e221d1bb27a64a9199  family-worship-menu-art/v1/topic-18-elijah.webp
+          aa0a79b3b55eec36f177a1a95ae00cd61f0c8109  family-worship-menu-art/v6/topic-19-elisha.jpg
+          a2ee61b850a4647780b64ae43d2d076c0df1b35b  family-worship-menu-art/v1/topic-20-esther.webp
+          58dce3b8db6cbb5444defbb5958a6f793bd3e5f4  family-worship-menu-art/v1/topic-21-daniel.webp
+          d1c373f6c00088943a52ba43ccd0e97e3375d498  family-worship-menu-art/v1/topic-22-jesus-early-life.webp
+          742820c61e9d94d29d87eb03277ee2efa714ef3d  family-worship-menu-art/v1/topic-23-jesus-illustrations.webp
+          b3b950a06af57cbf880191ac85b9cfda976ae53b  family-worship-menu-art/v1/topic-24-jesus-miracles.webp
+          2a95287920e83ddb778d9642cc0a1fd4beb26798  family-worship-menu-art/v4/topic-25-peter-early-disciples.webp
+          723174d1c6b3b9db489fc1196d9c0f7f9e89b758  family-worship-menu-art/v4/topic-26-paul-timothy.webp
+          5637d9934125186d9c3b91a8adcddc788a840698  family-worship-menu-art/v6/topic-27-samuel.jpg
+          fe62399f18852dc3e52bc99fbc58c4e0dd29a4c3  family-worship-menu-art/v1/topic-28-jonah.webp
+          0622386b65d8221788e56623daf1a10d475a3535  family-worship-menu-art/v1/topic-29-nehemiah.webp
+          f69ed0306a140f569b0fb12907f9294acfced330  family-worship-menu-art/v1/topic-30-psalms.webp
+          e6f839026eebdb45bc9e96b1128e5ff22efe65d6  family-worship-menu-art/v1/topic-31-proverbs.webp
+          9ddbb910199a7574460fa924d1e49e22612954c9  family-worship-menu-art/v1/topic-32-sermon-on-the-mount.jpg
+          d1c373f6c00088943a52ba43ccd0e97e3375d498  family-worship-menu-art/v1/topic-33-model-prayer.webp
+          119aac2d5aeaf60fb907582e978ffe2a046a0bbd  family-worship-menu-art/v1/topic-34-pentecost.webp
+          44d06a13da470462474056880c70ae91b1846a42  family-worship-menu-art/v1/topic-35-jesus-resurrection.webp
+          032163f5232f38be5ff505de89f156e6f9e0c904  family-worship-menu-art/v1/topic-36-future-promises.webp
+          552c8140c8d0c19063b2110839ac0ddadc986a69  family-worship-menu-art/v1/topic-37-jehovah-s-qualities.webp
+          e9ec7c2d5174ccc6a652290228c63df23f9668da  family-worship-menu-art/v5/topic-38-jesus-ministry.webp
+          2eab2c6c991005149f086a81f8d758e0e44c693f  family-worship-menu-art/v1/topic-39-kingdom-armageddon.webp
+          032163f5232f38be5ff505de89f156e6f9e0c904  family-worship-menu-art/v1/topic-40-bible-prophecy.webp
+          5a3c45d1b2b520a14b36de4f7fcb827dbd983170  family-worship-menu-art/v1/topic-41-job-integrity.webp
+          caf4df8b40dd1be2763f1f9c5e5302aef7c45510  family-worship-menu-art/v1/topic-42-christian-living.webp
+          7dd1a1c9d3391faec53b8359c4b31a5c9fb67901  family-worship-menu-art/v1/level-beginner.webp
+          d2c0ce5e92f3499fcbde06cc61618c0a222e7a8b  family-worship-menu-art/v1/level-intermediate.webp
+          7b29544e535e8d338ca252eba7196592a96af992  family-worship-menu-art/v1/level-advanced.webp
+          036412ae39a8807a474375fc6523e9abfb62b27a  family-worship-menu-art/v1/level-expert.webp
+          """
+          entries=[]
+          for line in manifest.splitlines():
+              line=line.strip()
+              if not line:continue
+              sha,path=line.split(maxsplit=1)
+              assert len(sha)==40 and path.startswith(("family-worship-menu-art/","family-worship-")), (sha,path)
+              entries.append((sha,path))
+          assert len(entries)==52 and len(set(p for _,p in entries))==52
+          assert sum(p.startswith("family-worship-menu-art/") for _,p in entries)==46
+          def verify(data,expected,path):
+              blobhash=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\0"+data).hexdigest()
+              if blobhash!=expected:raise ValueError("Content SHA mismatch for "+path)
+          def download(item):
+              sha,path=item
+              dst=Path(path)
+              if dst.exists():
+                  data=dst.read_bytes()
+                  verify(data,sha,path)
+                  return path,len(data),"existing"
+              url=base+quote(path,safe="/")
+              for retry in range(4):
+                  try:
+                      req=Request(url,headers={"User-Agent":"BibleUnfolded-Live-FamilyWorship-VerifiedPromotion"})
+                      with urlopen(req,timeout=45) as response:
+                          data=response.read()
+                      verify(data,sha,path)
+                      if path.endswith((".jpg",".webp",".png")):
+                          assert len(data)>5000,("Suspiciously small art",path)
+                      dst.parent.mkdir(parents=True,exist_ok=True)
+                      dst.write_bytes(data)
+                      return path,len(data),"copied"
+                  except Exception:
+                      if retry==3:raise
+                      time.sleep(retry+1)
+              raise AssertionError(path)
+          with ThreadPoolExecutor(max_workers=6) as pool:
+              futures=[pool.submit(download,item) for item in entries]
+              for f in as_completed(futures):
+                  path,size,mode=f.result()
+                  print("COPY",mode,path,size,flush=True)
+          gallery=Path("family-worship-picker-gallery-v3.js").read_text()
+          import re
+          referenced=set(re.findall(r"family-worship-menu-art/[^\"'\x60\\s)]+?\\.(?:jpg|webp|png)",gallery))
+          declared={p for _,p in entries if p.startswith("family-worship-menu-art/")}
+          assert referenced==declared,(sorted(referenced-declared),sorted(declared-referenced))
+          assert "topic-08-cain-and-abel.jpg" in gallery
+          assert "topic-10-tower-of-babel.jpg" in gallery
+          assert "topic-19-elisha.jpg" in gallery
+          assert "topic-27-samuel.jpg" in gallery
+          assert "topic-38-jesus-ministry.webp" in gallery
+          assert gallery.count("family-worship-menu-art/")==46
+          original=Path("journey-progress-caption.js")
+          previous=original.read_text()
+          assert "trivia-wrong-tone-repair-v1.js?v=20261106-live-approved-rich-negative-v5" in previous
+          assert "bu-fw-gathering-css-v1" not in previous or "bu-fw-gallery-v3-js" in previous
+          extra="""\
+          
+          /* LIVE — owner-approved Family Worship compact setup, cinematic topic/level
+             dropdowns, and headroom corrections, verified in Visual Lab at 8a4eef54fbe538ee74bc512e2e53b5b8eba08dae.
+             Only the Family Worship setup and its modal menus are enhanced. Existing
+             gameplay, scoring, audio and other modes remain unchanged. */
+          (()=>{if(document.getElementById('bu-fw-gathering-css-v1'))return;const l=document.createElement('link');l.id='bu-fw-gathering-css-v1';l.rel='stylesheet';l.href='family-worship-gathering-v1.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+          (()=>{if(document.getElementById('bu-fw-gathering-js-v1'))return;const s=document.createElement('script');s.id='bu-fw-gathering-js-v1';s.src='family-worship-gathering-v1.js?v=20261106-live-approved-fw-v7';s.defer=true;document.head.appendChild(s)})();
+          (()=>{if(document.getElementById('bu-fw-outer-v2-css'))return;const l=document.createElement('link');l.id='bu-fw-outer-v2-css';l.rel='stylesheet';l.href='family-worship-gathering-outer-v2.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+          (()=>{if(document.getElementById('bu-fw-gallery-v3-css'))return;const l=document.createElement('link');l.id='bu-fw-gallery-v3-css';l.rel='stylesheet';l.href='family-worship-picker-gallery-v3.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+          (()=>{if(document.getElementById('bu-fw-gallery-v3-js'))return;const s=document.createElement('script');s.id='bu-fw-gallery-v3-js';s.src='family-worship-picker-gallery-v3.js?v=20261106-live-approved-fw-v7';s.defer=true;document.head.appendChild(s)})();
+          (()=>{if(document.getElementById('bu-fw-gallery-crop-v4-css'))return;const l=document.createElement('link');l.id='bu-fw-gallery-crop-v4-css';l.rel='stylesheet';l.href='family-worship-gallery-crop-v4.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+          
+          """
+          if "bu-fw-gathering-css-v1" not in previous:
+              original.write_text(previous+"\\n"+extra)
+          updated=original.read_text()
+          for term in ("bu-fw-gathering-css-v1","bu-fw-gathering-js-v1","bu-fw-outer-v2-css","bu-fw-gallery-v3-css","bu-fw-gallery-v3-js","bu-fw-gallery-crop-v4-css"):
+              assert updated.count("getElementById('"+term+"')")==1,term
+          assert "trivia-wrong-tone-repair-v1.js?v=20261106-live-approved-rich-negative-v5" in updated
+          for name in ("Cain and Abel","The Tower of Babel","Elisha","Samuel"):
+              assert gallery.count('"'+name+'": ')==1
+          print("PASS source pin, 52 file hashes, all 46 images, native mappings and preserved Trivia audio")
+          PY
+          node --check family-worship-gathering-v1.js
+          node --check family-worship-picker-gallery-v3.js
+          node --check journey-progress-caption.js
+          git add family-worship-menu-art/ family-worship-gathering-v1.css family-worship-gathering-v1.js family-worship-gathering-outer-v2.css family-worship-picker-gallery-v3.css family-worship-picker-gallery-v3.js family-worship-gallery-crop-v4.css journey-progress-caption.js
+          git diff --cached --check
+          git diff --cached --stat
+          test "$(git diff --cached --name-only | wc -l)" -eq 53
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "LIVE: promote approved Family Worship V7 from verified Visual Lab release"
+          git push origin HEAD:main
