@@ -129,3 +129,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    hints and other dialogs remain unchanged. */
 (()=>{if(document.getElementById('bu-story-discovery-scroll-css-v1'))return;const l=document.createElement('link');l.id='bu-story-discovery-scroll-css-v1';l.rel='stylesheet';l.href='story-adventure-discovery-scroll-v1.css?v=20261106-live-story-discovery-scroll-v1';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-story-discovery-scroll-js-v1'))return;const s=document.createElement('script');s.id='bu-story-discovery-scroll-js-v1';s.src='story-adventure-discovery-scroll-v1.js?v=20261106-live-story-discovery-scroll-v1';s.defer=true;document.head.appendChild(s)})();
+
+/* LIVE — owner approved Family Worship answer explanation parchment V2.
+   Same QA-tested Visual Lab component (5f6857ab2c1cf27c62a7f447a73dd2c584dd15b9).
+   Covers scored Trivia, Lightning, Word Relay, Story Discoveries answer
+   results; original next-turn, scores, hints, audio and setup preserved. */
+(()=>{if(document.getElementById('bu-fw-answer-scroll-css-v1'))return;const l=document.createElement('link');l.id='bu-fw-answer-scroll-css-v1';l.rel='stylesheet';l.href='family-worship-answer-scroll-v1.css?v=20261107-family-answer-v1';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-fw-answer-scroll-js-v1'))return;const s=document.createElement('script');s.id='bu-fw-answer-scroll-js-v1';s.src='family-worship-answer-scroll-v1.js?v=20261107-all-four-answer-modes-v2';s.defer=true;document.head.appendChild(s)})();
