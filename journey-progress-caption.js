@@ -110,3 +110,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    Existing Effects toggle/slider, answer handlers, retries and other modes
    remain untouched. */
 (()=>{if(document.getElementById('bu-trivia-wrong-tone-v1'))return;const s=document.createElement('script');s.id='bu-trivia-wrong-tone-v1';s.src='trivia-wrong-tone-repair-v1.js?v=20261106-live-approved-rich-negative-v5';s.defer=true;document.head.appendChild(s)})();
+
+/* LIVE — owner-approved Family Worship compact setup, cinematic topic/level
+   dropdowns, and headroom corrections, verified in Visual Lab at 8a4eef54fbe538ee74bc512e2e53b5b8eba08dae.
+   Only the Family Worship setup and its modal menus are enhanced. Existing
+   gameplay, scoring, audio and other modes remain unchanged. */
+(()=>{if(document.getElementById('bu-fw-gathering-css-v1'))return;const l=document.createElement('link');l.id='bu-fw-gathering-css-v1';l.rel='stylesheet';l.href='family-worship-gathering-v1.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-fw-gathering-js-v1'))return;const s=document.createElement('script');s.id='bu-fw-gathering-js-v1';s.src='family-worship-gathering-v1.js?v=20261106-live-approved-fw-v7';s.defer=true;document.head.appendChild(s)})();
+(()=>{if(document.getElementById('bu-fw-outer-v2-css'))return;const l=document.createElement('link');l.id='bu-fw-outer-v2-css';l.rel='stylesheet';l.href='family-worship-gathering-outer-v2.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-fw-gallery-v3-css'))return;const l=document.createElement('link');l.id='bu-fw-gallery-v3-css';l.rel='stylesheet';l.href='family-worship-picker-gallery-v3.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-fw-gallery-v3-js'))return;const s=document.createElement('script');s.id='bu-fw-gallery-v3-js';s.src='family-worship-picker-gallery-v3.js?v=20261106-live-approved-fw-v7';s.defer=true;document.head.appendChild(s)})();
+(()=>{if(document.getElementById('bu-fw-gallery-crop-v4-css'))return;const l=document.createElement('link');l.id='bu-fw-gallery-crop-v4-css';l.rel='stylesheet';l.href='family-worship-gallery-crop-v4.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
