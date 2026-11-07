@@ -94,7 +94,7 @@ jobs:
           assert len(entries)==52 and len(set(p for _,p in entries))==52
           assert sum(p.startswith("family-worship-menu-art/") for _,p in entries)==46
           def verify(data,expected,path):
-              blobhash=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\0"+data).hexdigest()
+              blobhash=hashlib.sha1(b"blob "+str(len(data)).encode()+bytes([0])+data).hexdigest()
               if blobhash!=expected:raise ValueError("Content SHA mismatch for "+path)
           def download(item):
               sha,path=item
@@ -126,7 +126,7 @@ jobs:
                   print("COPY",mode,path,size,flush=True)
           gallery=Path("family-worship-picker-gallery-v3.js").read_text()
           import re
-          referenced=set(re.findall(r"family-worship-menu-art/[^\"'\x60\\s)]+?\\.(?:jpg|webp|png)",gallery))
+          referenced={line.split('"')[3] for line in gallery.splitlines() if '"family-worship-menu-art/' in line}
           declared={p for _,p in entries if p.startswith("family-worship-menu-art/")}
           assert referenced==declared,(sorted(referenced-declared),sorted(declared-referenced))
           assert "topic-08-cain-and-abel.jpg" in gallery
@@ -154,7 +154,7 @@ jobs:
           
           """
           if "bu-fw-gathering-css-v1" not in previous:
-              original.write_text(previous+"\\n"+extra)
+              original.write_text(previous+chr(10)+extra)
           updated=original.read_text()
           for term in ("bu-fw-gathering-css-v1","bu-fw-gathering-js-v1","bu-fw-outer-v2-css","bu-fw-gallery-v3-css","bu-fw-gallery-v3-js","bu-fw-gallery-crop-v4-css"):
               assert updated.count("getElementById('"+term+"')")==1,term
