@@ -154,7 +154,7 @@ jobs:
           
           """
           if "bu-fw-gathering-css-v1" not in previous:
-              original.write_text(previous+chr(10)+extra)
+              original.write_text(previous.rstrip(chr(10))+chr(10)+chr(10)+extra.strip(chr(10))+chr(10))
           updated=original.read_text()
           for term in ("bu-fw-gathering-css-v1","bu-fw-gathering-js-v1","bu-fw-outer-v2-css","bu-fw-gallery-v3-css","bu-fw-gallery-v3-js","bu-fw-gallery-crop-v4-css"):
               assert updated.count("getElementById('"+term+"')")==1,term
