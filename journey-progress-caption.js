@@ -121,3 +121,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (()=>{if(document.getElementById('bu-fw-gallery-v3-css'))return;const l=document.createElement('link');l.id='bu-fw-gallery-v3-css';l.rel='stylesheet';l.href='family-worship-picker-gallery-v3.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-fw-gallery-v3-js'))return;const s=document.createElement('script');s.id='bu-fw-gallery-v3-js';s.src='family-worship-picker-gallery-v3.js?v=20261106-live-approved-fw-v7';s.defer=true;document.head.appendChild(s)})();
 (()=>{if(document.getElementById('bu-fw-gallery-crop-v4-css'))return;const l=document.createElement('link');l.id='bu-fw-gallery-crop-v4-css';l.rel='stylesheet';l.href='family-worship-gallery-crop-v4.css?v=20261106-live-approved-fw-v7';document.head.appendChild(l)})();
+
+/* LIVE OWNER-APPROVED: Story Adventure post-answer discovery scroll V1.
+   Exact approved Visual Lab CSS/JS, matching original shared V3 parchment
+   and V2 wax art. This applies to legacy and newer post-answer Story dialogs
+   only; their real text, native X/Next handlers, progression, rewards, audio,
+   hints and other dialogs remain unchanged. */
+(()=>{if(document.getElementById('bu-story-discovery-scroll-css-v1'))return;const l=document.createElement('link');l.id='bu-story-discovery-scroll-css-v1';l.rel='stylesheet';l.href='story-adventure-discovery-scroll-v1.css?v=20261106-live-story-discovery-scroll-v1';document.head.appendChild(l)})();
+(()=>{if(document.getElementById('bu-story-discovery-scroll-js-v1'))return;const s=document.createElement('script');s.id='bu-story-discovery-scroll-js-v1';s.src='story-adventure-discovery-scroll-v1.js?v=20261106-live-story-discovery-scroll-v1';s.defer=true;document.head.appendChild(s)})();
