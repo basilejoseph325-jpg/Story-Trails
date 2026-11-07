@@ -1,0 +1,146 @@
+name: QA LIVE Family Worship approved V7 mobile gallery
+on:
+  push:
+    paths:
+      - '.github/workflows/qa-live-family-worship-v7.yml'
+      - 'family-worship-*.js'
+      - 'family-worship-*.css'
+      - 'family-worship-menu-art/**'
+      - 'journey-progress-caption.js'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify isolated image count and unchanged live audio
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check family-worship-gathering-v1.js
+          node --check family-worship-picker-gallery-v3.js
+          node --check journey-progress-caption.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          js=Path('family-worship-picker-gallery-v3.js').read_text()
+          assets=re.findall(r'"(family-worship-menu-art/[^"]+\.(?:jpg|webp|png))"',js)
+          assert len(assets)==46, len(assets)
+          assert len(set(assets))==46
+          assert all(Path(p).is_file() for p in assets)
+          assert all(Path(p).stat().st_size>4000 for p in assets)
+          assert len([p for p in assets if '/topic-' in p])==42
+          assert len([p for p in assets if '/level-' in p])==4
+          for label,path in {
+            'Cain and Abel':'family-worship-menu-art/v7/topic-08-cain-and-abel.jpg',
+            'The Tower of Babel':'family-worship-menu-art/v6/topic-10-tower-of-babel.jpg',
+            'Elisha':'family-worship-menu-art/v6/topic-19-elisha.jpg',
+            'Samuel':'family-worship-menu-art/v6/topic-27-samuel.jpg',
+            'Jesus\u2019 Ministry':'family-worship-menu-art/v5/topic-38-jesus-ministry.webp'
+          }.items():
+            assert f'"{label}": "{path}"' in js, label
+          loader=Path('journey-progress-caption.js').read_text()
+          for name in ['family-worship-gathering-v1.css','family-worship-gathering-v1.js',
+            'family-worship-gathering-outer-v2.css','family-worship-picker-gallery-v3.css',
+            'family-worship-picker-gallery-v3.js','family-worship-gallery-crop-v4.css']:
+            assert loader.count(name)==1,name
+          assert 'trivia-wrong-tone-repair-v1.js?v=20261106-live-approved-rich-negative-v5' in loader
+          assert 'bu-fw-help' in Path('family-worship-gathering-v1.js').read_text()
+          print('PASS 46 private art assets, 42 topic and 4 level cards, preserved LIVE audio and all six Family Worship modules')
+          PY
+      - name: Verify real mobile Chromium setup, custom selectors and six-player fit
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/bu-family-live --no-audit --no-fund --silent puppeteer-core@24
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/family-live-http.log 2>&1 &
+          sleep 2
+          node <<'JS'
+          const puppeteer=require('/tmp/bu-family-live/node_modules/puppeteer-core');
+          const {execSync}=require('node:child_process');
+          (async()=>{
+            let browser;
+            try{
+              const executablePath=execSync('command -v google-chrome || command -v chromium',{encoding:'utf8'}).trim();
+              browser=await puppeteer.launch({headless:true,executablePath,args:['--no-sandbox','--disable-setuid-sandbox']});
+              const page=await browser.newPage();
+              await page.setViewport({width:390,height:844,isMobile:true,hasTouch:true,deviceScaleFactor:2});
+              page.setDefaultTimeout(19000);
+              page.on('pageerror',x=>console.log('PAGE_ERROR',x.message.slice(0,240)));
+              await page.goto('http://127.0.0.1:8765/index.html',{waitUntil:'domcontentloaded',timeout:120000});
+              await new Promise(r=>setTimeout(r,2500));
+              await page.evaluate(()=>{bu35Open('hub');document.querySelector('#bu35-new')?.click();document.querySelector('#daily-close')?.click()});
+              await page.waitForSelector('#bu35-family.bu-fw-gathering #bu35-start');
+              const setup=await page.evaluate(()=>({
+                noInstructions:!document.querySelector('#bu35-family .bu3826-level-wrap .bu35-muted'),
+                help:!!document.querySelector('#help-dialog #bu-fw-help'),
+                selectors:document.querySelectorAll('#bu35-family .bu-fw-selector').length,
+                css:!!document.getElementById('bu-fw-outer-v2-css'),
+                people:document.querySelectorAll('#bu35-family .bu35-people input').length
+              }));
+              console.log('LIVE_SETUP',JSON.stringify(setup));
+              if(!setup.noInstructions||!setup.help||setup.selectors!==2||!setup.css)throw Error('Approved Family Worship setup not loaded');
+              await page.click('.bu-fw-topic .bu-fw-selector');
+              await page.waitForSelector('#bu-fw-picker-layer[data-bu-fw-gallery="topic"] .bu-fw-gallery-card');
+              const gallery=await page.evaluate(()=>{
+                const els=[...document.querySelectorAll('#bu-fw-picker-layer .bu-fw-gallery-card')];
+                const art=els.map(x=>x.dataset.buFwArt);
+                return {
+                  count:els.length,unique:new Set(art).size,
+                  allPrivate:art.every(x=>x.startsWith('family-worship-menu-art/')),
+                  selected:document.querySelector('#bu35-topic')?.selectedOptions[0]?.textContent.trim(),
+                  cain:art.find(x=>x.includes('topic-08-')),
+                  babel:art.find(x=>x.includes('topic-10-')),
+                  elisha:art.find(x=>x.includes('topic-19-')),
+                  samuel:art.find(x=>x.includes('topic-27-')),
+                  noahLegacy:els.some(x=>x.textContent.includes('Noah and the Ark')&&x.classList.contains('bu-word-challenge-card'))
+                };
+              });
+              console.log('LIVE_TOPIC_GALLERY',JSON.stringify(gallery));
+              if(gallery.count!==42||gallery.unique!==42||!gallery.allPrivate||gallery.noahLegacy||
+                !gallery.cain?.includes('/v7/')||!gallery.babel?.includes('/v6/')||
+                !gallery.elisha?.includes('/v6/')||!gallery.samuel?.includes('/v6/'))throw Error('Live topic photos not approved');
+              const misses=await page.evaluate(async()=>{
+                const urls=[...document.querySelectorAll('#bu-fw-picker-layer .bu-fw-gallery-card')].map(x=>x.dataset.buFwArt);
+                const out=await Promise.all(urls.map(async u=>({url:u,ok:(await fetch(u,{method:'HEAD'})).ok})));
+                return out.filter(x=>!x.ok);
+              });
+              if(misses.length)throw Error('Missing LIVE image assets '+JSON.stringify(misses));
+              await page.evaluate(()=>{
+                const field=document.querySelector('#bu-fw-picker-layer .bu-fw-picker-search');
+                field.value='Daniel';field.dispatchEvent(new Event('input',{bubbles:true}));
+              });
+              await page.waitForFunction(()=>document.querySelectorAll('#bu-fw-picker-layer .bu-fw-picker-option').length===1);
+              await page.click('#bu-fw-picker-layer .bu-fw-picker-option');
+              const topic=await page.evaluate(()=>document.querySelector('#bu35-topic').selectedOptions[0]?.textContent.trim());
+              if(topic!=='Daniel')throw Error('Native topic selection did not update');
+              await page.click('.bu-fw-level .bu-fw-selector');
+              await page.waitForSelector('#bu-fw-picker-layer[data-bu-fw-gallery="level"] .bu-fw-gallery-card');
+              const levels=await page.evaluate(()=>[...document.querySelectorAll('#bu-fw-picker-layer .bu-fw-gallery-card')].map(x=>x.textContent.trim()));
+              console.log('LIVE_LEVELS',JSON.stringify(levels));
+              if(levels.length!==4)throw Error('Not four difficulty image choices');
+              await page.evaluate(()=>document.querySelector('#bu-fw-picker-layer .bu-fw-gallery-card:last-child').click());
+              const level=await page.evaluate(()=>document.querySelector('#bu3826-level').value);
+              if(level!=='expert')throw Error('Expert difficulty not selected');
+              await page.evaluate(()=>{for(let i=0;i<4;i++)document.querySelector('#bu35-plus')?.click()});
+              await new Promise(r=>setTimeout(r,250));
+              const six=await page.evaluate(()=>{
+                const b=document.querySelector('#bu35-body'),start=document.querySelector('#bu35-start');
+                const names=document.querySelectorAll('.bu35-people input');
+                const count=document.querySelector('.bu35-countbox')?.getBoundingClientRect();
+                return {
+                  names:names.length,scroll:b.scrollHeight-b.clientHeight,
+                  startBottom:start.getBoundingClientRect().bottom,viewport:innerHeight,
+                  playerGap:names[0]?.getBoundingClientRect().top-count.bottom
+                };
+              });
+              console.log('LIVE_SIX_PLAYER',JSON.stringify(six));
+              if(six.names!==6||six.scroll>1||six.startBottom>six.viewport||six.playerGap<8)
+                throw Error('Live six-player setup overflow or controls overlap');
+              console.log('PASS LIVE 390x844 Family Worship: custom 42-topic gallery, four levels, images, selection, no scrolling with six players');
+            }catch(e){console.error('FAIL',e.stack);process.exitCode=1}
+            finally{if(browser)await browser.close()}
+          })();
+          JS
