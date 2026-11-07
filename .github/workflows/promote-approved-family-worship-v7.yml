@@ -134,7 +134,7 @@ jobs:
           assert "topic-19-elisha.jpg" in gallery
           assert "topic-27-samuel.jpg" in gallery
           assert "topic-38-jesus-ministry.webp" in gallery
-          assert gallery.count("family-worship-menu-art/")==46
+          assert len(referenced)==46,("Expected 42 topics and 4 difficulties",len(referenced))
           original=Path("journey-progress-caption.js")
           previous=original.read_text()
           assert "trivia-wrong-tone-repair-v1.js?v=20261106-live-approved-rich-negative-v5" in previous
