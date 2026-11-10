@@ -136,3 +136,42 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    results; original next-turn, scores, hints, audio and setup preserved. */
 (()=>{if(document.getElementById('bu-fw-answer-scroll-css-v1'))return;const l=document.createElement('link');l.id='bu-fw-answer-scroll-css-v1';l.rel='stylesheet';l.href='family-worship-answer-scroll-v1.css?v=20261107-family-answer-v1';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-fw-answer-scroll-js-v1'))return;const s=document.createElement('script');s.id='bu-fw-answer-scroll-js-v1';s.src='family-worship-answer-scroll-v1.js?v=20261107-all-four-answer-modes-v2';s.defer=true;document.head.appendChild(s)})();
+
+
+/* LIVE owner-approved — Shared Rewards core host binding, Word Trails integration.
+   Root game delegates through its actual authoritative wallet/entitlement and
+   setWheelTheme functions; the module is shared with the Word Trails page.
+   NO native purchases, music, gestures, menus or gameplay are modified here. */
+(()=>{
+ if(window.__BUPlatformRewardsHostInstalled)return;
+ window.__BUPlatformRewardsHostInstalled=true;
+ const script=document.createElement('script');
+ script.id='bu-platform-rewards-core-v1';
+ script.src='bu-platform-rewards-v1.js?v=shared-wheel-core-20261109';
+ script.onload=()=>{
+  if(typeof bu3824RefreshWallet!=='function'||
+     typeof bu3824MergeEntitlements!=='function'||
+     typeof bu3824OwnedWheels!=='function'||
+     typeof setWheelTheme!=='function'||
+     typeof economy==='undefined')return;
+  window.BUPlatformRewards?.attachNativeHost({
+   wallet:()=>{bu3824RefreshWallet();return {...economy}},
+   owned:()=>{bu3824RefreshWallet();bu3824MergeEntitlements();return ['classic',...bu3824OwnedWheels()]},
+   equip:(id)=>{
+    bu3824RefreshWallet();bu3824MergeEntitlements();
+    if(id!=='classic'&&!bu3824OwnedWheels().has(id))return false;
+    setWheelTheme(id);
+    return economy.equippedWheel===id;
+   }
+  });
+ };
+ document.head.appendChild(script);
+})();
+
+
+/* LIVE: owner-approved 30-level Word Trails — additive to original game. */
+(()=>{if(document.getElementById('bu-wt-live-bootstrap'))return;
+ const s=document.createElement('script');s.id='bu-wt-live-bootstrap';
+ s.src='word-trails-live-bootstrap-v1.js?v=live-word-trails-20261109-r1';
+ s.defer=true;document.head.appendChild(s);
+})();

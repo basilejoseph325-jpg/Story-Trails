@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#092b34">
+<!-- A published direct link must use the same real Bible Unfolded menu host.
+     The standalone fallback stays available to local automated QA only. -->
+<script>
+(()=>{'use strict';try{
+ const args=new URLSearchParams(location.search);
+ if(window.top===window && args.get('standalone')!=='qa' &&
+    (location.hostname.endsWith('.github.io')||args.get('native')==='1')){
+  location.replace('../index.html?wt_launch=native');
+ }
+}catch(_){}})();
+</script>
+<!-- Embedded Word Trails reload still resumes its protected crossword save. -->
+
+<meta name="description" content="Bible Unfolded — 30-level Word Trails adventure.">
+<title>Word Trails · 30 Bible Levels • Bible Unfolded</title>
+<link rel="stylesheet" href="word-trails-next-v1.css?v=scenic-map-seals-v8">
+<link rel="stylesheet" href="word-trails-feel-v2.css?v=gold-win-v5-final-20261107">
+<link rel="stylesheet" href="word-trails-unified-menu-v1.css?v=standard-menu-v1">
+<link rel="stylesheet" href="word-trails-native-wheel-v1.css?v=faithful-ocean-solid-20261109">
+<link rel="stylesheet" href="word-trails-main-settings-v1.css?v=shared-native-settings-20261109">
+<script src="../bu-platform-rewards-v1.js?v=shared-wheel-core-20261109" defer></script>
+<script src="word-trails-feel-v2.js?v=native-settings-20261109" defer></script>
+<script src="word-trails-unified-menu-v1.js?v=native-settings-20261109" defer></script>
+<script src="word-trails-announcer-v1.js?v=live-original-recordings-20261109-r1" defer></script>
+<script src="word-trails-main-settings-v1.js?v=native-settings-20261109" defer></script>
+<script src="word-trails-native-wheel-v1.js?v=faithful-ocean-holdfix-20261109" defer></script>
+<script src="word-trails-levels-12-30-v1.js?v=source-novelty-14-reviews-20261109" defer></script>
+<script src="word-trails-live-migration-v1.js?v=live-progress-only-20261109" defer></script>
+<script src="word-trails-next-v1.js?v=live-progress-20261109-r1" defer></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="header-left">
+      <a class="back" href="../index.html" aria-label="Back to Bible Unfolded">‹</a>
+      <button type="button" id="spark" class="spark-button" aria-label="Bible word hunt" title="Find Bible words"><span class="star" aria-hidden="true">★</span><span id="spark-progress" class="spark-progress" aria-hidden="true">0/2</span></button>
+    </div>
+    <div class="heading">
+      <h1>Word Trails</h1>
+      <span><b id="scene-title">The Beginning</b> · <b id="level-label">LEVEL 1 / 30</b></span>
+      <div class="progress-line"><div class="progress-track" aria-hidden="true"><i id="progress-fill"></i></div><strong id="solved-count" aria-label="Words solved">0 / 4</strong></div>
+    </div>
+    <div class="top-actions">
+      <div class="points" title="Trail Coins — separate from Insight Tokens"><span>✦</span><strong id="points">60</strong></div>
+      <button id="audio" type="button" aria-label="Open Bible Unfolded menu" aria-pressed="false" title="Bible Unfolded menu">☰</button>
+    </div>
+  </header>
+  <main class="board-region" aria-label="Connected five by five word crossword">
+    <div id="board" class="board" aria-label="Find words by tracing the letter wheel"></div>
+    <output id="toast" role="status" aria-live="polite"></output>
+  </main>
+  <section class="play-region" aria-label="Swipe or tap letters to form words">
+    <div class="wheel" id="wheel">
+      <svg class="selection-lines" id="selection-lines" aria-hidden="true"></svg>
+      <button id="submit" type="button" class="wheel-center" aria-label="Submit selected letters"><span class="submit-icon">✓</span><span class="submit-text">ENTER</span></button>
+      <output id="preview" class="preview" aria-live="polite"></output>
+    </div>
+    <button type="button" id="shuffle" class="side-control shuffle" aria-label="Shuffle letters"><img src="../assets/ui/story-gold-shuffle-v1.svg" alt=""></button>
+    <button type="button" id="hint" class="side-control hint" aria-label="Reveal a letter">
+      <img src="../assets/ui/daily-gold-hint-v3.svg" alt=""><span id="hint-cost">FREE</span>
+    </button>
+    <div class="combo" id="combo" aria-live="polite"></div>
+  </section>
+  <footer class="bottom">
+    <span>✦ BONUS <strong id="bonus-count">0</strong></span>
+    <button type="button" id="level-map" aria-label="Open unlocked levels">1 / 30</button>
+    <span class="lab-tag">BIBLE · 30 LEVELS</span>
+  </footer>
+  <div id="particles" class="particles" aria-hidden="true"></div>
+</div>
+<dialog id="discovery" aria-labelledby="spark-title">
+  <div class="scroll-art">
+    <button type="button" id="spark-x" class="scroll-x" aria-label="Close Bible discovery">×</button>
+    <span class="scroll-tag">A BIBLE DISCOVERY</span>
+    <h2 id="spark-title">★ Scripture Spark</h2>
+    <div class="scroll-body">
+      <p id="spark-text"></p>
+      <div id="spark-list" class="spark-list" aria-label="Bible word clues" hidden></div>
+      <a id="spark-link" target="_blank" rel="noopener noreferrer" href="https://www.jw.org/" hidden>Read on JW.org ↗</a>
+    </div>
+    <button id="spark-next" type="button" class="scroll-next">Keep Playing</button>
+  </div>
+</dialog>
+<dialog id="finish" aria-labelledby="finish-level">
+  <div id="finish-fx" class="finish-fx" aria-hidden="true"></div>
+  <div class="finish-panel">
+    <div class="finish-small">BIBLE UNFOLDED · WORD TRAILS</div>
+    <div class="victory-star" aria-hidden="true">✦</div>
+    <h2 id="finish-level">LEVEL COMPLETE!</h2>
+    <p class="victory-intro">Every word brings a new discovery.</p>
+    <div class="finish-seal" id="finish-seal" hidden aria-label="Journey milestone collectible"><span id="finish-seal-symbol" aria-hidden="true">✦</span><span class="finish-seal-copy"><strong id="finish-seal-title">Journey Seal</strong><small id="finish-seal-note">Five-level milestone collected</small></span></div>
+    <div class="reward-coin" aria-label="Level reward"><span>✦</span><strong id="finish-reward">+20 TEST COINS</strong></div>
+    <div class="finish-stats" id="finish-words"></div>
+    <p class="finish-spark" id="finish-spark"></p>
+    <button type="button" class="primary-action" id="next-level">Next Level</button>
+    <button type="button" class="secondary-action" id="stay">Keep exploring</button>
+  </div>
+</dialog>
+<dialog id="map" aria-labelledby="map-title">
+  <div class="map-panel">
+    <button type="button" id="map-x" class="map-x" aria-label="Close level map">×</button>
+    <div class="finish-small">BIBLE UNFOLDED</div>
+    <h2 id="map-title">Your Word Journey</h2>
+    <p>Levels unlock in order. Trail Coins are for crossword hints and bonuses; Insight Tokens and purchased wheels are part of your shared Bible Unfolded rewards.</p>
+    <div id="map-list" class="map-list"></div>
+    <div class="map-actions">
+      <button type="button" id="reset-level">↻ Restart current puzzle</button>
+      <button type="button" id="reset-test">Reset all test progress</button>
+    </div>
+  </div>
+</dialog>
+</body>
+</html>
