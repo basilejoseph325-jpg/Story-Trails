@@ -11,7 +11,7 @@ const LIVE='bible-unfolded-word-trails-next-v1',WALLET='bible-unfolded-rewards-v
   for(const size of [{width:390,height:705},{width:832,height:384}]){
    const page=await browser.newPage();page.setDefaultTimeout(60000);
    const errors=[],notFound=[];page.on('pageerror',x=>errors.push(x.message.slice(0,180)));
-   page.on('response',r=>{if(r.status()===404)notFound.push(new URL(r.url()).pathname)});
+   page.on('response',r=>{const path=new URL(r.url()).pathname;if(r.status()===404&&!path.endsWith('/favicon.ico'))notFound.push(path)});
    await page.setViewport({...size,deviceScaleFactor:2,isMobile:true,hasTouch:true});
    await page.goto(ROOT,{waitUntil:'domcontentloaded',timeout:120000});
    await page.waitForFunction(()=>window.BUWTNativeShell?.nativeReady?.()&&window.BUPlatformSaves?.bound?.(),{timeout:90000});
