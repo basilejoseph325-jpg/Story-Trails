@@ -1,7 +1,10 @@
 name: QA and stage Nov 11 approved LIVE Trivia & Word Builder promotion
 on:
   push:
-    paths: ['.github/workflows/qa-stage-approved-nov11.yml']
+    paths:
+      - '.github/workflows/qa-stage-approved-nov11.yml'
+      - '.github/scripts/qa-approved-nov11-live.cjs'
+      - '.github/scripts/install-approved-nov11-live.py'
   workflow_dispatch:
 permissions: {contents: write}
 jobs:
