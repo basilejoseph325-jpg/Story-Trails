@@ -28,6 +28,7 @@ const ctx={
   window:{addEventListener(){}},
   document:{
     readyState:'complete',hidden:true,
+    body:{append(){}},
     addEventListener(name,fn){handlers[name]=fn},
     querySelector(s){if(s==='#bu34-trivia')return screen;if(s==='#bu34-body')return body;return null},
     createElement(name){return {setAttribute(){},classList:{toggle(){},add(){},remove(){}},style:{},append(){},textContent:''}}
