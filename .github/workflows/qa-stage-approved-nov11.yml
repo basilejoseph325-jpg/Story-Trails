@@ -1,0 +1,52 @@
+name: QA and stage Nov 11 approved LIVE Trivia & Word Builder promotion
+on:
+  push:
+    paths: ['.github/workflows/qa-stage-approved-nov11.yml']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test JavaScript syntax and isolated life/wallet behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check trivia-lives-live-v1.js
+          node --check trivia-stone-press-live-v1.js
+          node .github/scripts/qa-approved-nov11-live.cjs
+      - name: Install only approved loader tags into staging HTML
+        run: python3 .github/scripts/install-approved-nov11-live.py
+      - name: Assert all LIVE paths present and no TEST-only loader installed
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text()
+          for id_ in ['bu-live-trivia-stone-uniform-nov11',
+                      'bu-live-trivia-press-nov11','bu-live-wordbuilder-score-nov11',
+                      'bu-live-trivia-lives-css-nov11',
+                      'bu-live-trivia-press-script-nov11','bu-live-trivia-lives-script-nov11']:
+              assert s.count('id="'+id_+'"')==1,id_
+          for filename in ['trivia-stone-uniform-live-v1.css','trivia-stone-press-live-v1.css',
+                           'word-builder-score-layout-live-v1.css','trivia-lives-live-v1.css',
+                           'trivia-stone-press-live-v1.js','trivia-lives-live-v1.js']:
+              assert Path(filename).is_file()
+              assert s.count(filename)==1,filename
+          assert 'visual-lab-test-banner.js' not in s
+          assert 'james-return-loop-test-v1.js' not in s
+          assert 'word-trails-live-bootstrap-v1.js' in s
+          print('PASS staged LIVE index: six loaders, no TEST features or unrelated navigation modifications.')
+          PY
+      - name: Commit staged page (not LIVE yet)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add index.html
+          if git diff --cached --quiet; then echo 'Already installed'; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Stage: six isolated approved LIVE Trivia and Word Builder assets"
+          git push origin HEAD:release-nov11-trivia-wordbuilder
