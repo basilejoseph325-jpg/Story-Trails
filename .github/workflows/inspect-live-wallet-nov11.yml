@@ -16,13 +16,23 @@ jobs:
           import re
           from pathlib import Path
           s=Path("index.html").read_text(errors="replace")
+          import json
+          parts=[]
+          for i in range(1,6):
+           src=Path(f'bible_unfolded_core_part{i}.js').read_text(errors='replace')
+           hit=re.search(r'__BU_STAGE41_CORE_PARTS__\\[\\d+\\]\\s*=\\s*("(?:\\\\.|[^"\\\\])*");',src)
+           if hit:
+            try: parts.append(json.loads(hit.group(1)))
+            except Exception as e:print('decode error',i,str(e))
+          s='\\n'.join(parts)
+
           pats=[
            ('CORE_SAVE',r'function\s+(?:saveEconomy|saveGame|saveRewards|spendCoins|spendTokens|bu3824[A-Za-z_]{0,60})\s*\('),
            ('STORE',r'localStorage\.setItem\([^;]{0,110}(?:reward|economy|wallet)[^;]{0,180}'),
            ('COIN_DEBIT',r'(?:(?:economy|wallet|rewards)\.coins\s*(?:[-+]=|=)|(?:coins|tokens)\s*-\s*cost)'),
            ('UI_NATIVE',r'(?:(?:insight|token)[^\n]{0,75}(?:cost|spend|buy)|(?:buy|purchase)[A-Za-z_]*\s*\(\s*\d+\s*\))'),
           ]
-          print('HTML size:',len(s))
+          print('DECODED CORE size:',len(s))
           for label,pat in pats:
            matches=list(re.finditer(pat,s,re.I))
            print('\\nGROUP',label,'COUNT',len(matches))
