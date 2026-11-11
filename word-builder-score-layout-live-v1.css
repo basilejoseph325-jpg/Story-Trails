@@ -141,3 +141,14 @@
  #wb36.bu67-wb-play .wb37-scorebar{grid-template-columns:minmax(0,1fr) minmax(0,auto) 28px 28px!important;gap:1px 3px!important}
  #wb36.bu67-wb-play .wb36-players.wb37-mini-players .wb36-player{flex-basis:62px!important;min-width:62px!important}
 }
+
+/* LIVE small-height safety budget: pay for the more readable HUD by reducing
+ * only the board size on especially short screens, not cutting off buttons. */
+@media(max-height:700px) and (max-width:600px){
+ #wb36.bu67-wb-play .wb36-board{
+  width:min(calc(100vw - 28px),465px,max(164px,calc(100dvh - 370px)))!important;
+  max-height:min(calc(100vw - 28px),465px,max(164px,calc(100dvh - 370px)))!important;
+ }
+ #wb36.bu67-wb-play .wb36-players.wb37-mini-players .wb36-player{min-height:40px!important}
+ #wb36.bu67-wb-play .wb36-status.has-message{min-height:28px!important;margin:2px auto 3px!important}
+}
