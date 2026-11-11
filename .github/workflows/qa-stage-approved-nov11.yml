@@ -40,7 +40,7 @@ jobs:
               assert s.count(filename)==1,filename
           assert 'visual-lab-test-banner.js' not in s
           assert 'james-return-loop-test-v1.js' not in s
-          assert 'word-trails-live-bootstrap-v1.js' in s
+          assert 'id="wb36"' in s and 'id="bu34-trivia"' in s
           print('PASS staged LIVE index: six loaders, no TEST features or unrelated navigation modifications.')
           PY
       - name: Commit staged page (not LIVE yet)
