@@ -1,0 +1,31 @@
+name: Inspect LIVE reward-wallet integration before approved promotion
+on:
+  push:
+    paths: ['.github/workflows/inspect-live-wallet-nov11.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find native wallet mutation and saving contracts (read only)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          s=Path("index.html").read_text(errors="replace")
+          pats=[
+           ('CORE_SAVE',r'function\s+(?:saveEconomy|saveGame|saveRewards|spendCoins|spendTokens|bu3824[A-Za-z_]{0,60})\s*\('),
+           ('STORE',r'localStorage\.setItem\([^;]{0,110}(?:reward|economy|wallet)[^;]{0,180}'),
+           ('COIN_DEBIT',r'(?:(?:economy|wallet|rewards)\.coins\s*(?:[-+]=|=)|(?:coins|tokens)\s*-\s*cost)'),
+           ('UI_NATIVE',r'(?:(?:insight|token)[^\n]{0,75}(?:cost|spend|buy)|(?:buy|purchase)[A-Za-z_]*\s*\(\s*\d+\s*\))'),
+          ]
+          print('HTML size:',len(s))
+          for label,pat in pats:
+           matches=list(re.finditer(pat,s,re.I))
+           print('\\nGROUP',label,'COUNT',len(matches))
+           for m in matches[:28]:
+            print('OFFSET',m.start(),repr(s[max(0,m.start()-330):m.end()+550])[:1000])
+          PY
