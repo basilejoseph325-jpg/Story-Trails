@@ -1,0 +1,39 @@
+name: Audit LIVE core token-spend contract from decoded code
+on:
+  push:
+    paths: ['.github/workflows/inspect-live-core-v3.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read core and identify wallet functions and writes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          s=''
+          for n in range(1,6):
+            src=Path(f'bible_unfolded_core_part{n}.js').read_text(errors='replace')
+            m=re.search(r'__BU_STAGE41_CORE_PARTS__\[\d+\]\s*=\s*("(?:\\.|[^"\\])*");',src)
+            if m:
+              try:s+=json.loads(m.group(1))
+              except Exception as e:print('decode failure',n,e)
+            else:print('no part',n,src[:100])
+          print('CORE LENGTH',len(s))
+          search=[
+           ('Save functions',r'(?i)(?:function\s+[A-Za-z_$][\w$]*(?:save|economy|wallet|spend|token|rewards|coin)[\w$]*\s*\()'),
+           ('Coin debits',r'(?i)economy\.coins\s*(?:[-+]=|=)|economy\.coins\s*-\s*\d+'),
+           ('Persist writes',r'(?i)localStorage\.setItem\s*\(\s*["\x27]bible-unfolded-rewards|JSON\.stringify\s*\(\s*economy'),
+           ('Spend operations',r'(?i)(?:economy|wallet)\.coins[^\n;]{0,120}'),
+           ('Wallet API',r'(?i)bu3824(?:RefreshWallet|MergeEntitlements)|saveEconomy\s*\(|function\s+save\w+'),
+          ]
+          for label,pat in search:
+            hits=list(re.finditer(pat,s))
+            print('\n###',label,'total',len(hits))
+            for m in hits[:20]:
+              print(m.start(),repr(s[max(0,m.start()-230):m.end()+350])[:600])
+          PY
