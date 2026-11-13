@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+"""Stages exactly 26 checksum-locked owner-approved Daily Discovery WebPs.
+Run ONLY on release/daily-discovery-illustrated-20261113, never directly in LIVE.
+Source is a fixed Visual Lab commit; a changed/failed download aborts completely.
+"""
+from pathlib import Path
+from urllib.request import Request, urlopen
+import hashlib, json, subprocess
+SOURCE="5770bdc629ad2a4e091d5aa31eff602d85c7c8df"
+REPO="basilejoseph325-jpg/Bible-Unfolded-Visual-Lab"
+FILES={
+  "abigail.webp": "ac424562936014f32c598828f2c8ee35fc964458",
+  "baruch-scroll.webp": "2d27440bc3b6711e61a1400fc000371290c5fca4",
+  "bereans.webp": "cffb429b098496adf890791f4792894753cdb3e6",
+  "dorcas-clothes.webp": "c82a97fd26395c91ccc11013c045dee5006a9994",
+  "early-students-1870.webp": "ea54bedbf7fd9227ce5eb20e451c27afd7c57ef6",
+  "ezra.webp": "cfe02ef4db12eded0a4afc010bb464b50ab90d95",
+  "hezekiah-water.webp": "ea1e807e14b531d989dae7b7721070a2895cdac3",
+  "jeremiah-field.webp": "126473f52b5649f3608f71b2fa64eb54d6aacd2b",
+  "lydia-purple.webp": "6fb263ebeab60fef65e8d46c8243875b2b47164f",
+  "mustard.webp": "127bb50a273675636842fc9a35e5a975e94b1589",
+  "naaman-servant-girl.webp": "3364dff79504e8023ee1a8f73990c64017263198",
+  "nehemiah-builders.webp": "4b20281a8e3f2cc81fed4fc2e52ea13e4a52e0e7",
+  "nile-farmland.webp": "cbf746bcd6dffc40216552557c456bf02fa5606e",
+  "paul-breaking-bread.webp": "246285ae9dbed76a2d3eac0507a38a250c03884f",
+  "paul-work.webp": "67288bf8af1e702312ea04a8ebebab4b7c6b88de",
+  "peter-fishing.webp": "f246ed9300b8e638e188291c47d743407711fefe",
+  "philip.webp": "62053b8dec311e41cf5aba97b5714a9bc509c55d",
+  "radio.webp": "3cf700cd621e1b0c071c19c50df913b0fe05f039",
+  "rahab-cord.webp": "2cb9038a6c4df689020de278aa05a95b51bbc3ec",
+  "ruth-harvest.webp": "7deba44b97956522f6a8a519294a147e74937320",
+  "samaritan-at-well.webp": "a8f22e71e3b2fa7fe4faa317cfd1a88dd46ff615",
+  "samaritan.webp": "c55761b1922ac0853424f16bd6afbc17c6bfdfb6",
+  "sparrows.webp": "2a61c652df738b9c307e5806da049895a89d73a1",
+  "stars.webp": "0b0cf4737dcc5ee0fe8f87ccd97a990a73cea179",
+  "widow-coins.webp": "766cb0a20992c2ad2460e4b9f26f23cc6b4720bf",
+  "widow-oil.webp": "15a67a06d40f2832269de9dade8186f795e21148"
+}
+assert len(FILES)==26 and len(set(FILES))==26
+branch=subprocess.check_output(["git","branch","--show-current"],text=True).strip()
+assert branch=="release/daily-discovery-illustrated-20261113", f"Refusing artwork staging outside release branch: {branch}"
+for name,expected in FILES.items():
+    assert name.endswith(".webp") and "/" not in name
+    path=Path("assets/daily-book")/name
+    url=f"https://raw.githubusercontent.com/{REPO}/{SOURCE}/assets/daily-book/{name}"
+    try:
+        with urlopen(Request(url,headers={"User-Agent":"BibleUnfolded-approved-artwork-release/1.0"}),timeout=25) as stream:
+            payload=stream.read(220_000)
+    except Exception as ex:
+        raise RuntimeError(f"Cannot fetch pinned approved image {name}: {ex}") from ex
+    sha=hashlib.sha1(b"blob "+str(len(payload)).encode()+b"\\0"+payload).hexdigest()
+    assert sha==expected,(name,"Git object hash changed",sha,expected)
+    assert payload[:4]==b"RIFF" and payload[8:12]==b"WEBP",(name,"not WebP")
+    if path.exists(): assert path.read_bytes()==payload, "Would overwrite different image: "+str(path)
+    else:
+        path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_bytes(payload)
+    print("VERIFIED",name,len(payload),sha)
+print("PASS: all 26 LIVE candidate images match EXACT pinned approved source blobs")
