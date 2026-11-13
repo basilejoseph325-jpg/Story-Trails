@@ -6,7 +6,7 @@ const assert=require('node:assert/strict');
 const puppeteer=require('puppeteer-core');
 const {execSync}=require('node:child_process');
 const exe=execSync('command -v google-chrome || command -v chromium',{encoding:'utf8'}).trim();
-const root='http://127.0.0.1:8897/';
+const root=process.env.BU_QA_ROOT||'http://127.0.0.1:8897/';
 const KEY='bu-daily-insight-live-v1';
 (async()=>{
  let browser;
