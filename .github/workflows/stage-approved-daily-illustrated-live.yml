@@ -4,6 +4,8 @@ on:
     branches: [release/daily-discovery-illustrated-20261113]
     paths:
       - '.github/workflows/stage-approved-daily-illustrated-live.yml'
+      - '.github/scripts/stage_approved_daily_illustrated_live.py'
+      - 'scripts/qa_live_daily_illustrated.cjs'
 permissions:
   contents: write
 jobs:
