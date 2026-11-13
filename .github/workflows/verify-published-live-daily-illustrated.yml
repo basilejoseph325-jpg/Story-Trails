@@ -1,0 +1,64 @@
+name: Verify published LIVE illustrated Daily Discovery (read-only)
+on:
+  push:
+    branches: [release/daily-discovery-illustrated-20261113]
+    paths:
+      - '.github/workflows/verify-published-live-daily-illustrated.yml'
+permissions: {contents: read}
+jobs:
+  verify-published:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/daily-discovery-illustrated-20261113
+      - name: Verify the actual GitHub Pages version and every artwork HTTP response
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request,hashlib,json
+          m=json.load(open("docs/DAILY_ILLUSTRATED_APPROVED_ASSETS_20261113.json"))
+          base="https://basilejoseph325-jpg.github.io/Story-Trails/"
+          def get(path,limit=13000000):
+            request=urllib.request.Request(base+path,headers={"User-Agent":"BibleUnfolded-LIVE-Release-QA","Cache-Control":"no-cache"})
+            with urllib.request.urlopen(request,timeout=50) as r:
+              assert r.status==200,(path,r.status)
+              return r.read(limit)
+          index=get("index.html?verify=live-daily-20261113")
+          assert b'journey-progress-caption.js?v=20261113-live-daily-illustrated-v1' in index
+          loader=get("journey-progress-caption.js?v=20261113-live-daily-illustrated-v1")
+          for path in [b'daily-discovery-illustrated-v1.css',b'daily-discovery-insights-content-v1.js',b'daily-discovery-illustrated-v1.js']:
+            assert path in loader,path
+          app=get("daily-discovery-illustrated-v1.js?verify=live-daily-20261113")
+          css=get("daily-discovery-illustrated-v1.css?verify=live-daily-20261113")
+          data=get("daily-discovery-insights-content-v1.js?verify=live-daily-20261113")
+          assert b"const KEY='bu-daily-insight-live-v1'" in app
+          assert b"const editorialQA=()=>false" in app
+          assert b"bu-book-art-only" in app and b"TEST version" not in app
+          assert b"TEST art-first cover v13" in css
+          assert data.count(b"id:'")==30
+          for entry in m['art']:
+            raw=get(entry['path']+'?verify=live-daily-20261113',300000)
+            assert len(raw)==entry['bytes'],entry['path']
+            obj=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+            assert obj==entry['sha'],("Published image differs",entry['path'])
+          print("PASS LIVE Pages: correct original index cache, module chains, all 26 original approved WEBP bytes")
+          PY
+      - name: Visit published LIVE game in simulated mobile browser, test Daily, Share and Saved
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/bu-live-remote-qa puppeteer-core@24 --no-audit --no-fund --silent
+          BU_QA_ROOT='https://basilejoseph325-jpg.github.io/Story-Trails/' \
+            NODE_PATH=/tmp/bu-live-remote-qa/node_modules node scripts/qa_live_daily_illustrated.cjs
+      - name: Keep actual production-site screenshot evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: published-live-daily-illustrated-phone-screens
+          path: |
+            /tmp/LIVE-DAILY-READING-390.png
+            /tmp/LIVE-DAILY-SHARE-390.png
+          if-no-files-found: ignore
