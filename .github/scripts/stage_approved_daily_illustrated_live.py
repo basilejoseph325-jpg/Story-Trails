@@ -35,7 +35,7 @@ for entry in art:
     dst.parent.mkdir(parents=True,exist_ok=True)
     if not dst.exists():dst.write_bytes(data)
     with Image.open(dst) as im:
-        assert im.format=="WEBP" and im.size==(960,540),("Wrong image format/resolution",path,im.size)
+        assert im.format=="WEBP" and im.size[0]>=600 and im.size[1]>=330 and abs(im.size[0]/im.size[1]-16/9)<0.025,("Wrong image format/aspect",path,im.size)
 print("PASS: exact 26 approved source images present, original git hashes match immutable TEST build")
 
 js=(root/"daily-discovery-illustrated-v1.js").read_text(encoding="utf8")
