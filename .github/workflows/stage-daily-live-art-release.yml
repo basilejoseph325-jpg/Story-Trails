@@ -1,0 +1,36 @@
+name: Stage approved Daily illustrations for LIVE release candidate
+on:
+  push:
+    branches: [release/daily-discovery-illustrated-20261113]
+    paths:
+      - '.github/workflows/stage-daily-live-art-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  stage-exact-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/daily-discovery-illustrated-20261113
+      - name: Fetch exact approved artwork into staging branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile .github/scripts/stage_approved_daily_live_art_20261113.py
+          python3 .github/scripts/stage_approved_daily_live_art_20261113.py
+          node --check daily-discovery-insights-content-v1.js
+          node --check daily-discovery-illustrated-v1.js
+          test "$(find assets/daily-book -type f -name '*.webp' | wc -l)" -eq 26
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/daily-book
+          if git diff --cached --quiet; then
+            echo "Already staged all 26 original images"
+            exit 0
+          fi
+          git commit -m "Stage approved 26 Daily Discovery artwork files with pinned blob hashes"
+          git push origin HEAD:refs/heads/release/daily-discovery-illustrated-20261113
+          echo "PASS: staged ONLY to release branch; LIVE main unchanged"
