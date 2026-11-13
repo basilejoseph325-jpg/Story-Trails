@@ -175,3 +175,31 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  s.src='word-trails-live-bootstrap-v1.js?v=live-word-trails-20261109-r1';
  s.defer=true;document.head.appendChild(s);
 })();
+
+
+/* OWNER-APPROVED LIVE DAILY DISCOVERY — NOVEMBER 13 2026.
+ * Only binds the existing #bu375-daily home tile and reader screen.
+ * Original five-question Daily quiz saves, wallet, rewards and all other
+ * modes remain unchanged; no TEST banner, test currency, or future browser.
+ * Native LIVE settings, page navigation, and music remain authoritative.
+ */
+(()=>{'use strict';
+ if(location.pathname.includes('/experiments/'))return;
+ if(document.getElementById('bu-live-daily-illustrated-v1'))return;
+ const style=document.createElement('link');
+ style.rel='stylesheet';style.id='bu-live-daily-illustrated-v1-style';
+ style.href='daily-discovery-illustrated-v1.css?v=20261113-live-daily-illustrated-v1';
+ document.head.append(style);
+ const data=document.createElement('script');
+ data.id='bu-live-daily-illustrated-v1-data';data.async=false;
+ data.src='daily-discovery-insights-content-v1.js?v=20261113-live-daily-illustrated-v1';
+ data.onload=()=>{
+   if(document.getElementById('bu-live-daily-illustrated-v1'))return;
+   const app=document.createElement('script');
+   app.id='bu-live-daily-illustrated-v1';app.async=false;
+   app.src='daily-discovery-illustrated-v1.js?v=20261113-live-daily-illustrated-v1';
+   document.head.append(app);
+ };
+ data.onerror=()=>console.error('Daily Discovery illustrated data unavailable; original Daily screen has not been overwritten');
+ document.head.append(data);
+})();
