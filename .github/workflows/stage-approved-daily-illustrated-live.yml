@@ -1,0 +1,72 @@
+name: Stage and verify owner-approved Daily Discovery illustrated LIVE candidate
+on:
+  push:
+    branches: [release/daily-discovery-illustrated-20261113]
+    paths:
+      - '.github/workflows/stage-approved-daily-illustrated-live.yml'
+permissions:
+  contents: write
+jobs:
+  verify-staged-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/daily-discovery-illustrated-20261113
+      - name: Check release code without overwriting the original native game
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile .github/scripts/stage_approved_daily_illustrated_live.py
+          node --check daily-discovery-insights-content-v1.js
+          node --check daily-discovery-illustrated-v1.js
+          node --check journey-progress-caption.js
+          node --check scripts/qa_live_daily_illustrated.cjs
+          test ! -e visual-lab-test-banner.js
+          test ! -e native-boost-shop-test-v1.js
+      - name: Download precisely the 26 approved illustrations and make one safe index cache edit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install Pillow -q
+          python3 .github/scripts/stage_approved_daily_illustrated_live.py
+      - name: Mobile Chrome browser test of full original LIVE game + approved Daily reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/bu-live-daily-qa puppeteer-core@24 --no-audit --no-fund --silent
+          python3 -m http.server 8897 --bind 127.0.0.1 >/tmp/bu-live-daily-http.log 2>&1 &
+          sleep 2
+          NODE_PATH=/tmp/bu-live-daily-qa/node_modules node scripts/qa_live_daily_illustrated.cjs
+      - name: Keep rendered screenshots as release evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved-daily-illustrated-live-candidate-qa
+          path: |
+            /tmp/LIVE-DAILY-READING-390.png
+            /tmp/LIVE-DAILY-SHARE-390.png
+          if-no-files-found: ignore
+      - name: Commit verified assets and only the safe versioned original index
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # This branch is NOT LIVE. Only release staging is modified.
+          git add assets/daily-book index.html
+          if git diff --cached --quiet; then
+            echo 'Candidate artwork and cache already integrated'
+            exit 0
+          fi
+          git diff --cached --name-only | tee /tmp/daily-release-diff.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          paths=Path('/tmp/daily-release-diff.txt').read_text().splitlines()
+          assert len([p for p in paths if p.startswith('assets/daily-book/')])==26
+          assert len(paths)==27 and 'index.html' in paths, paths
+          print('PASS 27 changed paths only (26 approved image assets + 1 versioned index)')
+          PY
+          git commit -m 'Staged candidate: 26 approved Daily illustrations and one native loader cache URL'
+          git push origin HEAD:release/daily-discovery-illustrated-20261113
