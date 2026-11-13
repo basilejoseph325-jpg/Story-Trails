@@ -102,7 +102,7 @@ const KEY='bu-daily-insight-live-v1';
      legacy:Object.fromEntries(Object.keys(localStorage).filter(k=>/^(bible-unfolded|story-trails)-/i.test(k))
        .map(k=>[k,localStorage.getItem(k)])),
      test:localStorage.getItem('bu-daily-insight-test-v1'),
-     live:localStorage.getItem(KEY)
+     live:localStorage.getItem('bu-daily-insight-live-v1')
    }));
    assert.equal(after.test,before.test,'Existing TEST data must be untouched');
    // Native game initialization can create live keys; pre-existing values may not be changed.
