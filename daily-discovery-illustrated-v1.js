@@ -18,9 +18,7 @@ const KEY='bu-daily-insight-live-v1';
 const Q=new URLSearchParams(location.search);
 // A deliberately explicit, TEST-repository-only editorial QA route.
 // Never expose the full 30-lesson browser or ?daily_preview= on normal Daily.
-const editorialQA=()=>Q.get('daily_qa')==='1'&&(
- (location.hostname==='basilejoseph325-jpg.github.io'&&location.pathname.startsWith('/Bible-Unfolded-Visual-Lab/'))||
- ['127.0.0.1','localhost'].includes(location.hostname));
+const editorialQA=()=>false; // Production NEVER exposes future lessons, even via URL or localhost.
 const DATA=()=>window.BUDailyDiscoveryLibrary||[];
 // TEST only: a curated historical illustration for every existing lesson.
 // Seven now use purpose-made, reviewed artistic reconstructions. Other items
