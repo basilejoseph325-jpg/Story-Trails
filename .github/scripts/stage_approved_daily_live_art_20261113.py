@@ -48,7 +48,7 @@ for name,expected in FILES.items():
             payload=stream.read(220_000)
     except Exception as ex:
         raise RuntimeError(f"Cannot fetch pinned approved image {name}: {ex}") from ex
-    sha=hashlib.sha1(b"blob "+str(len(payload)).encode()+b"\\0"+payload).hexdigest()
+    sha=hashlib.sha1(b"blob "+str(len(payload)).encode()+b"\0"+payload).hexdigest()
     assert sha==expected,(name,"Git object hash changed",sha,expected)
     assert payload[:4]==b"RIFF" and payload[8:12]==b"WEBP",(name,"not WebP")
     if path.exists(): assert path.read_bytes()==payload, "Would overwrite different image: "+str(path)
