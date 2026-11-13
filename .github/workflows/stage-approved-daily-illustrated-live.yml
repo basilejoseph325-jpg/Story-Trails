@@ -6,6 +6,10 @@ on:
       - '.github/workflows/stage-approved-daily-illustrated-live.yml'
       - '.github/scripts/stage_approved_daily_illustrated_live.py'
       - 'scripts/qa_live_daily_illustrated.cjs'
+      - 'daily-discovery-illustrated-v1.js'
+      - 'daily-discovery-illustrated-v1.css'
+      - 'daily-discovery-insights-content-v1.js'
+      - 'journey-progress-caption.js'
 permissions:
   contents: write
 jobs:
