@@ -1,0 +1,616 @@
+/* Bible Unfolded · Meaningful Daily Discovery · approved LIVE reader
+   Reuses the NATIVE Daily Discovery screen, header, back, soundtrack.
+   Only #bu375-daily changes visually; no other game mode styles touched. */
+#bu375-daily.bu-insight-active{--dd-ivory:#fff1c9;--dd-gold:#e9c589;--dd-cream:#f6e7c5;--dd-deep:#072836;--dd-teal:#0c394a;background:linear-gradient(150deg,#0e3c4b,#071f2e)!important}
+#bu375-daily.bu-insight-active .bu34-top{border-bottom:1px solid #c9a16c;background:linear-gradient(90deg,#072736,#153c48)!important;box-shadow:0 4px 13px #00141b8a}
+#bu375-daily.bu-insight-active .bu34-title{font-size:clamp(19px,4.3vw,30px)!important}
+#bu375-body.bu-insight-reading{position:fixed;inset:69px 0 0!important;width:100%!important;max-width:none!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;display:block!important;padding:0 0 38px!important;scrollbar-color:#bb955b #0e303e;scroll-behavior:smooth;background:linear-gradient(#092a39,#0b3240 52%,#061b28)}
+#bu375-body.bu-insight-reading *{box-sizing:border-box}
+#bu375-body.bu-insight-reading .bu-insight-wrap{max-width:840px;margin:0 auto;color:var(--dd-cream);font-family:system-ui,-apple-system,sans-serif}
+#bu375-body.bu-insight-reading button:focus-visible,#bu375-body.bu-insight-reading a:focus-visible{outline:3px solid #ffdf95;outline-offset:3px}
+#bu375-body.bu-insight-reading .bu-insight-tabs{display:flex;gap:6px;padding:10px 12px 9px;position:sticky;top:0;z-index:6;background:linear-gradient(180deg,#092a39 75%,#092a39d7);border-bottom:1px solid #c4a57473;justify-content:center;box-shadow:0 3px 8px #041f2b6a}
+#bu375-body.bu-insight-reading .bu-insight-tab{appearance:none;flex:1;max-width:210px;min-height:40px;padding:8px 7px;color:#e4d0aa;background:#174657;border:1px solid #b99e6870;border-radius:10px;cursor:pointer;font:850 clamp(11px,2.5vw,13px)/1.15 system-ui,sans-serif;letter-spacing:.01em}
+#bu375-body.bu-insight-reading .bu-insight-tab[aria-selected="true"]{color:#163440;background:linear-gradient(180deg,#fff1ba,#dbb56b);border-color:#ffefd2;box-shadow:0 2px 8px #0006}
+#bu375-body.bu-insight-reading .bu-insight-cover{position:relative;min-height:267px;display:flex;flex-direction:column;justify-content:flex-end;margin:0;padding:20px 22px 21px;border-bottom:2px solid #cfaa6d;background-position:center;background-size:cover;isolation:isolate;overflow:hidden}
+#bu375-body.bu-insight-reading .bu-insight-cover::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#05253230 0%,#051c29b8 56%,#021723ed 100%),radial-gradient(ellipse at 80% 20%,#f9d8933d,transparent 70%);pointer-events:none}
+#bu375-body.bu-insight-reading .bu-insight-cover::after{content:"✦";position:absolute;right:16px;top:14px;font-size:35px;color:#ffe3a2;text-shadow:0 0 23px #ffe39c;opacity:.84;pointer-events:none}
+#bu375-body.bu-insight-reading .bu-insight-datestamp{color:#ffdfa0;font:900 10px/1.3 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;text-shadow:0 2px 7px #000e}
+#bu375-body.bu-insight-reading .bu-insight-cover h2{margin:9px 0 8px;font:700 clamp(29px,7vw,47px)/1.05 Georgia,'Times New Roman',serif;color:#ffeabf;text-shadow:0 3px 9px #000c}
+#bu375-body.bu-insight-reading .bu-insight-cover p{margin:0;color:#f5e6ca;font:600 clamp(13px,2.9vw,16px)/1.38 system-ui,sans-serif;text-shadow:0 2px 8px #000b}
+#bu375-body.bu-insight-reading .bu-insight-section{padding:19px 18px 22px}
+#bu375-body.bu-insight-reading .bu-insight-lead{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap}
+#bu375-body.bu-insight-reading .bu-insight-category{color:#e7bd78;font:850 10px system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em}
+#bu375-body.bu-insight-reading .bu-insight-source{display:inline-flex;align-items:center;gap:5px;min-height:31px;border-radius:9px;border:1px solid #c9ad7e89;background:#144555;color:#ffe2a6;padding:6px 10px;font:800 11px system-ui,sans-serif;text-decoration:none}
+#bu375-body.bu-insight-reading .bu-insight-story{padding:17px 17px 13px;border:1px solid #d7b77b91;border-radius:17px;background:linear-gradient(130deg,#174e61e8,#0e3243 84%);box-shadow:0 8px 18px #0007,inset 0 1px #fff4bd4c}
+#bu375-body.bu-insight-reading .bu-insight-story p{color:#fbf1da;font:500 clamp(15px,3.4vw,18px)/1.6 system-ui,sans-serif;letter-spacing:.005em;margin:0 0 14px}
+#bu375-body.bu-insight-reading .bu-insight-story p:last-child{margin-bottom:0}
+#bu375-body.bu-insight-reading .bu-insight-insight{margin-top:12px;position:relative;padding:15px 17px 15px 20px;border:1px solid #eccb88;border-radius:14px;background:linear-gradient(120deg,#e6ba6d 0%,#f1d49a 55%,#d9ac5c 100%);color:#153642;box-shadow:0 4px 15px #0006}
+#bu375-body.bu-insight-reading .bu-insight-insight span{display:block;color:#6c4c23;font:900 10px system-ui,sans-serif;letter-spacing:.13em;text-transform:uppercase;margin-bottom:6px}
+#bu375-body.bu-insight-reading .bu-insight-insight strong{display:block;font:700 clamp(17px,3.6vw,21px)/1.3 Georgia,serif}
+#bu375-body.bu-insight-reading .bu-insight-reflect{margin-top:12px;padding:15px 17px;border:1px solid #b8b98977;border-radius:13px;background:linear-gradient(100deg,#1f5362,#103847);color:#f9edcc}
+#bu375-body.bu-insight-reading .bu-insight-reflect .bu-insight-kicker{font:900 10px system-ui,sans-serif;letter-spacing:.14em;color:#f9d18b;text-transform:uppercase}
+#bu375-body.bu-insight-reading .bu-insight-reflect p{font:italic 700 clamp(18px,3.9vw,23px)/1.4 Georgia,serif;color:#ffeac2;margin:9px 0 0}
+#bu375-body.bu-insight-reading .bu-insight-next{display:flex;flex-wrap:wrap;gap:10px;margin-top:17px;align-items:center;justify-content:space-between}
+#bu375-body.bu-insight-reading .bu-insight-button{appearance:none;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid #fff0b9;border-radius:12px;min-height:45px;padding:10px 15px;background:linear-gradient(180deg,#ffecba,#e3b96a 65%,#be8439);color:#17323c;font:900 12px/1.15 system-ui,sans-serif;box-shadow:0 4px 8px #0008,inset 0 1px #fff7ce;cursor:pointer}
+#bu375-body.bu-insight-reading .bu-insight-button.secondary{border-color:#b9a171;background:linear-gradient(#195065,#0f3445);color:#ffe2ab;text-shadow:none}
+#bu375-body.bu-insight-reading .bu-insight-button:active{transform:translateY(2px)}
+#bu375-body.bu-insight-reading .bu-insight-note{font:650 11px/1.35 system-ui,sans-serif;color:#c8d7d2;margin-top:17px}
+#bu375-body.bu-insight-reading .bu-insight-share-banner{margin-top:10px;padding:12px 14px;background:linear-gradient(110deg,#b17a36,#e5bb71);color:#112e39;border-radius:13px;border:1px solid #ffe6aa}
+#bu375-body.bu-insight-reading .bu-insight-share-banner h3{margin:1px 0 6px;font:700 24px Georgia,serif;color:#123541}
+#bu375-body.bu-insight-reading .bu-insight-share-banner p{margin:0;font:650 12px/1.4 system-ui,sans-serif}
+#bu375-body.bu-insight-reading .bu-insight-conversation{padding:15px 16px;margin-top:12px;border:1px solid #ddb979;border-radius:15px;background:linear-gradient(145deg,#165267,#092d3f);box-shadow:0 6px 16px #0006}
+#bu375-body.bu-insight-reading .bu-insight-conversation .number{font:900 10px system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#e7c182}
+#bu375-body.bu-insight-reading .bu-insight-conversation h3{margin:6px 0 9px;color:#ffe6b1;font:700 clamp(19px,4.5vw,24px) Georgia,serif}
+#bu375-body.bu-insight-reading .bu-insight-conversation p{margin:0;color:#f7edda;font:650 clamp(14px,3.25vw,16px)/1.56 system-ui,sans-serif}
+#bu375-body.bu-insight-reading .bu-insight-conversation.question{background:linear-gradient(120deg,#4f4a2f,#163f4e);border-color:#ffe1a1}
+#bu375-body.bu-insight-reading .bu-insight-conversation.question p{font:italic 700 19px/1.38 Georgia,serif;color:#ffeebf}
+#bu375-body.bu-insight-reading .bu-insight-sources{padding:10px 13px;margin-top:13px;background:#0d3040;border:1px solid #9a9b7e70;border-radius:11px}
+#bu375-body.bu-insight-reading .bu-insight-sources p{font:650 11px/1.4 system-ui,sans-serif;margin:0;color:#e3d6b8}
+#bu375-body.bu-insight-reading .bu-insight-sources a{color:#f9d891;font-weight:850;text-decoration:underline}
+#bu375-body.bu-insight-reading .bu-insight-archive{margin:15px 0 0}
+#bu375-body.bu-insight-reading .bu-insight-archive h2{font:700 29px Georgia,serif;color:#ffe2ad;margin:0 0 4px}
+#bu375-body.bu-insight-reading .bu-insight-archive p{font:650 12px system-ui,sans-serif;margin:0 0 12px;color:#cbdcd5}
+#bu375-body.bu-insight-reading .bu-insight-saved-row{display:flex;gap:12px;align-items:center;width:100%;min-height:84px;padding:9px;text-align:left;border:1px solid #d5b77c;border-radius:11px;background:#194657;color:#ffeac2;cursor:pointer;margin-bottom:9px}
+#bu375-body.bu-insight-reading .bu-insight-thumb{flex:none;width:87px;height:66px;border-radius:8px;background-size:cover;background-position:center;border:1px solid #d8c18b}
+#bu375-body.bu-insight-reading .bu-insight-saved-row strong{display:block;font:700 16px Georgia,serif}
+#bu375-body.bu-insight-reading .bu-insight-saved-row small{display:block;color:#e8cd91;font:850 10px system-ui,sans-serif;margin-top:5px}
+#bu375-body.bu-insight-reading .bu-insight-empty{padding:28px 17px;background:#123744;border:1px solid #c2a46f;border-radius:14px;color:#f4dca6;font:700 14px/1.5 system-ui,sans-serif;text-align:center}
+#bu375-body.bu-insight-reading .bu-insight-toast{position:sticky;bottom:12px;z-index:7;text-align:center;margin:12px auto;padding:10px 13px;border:1px solid #ffe2a2;border-radius:11px;background:#1f5667;color:#ffedc8;font:850 11px system-ui,sans-serif;box-shadow:0 5px 15px #0007}
+#bu375-daily.bu-insight-active #bu375-back{min-height:45px;min-width:45px}
+@media (max-width:440px){
+ #bu375-body.bu-insight-reading .bu-insight-cover{min-height:245px;padding:18px 16px}
+ #bu375-body.bu-insight-reading .bu-insight-section{padding:13px 12px 18px}
+ #bu375-body.bu-insight-reading .bu-insight-story{padding:15px}
+ #bu375-body.bu-insight-reading .bu-insight-next .bu-insight-button{flex:1}
+ #bu375-body.bu-insight-reading .bu-insight-tabs{padding:8px 9px;gap:4px}
+ #bu375-body.bu-insight-reading .bu-insight-tab{padding:8px 5px;font-size:10.5px}
+}
+@media(max-height:480px){
+ #bu375-body.bu-insight-reading{inset:57px 0 0!important}
+ #bu375-body.bu-insight-reading .bu-insight-cover{min-height:165px;padding:12px 17px}
+ #bu375-body.bu-insight-reading .bu-insight-cover h2{font-size:30px;margin:4px 0}
+ #bu375-body.bu-insight-reading .bu-insight-tabs{padding:6px 10px}
+}
+@media(prefers-reduced-motion:reduce){#bu375-body.bu-insight-reading *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Historically honest Nile cover: abstract water, riverbanks and warm light.
+   Existing Moses/Red Sea artwork portrays a DIFFERENT body of water and must
+   never be used as photographic/illustrated evidence for the Nile itself. */
+#bu375-body.bu-insight-reading .bu-insight-cover.no-art[data-illustration="nile"]{
+ background:
+  radial-gradient(ellipse at 74% 14%,#f6dea67a 0%,#e4ba7566 12%,transparent 37%),
+  repeating-linear-gradient(175deg,transparent 0 17px,#c7d6cd11 18px,#b6d9d422 20px,transparent 23px 44px),
+  linear-gradient(135deg,#192e33 0%,#4f6b67 32%,#174b5b 53%,#132c3c 80%,#061b2c 100%);
+}
+#bu375-body.bu-insight-reading .bu-insight-cover.no-art[data-illustration="nile"]:before{
+ background:linear-gradient(180deg,#182f2b2b,#061c29a6 60%,#071b25e9 100%);
+}
+
+/* Share view must reveal a usable ministry thought immediately, not require
+   scrolling past the same large cover again. */
+#bu375-body.bu-insight-reading .bu-insight-cover.bu-insight-compact{min-height:138px;padding:14px 19px}
+#bu375-body.bu-insight-reading .bu-insight-cover.bu-insight-compact h2{font-size:clamp(21px,4.5vw,31px);margin:6px 0 0}
+#bu375-body.bu-insight-reading .bu-insight-cover.bu-insight-compact p{display:none}
+#bu375-body.bu-insight-reading .bu-insight-cover.bu-insight-compact:after{font-size:22px}
+#bu375-body.bu-insight-reading .bu-insight-share-banner{padding:10px 13px}
+#bu375-body.bu-insight-reading .bu-insight-share-banner h3{font-size:23px}
+#bu375-body.bu-insight-reading .bu-insight-conversation{padding:12px 14px;margin-top:9px}
+#bu375-body.bu-insight-reading .bu-insight-conversation p{font-size:14px;line-height:1.48}
+#bu375-body.bu-insight-reading .bu-insight-conversation.question p{font-size:18px}
+#bu375-body.bu-insight-reading .bu-insight-extra{margin-top:12px;padding:10px;border-top:1px solid #ffe0a16b;
+ color:#fff0c9;font:650 13px/1.45 system-ui,sans-serif}
+#bu375-body.bu-insight-reading .bu-insight-extra b{display:block;color:#ffdb94;margin-bottom:5px}
+@media(max-height:480px){
+ #bu375-body.bu-insight-reading .bu-insight-cover.bu-insight-compact{min-height:87px;padding:7px 15px}
+ #bu375-body.bu-insight-reading .bu-insight-cover.bu-insight-compact h2{font-size:23px}
+}
+
+
+
+/* Daily Discovery Editorial Polish V2 — TEST ONLY
+   A unified magazine-like sharing page and elegant photo-led saved shelf.
+   Intentional removal of separate bordered information cards. */
+#bu375-body.bu-insight-reading .bu-insight-share-page {
+  position:relative;
+  padding:17px clamp(18px,4.2vw,34px) 30px;
+  background:
+   radial-gradient(ellipse at 96% 4%,rgba(207,166,93,.16),transparent 46%),
+   radial-gradient(ellipse at -14% 65%,rgba(35,91,103,.45),transparent 52%),
+   linear-gradient(165deg,#0c3540 0%,#082735 53%,#062330 100%);
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page::before {
+ content:"✧";
+ position:absolute;right:26px;top:19px;font:38px Georgia,serif;
+ color:#e8bc6c;opacity:.3;pointer-events:none;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-share-banner {
+ margin:0 0 4px!important;padding:10px 2px 20px!important;
+ background:none!important;border:0!important;border-radius:0!important;
+ border-bottom:1px solid rgba(238,202,139,.46)!important;
+ box-shadow:none!important;color:#f9eac8!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-share-banner h3 {
+ margin:0 26px 9px 0!important;
+ color:#ffe8b8!important;
+ font:700 clamp(27px,6.2vw,39px)/1.1 Georgia,"Times New Roman",serif!important;
+ letter-spacing:-.025em;text-shadow:0 2px 10px #0007;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-share-banner p {
+ margin:0!important;color:#e9dbbc!important;
+ font:400 clamp(13px,3.2vw,16px)/1.55 Georgia,serif!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-conversation,
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-conversation.question {
+ margin:0!important;padding:19px 2px 20px!important;
+ border:0!important;border-radius:0!important;
+ border-bottom:1px solid rgba(224,191,132,.30)!important;
+ background:transparent!important;box-shadow:none!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-conversation .number {
+ display:block;margin-bottom:9px;color:#e7c488!important;
+ font:800 10px/1.5 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:.17em!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-conversation p {
+ color:#f9edd7!important;
+ font:400 clamp(16px,3.65vw,19px)/1.6 Georgia,"Times New Roman",serif!important;
+ text-wrap:pretty;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-conversation.question p {
+ color:#ffe0a0!important;
+ font:italic 700 clamp(22px,5.05vw,30px)/1.35 Georgia,"Times New Roman",serif!important;
+ padding:3px 0 7px;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-extra {
+ margin-top:17px;padding:3px 0 3px 15px;
+ border-top:0!important;border-left:2px solid #d8ad68;
+ color:#eaddc4;font:400 clamp(14px,3.4vw,17px)/1.6 Georgia,serif;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-extra b {
+ display:block;color:#efc98a;font:750 11px/1.5 system-ui,sans-serif;
+ letter-spacing:.03em;margin-bottom:5px;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-sources {
+ padding:16px 2px 10px!important;margin:0!important;
+ background:transparent!important;border:0!important;border-radius:0!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-sources p {
+ color:#d5dfd7!important;font:400 13px/1.65 Georgia,serif!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-next {
+ margin-top:15px;
+}
+#bu375-body.bu-insight-reading .bu-insight-archive {
+ margin:0!important;padding:24px clamp(17px,4.4vw,32px) 26px!important;
+ background:radial-gradient(ellipse at 100% 0%,#ac885f24,transparent 50%);
+}
+#bu375-body.bu-insight-reading .bu-insight-archive h2 {
+ font:700 clamp(27px,6.1vw,37px)/1.12 Georgia,serif!important;
+ margin:5px 0 11px!important;text-wrap:balance;
+ color:#ffdfaa!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-archive>p {
+ font:400 clamp(14px,3.35vw,16px)/1.55 Georgia,serif!important;
+ color:#d2e0d8!important;margin-bottom:22px!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-saved-row {
+ position:relative;
+ display:grid!important;grid-template-columns:minmax(92px,30%) minmax(0,1fr)!important;
+ gap:15px!important;align-items:center!important;
+ width:100%;min-height:116px;padding:11px 29px 11px 11px!important;
+ border:1px solid #e4bf7c9c!important;border-radius:15px!important;
+ background:linear-gradient(120deg,#215564 0%,#0c3545 100%)!important;
+ box-shadow:0 7px 16px #00152070,inset 0 1px 0 #fff2!important;
+ color:#ffe5b6!important;margin:0 0 13px!important;
+ transition:transform .13s ease,background .13s ease;
+}
+#bu375-body.bu-insight-reading .bu-insight-saved-row:active {
+ transform:scale(.986);background:#245363!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-saved-row::after {
+ content:"›";position:absolute;right:11px;top:50%;transform:translateY(-50%);
+ color:#f4d18e;font:28px Georgia,serif;opacity:.85;
+}
+#bu375-body.bu-insight-reading .bu-insight-thumb {
+ width:100%!important;height:94px!important;min-width:0!important;
+ border:1px solid #f4d39a80!important;border-radius:11px!important;
+ background-size:cover!important;background-position:center!important;
+ background-color:#174b58!important;
+ background-image:radial-gradient(ellipse at 70% 18%,#bdaf7d70,transparent 46%),
+ linear-gradient(145deg,#285766,#133746);
+ box-shadow:inset 0 0 0 1px #00151b6b,0 2px 8px #0004;
+}
+#bu375-body.bu-insight-reading .bu-insight-saved-row strong {
+ font:700 clamp(16px,3.75vw,21px)/1.22 Georgia,serif!important;
+ color:#ffe6b6;overflow-wrap:anywhere;
+}
+#bu375-body.bu-insight-reading .bu-insight-saved-row small {
+ display:block;margin-top:10px!important;font:800 10px/1.3 system-ui,sans-serif!important;
+ color:#f6cf8d!important;letter-spacing:.05em;
+}
+@media(max-width:380px){
+ #bu375-body.bu-insight-reading .bu-insight-saved-row{
+  grid-template-columns:93px minmax(0,1fr)!important;gap:10px!important;
+ }
+ #bu375-body.bu-insight-reading .bu-insight-thumb{height:85px!important}
+}
+
+
+/* Actual image thumbnails: no blank photo slots if the remote original is unavailable. */
+#bu375-body.bu-insight-reading .bu-insight-thumb{overflow:hidden;position:relative;display:block}
+#bu375-body.bu-insight-reading .bu-insight-thumb img{
+ width:100%;height:100%;display:block;object-fit:cover;object-position:center;
+ border-radius:inherit;filter:saturate(.94) contrast(1.04)
+}
+
+
+/* Daily Discovery sunshine palette v3 — TEST ONLY, Nov 11 2026.
+   Lighter ocean/lagoon and a touch of warm amber light, NOT a white-page redesign.
+   Scoped entirely to the reimagined Daily reader; original modes unaffected. */
+#bu375-daily.bu-insight-active{
+  background:linear-gradient(155deg,#317c8b 0%,#276477 48%,#1c4d60 100%)!important;
+}
+#bu375-daily.bu-insight-active .bu34-top{
+  background:linear-gradient(105deg,#20566b 0%,#2e6d7e 55%,#24576a 100%)!important;
+  border-bottom-color:#e2ba79;
+  box-shadow:0 4px 12px #052b3859;
+}
+#bu375-body.bu-insight-reading{
+  background:
+   radial-gradient(ellipse at 92% 10%,rgba(249,213,139,.21),transparent 46%),
+   radial-gradient(ellipse at -12% 60%,rgba(96,187,180,.24),transparent 50%),
+   linear-gradient(155deg,#2c7584 0%,#1d6274 45%,#184c60 100%)!important;
+  scrollbar-color:#e1bc78 #22596b;
+}
+#bu375-body.bu-insight-reading .bu-insight-tabs{
+  background:linear-gradient(180deg,#256b7f 68%,#256b7ff3)!important;
+  border-bottom-color:#e5c28582;
+  box-shadow:0 3px 10px #0c3c4a5c;
+}
+#bu375-body.bu-insight-reading .bu-insight-tab{
+  background:linear-gradient(170deg,#28677d,#205c70);
+  color:#fff0d0;border-color:#e4c18280;
+}
+#bu375-body.bu-insight-reading .bu-insight-tab[aria-selected="true"]{
+  background:linear-gradient(180deg,#fff1b9,#ecc581 80%,#daab60);
+  color:#173942;box-shadow:0 3px 10px #093c4a65;
+}
+#bu375-body.bu-insight-reading .bu-insight-story{
+  background:linear-gradient(130deg,#28758a 0%,#1d5e72 82%)!important;
+  border-color:#f0cf90b5;box-shadow:0 9px 18px #0b334c52,inset 0 1px #ffecb250;
+}
+#bu375-body.bu-insight-reading .bu-insight-story p{color:#fff4db}
+#bu375-body.bu-insight-reading .bu-insight-reflect{
+  background:linear-gradient(125deg,#347d8d,#215c70 94%)!important;
+  border-color:#efce9670;
+}
+#bu375-body.bu-insight-reading .bu-insight-source{
+  background:linear-gradient(160deg,#32788b,#21576b)!important;
+  border-color:#e7c387a0;color:#fff1cd;
+}
+#bu375-body.bu-insight-reading .bu-insight-button.secondary{
+  background:linear-gradient(180deg,#327c91,#205a6d 87%)!important;
+  border-color:#e5c78cab;color:#ffedc7;
+}
+#bu375-body.bu-insight-reading .bu-insight-button{box-shadow:0 3px 8px #123f4f72,inset 0 1px #fff7ce}
+#bu375-body.bu-insight-reading .bu-insight-next .bu-insight-button.copy-compact{
+  flex:0 0 auto!important;min-width:90px;max-width:122px;
+  padding-inline:17px;white-space:nowrap;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page{
+  background:
+   radial-gradient(ellipse at 86% 0%,rgba(255,220,153,.25),transparent 44%),
+   radial-gradient(ellipse at -14% 72%,rgba(108,191,186,.26),transparent 47%),
+   linear-gradient(166deg,#307b87 0%,#246779 48%,#1b5369 100%)!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-share-banner h3{
+  color:#fff0c9!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-share-banner p,
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-conversation p,
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-sources p{
+  color:#fff3dc!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-share-page .bu-insight-extra{color:#fff0da}
+#bu375-body.bu-insight-reading .bu-insight-archive{
+  min-height:calc(100dvh - 165px);
+  background:
+   radial-gradient(ellipse at 86% 10%,rgba(249,213,146,.25),transparent 46%),
+   radial-gradient(ellipse at 12% 68%,rgba(117,195,183,.24),transparent 54%),
+   linear-gradient(155deg,#2c7685 0%,#256a7a 42%,#1a5266 100%)!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-archive h2{color:#fff0c6!important}
+#bu375-body.bu-insight-reading .bu-insight-archive>p{color:#f7e9ce!important}
+#bu375-body.bu-insight-reading .bu-insight-saved-row{
+  background:linear-gradient(112deg,#337b8a 0%,#205b72 100%)!important;
+  border-color:#f2d091b8!important;
+  box-shadow:0 6px 15px #0b384851,inset 0 1px 0 #fff4!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-saved-row:active{
+  background:linear-gradient(112deg,#3c8896,#25677b)!important;
+}
+#bu375-body.bu-insight-reading .bu-insight-empty{
+  background:linear-gradient(135deg,#367b89,#225f71)!important;
+  border-color:#ecd09a;
+}
+#bu375-body.bu-insight-reading .bu-insight-note{
+  color:#f1e9d8;font-size:11px;line-height:1.5;
+}
+@media(max-width:380px){
+ #bu375-body.bu-insight-reading .bu-insight-next .bu-insight-button.copy-compact{
+   min-width:84px;padding-inline:11px;
+ }
+}
+
+
+/* Optional living-history book preview — ?daily_book=1&daily_preview=peter|nile|ruth.
+   Intentional proof-of-concept only: approved teal reader unchanged by default.
+   Warm physical-page illusion inside the game's ocean-blue frame, no giant
+   fixed book prop or fake physical page-turn that would hinder scrolling. */
+#bu375-body.bu-insight-reading.bu-daily-book-preview{
+ background:
+  radial-gradient(ellipse at 92% 5%,rgba(255,224,165,.27),transparent 47%),
+  linear-gradient(160deg,#317b8b 0%,#225c70 51%,#194c62 100%)!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-wrap{
+ padding-bottom:28px;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover{
+ margin:14px 14px 0;
+ border:8px solid #eddcb8!important;
+ border-bottom:0!important;
+ border-radius:15px 15px 0 0;
+ outline:1px solid #9a783f;
+ box-shadow:0 8px 20px #092c3e70,inset 0 0 0 2px #fff2ce;
+ background-position:center!important;
+ min-height:clamp(245px,67vw,350px);
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover::before{
+ background:linear-gradient(180deg,#0a292d22 0%,#10272528 35%,#082330e3 100%),
+ radial-gradient(ellipse at 80% 14%,#ffe5b320,transparent 58%)!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover::after{
+ opacity:.78;top:12px;right:13px;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover h2{
+ color:#fff2d4;font-size:clamp(26px,6.8vw,43px)!important;
+ text-shadow:0 3px 12px #00151dec;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-scene-label{
+ position:absolute;top:14px;left:14px;
+ display:inline-flex;max-width:calc(100% - 75px);
+ padding:4px 8px;border-radius:5px;
+ background:#113b47c9;border:1px solid #f3dca089;
+ color:#ffe8b9;
+ font:700 9px/1.2 system-ui,sans-serif;
+ letter-spacing:.075em;text-transform:uppercase;z-index:1;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover .bu-insight-datestamp{
+ color:#ffe3a0;text-shadow:0 1px 6px #000;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-section:not(.bu-insight-archive){
+ position:relative;
+ margin:0 14px 18px;
+ padding:24px 17px 24px!important;
+ border:8px solid #eddbb8;
+ border-top:0;
+ border-radius:0 0 15px 15px;
+ outline:1px solid #9a783f;
+ background:
+  radial-gradient(ellipse at 8% 5%,#fffbeba8,transparent 48%),
+  repeating-linear-gradient(94deg,#f7ead500 0 16px,#8e734808 17px,#f7ead500 18px 34px),
+  linear-gradient(170deg,#f7ebd2 0%,#f1e1bf 53%,#ead5ad 100%)!important;
+ box-shadow:0 10px 22px #0b2c3866,inset 0 0 0 1px #fff7e1;
+ color:#342d24;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-section:not(.bu-insight-archive)::before{
+ content:"❧";
+ position:absolute;right:23px;top:9px;
+ color:#977342;opacity:.35;font:23px Georgia,serif;
+ pointer-events:none;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-lead{
+ padding-bottom:11px;margin-bottom:15px;
+ border-bottom:1px solid #b6966180;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-category{
+ color:#795927!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-story{
+ padding:0 4px 7px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-story p{
+ color:#362d23!important;
+ font:400 clamp(16px,3.65vw,19px)/1.64 Georgia,'Times New Roman',serif!important;
+ letter-spacing:0;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-insight{
+ background:linear-gradient(125deg,#f0d49a 0%,#f6e3b6 58%,#e6c480 100%)!important;
+ border:1px solid #ad894d!important;
+ color:#372b19;
+ box-shadow:0 3px 7px #73572430;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-reflect{
+ background:linear-gradient(125deg,#ecdfc4,#e8d2a7)!important;
+ color:#3b3022!important;border:1px solid #bea170!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-reflect .bu-insight-kicker{
+ color:#76501d!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-reflect p{
+ color:#51402c!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-source{
+ background:linear-gradient(160deg,#2d6b76,#1e5967)!important;
+ color:#fff1cf!important;border:1px solid #927342!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-note{
+ color:#5b4d39!important;font-size:11px;line-height:1.5;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-share-page{
+ background:
+  radial-gradient(ellipse at 80% 2%,rgba(255,252,233,.7),transparent 52%),
+  linear-gradient(170deg,#f7ecd5,#ecd7b3)!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-share-page::before{
+ color:#976731!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-share-banner{
+ border-bottom-color:#a88b65a8!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-share-banner h3{
+ color:#503b23!important;text-shadow:none!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-share-banner p,
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-conversation p,
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-sources p{
+ color:#413424!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-conversation{
+ border-bottom-color:#b19a7188!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-conversation .number{
+ color:#7e5927!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-share-page .bu-insight-conversation.question p{
+ color:#68401c!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-extra{
+ color:#4d3a26!important;border-left-color:#a8793a!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-extra b{
+ color:#7b501e!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-sources a{
+ color:#78501c!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-archive .bu-insight-saved-row{
+ background:linear-gradient(116deg,#f3e2bc,#e5cd9a)!important;
+ border-color:#a77f43!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-saved-row strong{
+ color:#3b2c1d!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-saved-row small{
+ color:#7a5325!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-archive .bu-insight-note{
+ color:#f9ebcf!important;
+}
+@media(max-width:390px){
+ #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover{margin-inline:9px;border-width:6px}
+ #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-section:not(.bu-insight-archive){
+  margin-inline:9px;padding:19px 13px 21px!important;border-width:6px;
+ }
+ #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-story p{font-size:16px!important}
+}
+
+/* TEST-only chapter picker: accessible, small, and part of the teal frame.
+   Shown only for explicit ?daily_book=1 editorial previews. */
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-preview-picker{
+ display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+ gap:8px 13px;padding:9px 12px 10px;margin:0 auto;
+ background:linear-gradient(120deg,#2a7181,#1e586b);
+ border-bottom:1px solid #e4c68c9c;color:#f5ddb0;
+ box-shadow:inset 0 1px #ffe8ba24;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-preview-caption{
+ font:750 10px/1.3 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.095em;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-preview-options{
+ display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:nowrap;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview [data-insight-preview]{
+ appearance:none;min-height:35px;min-width:66px;padding:7px 11px;
+ border:1px solid #d0b07b;border-radius:9px;
+ background:linear-gradient(#246378,#194b5f);color:#ffe8b7;
+ font:800 12px/1.2 system-ui,sans-serif;cursor:pointer;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview [data-insight-preview][aria-pressed="true"]{
+ background:linear-gradient(#fff0be,#deb56e);color:#213c41;
+ border-color:#fff3cf;box-shadow:0 2px 6px #07334270;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview [data-insight-preview]:focus-visible{
+ outline:3px solid #fff0a7;outline-offset:2px;
+}
+@media(max-width:365px){
+ #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-preview-picker{
+  gap:5px;padding:7px 6px 9px;
+ }
+ #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-preview-caption{font-size:9px}
+ #bu375-body.bu-insight-reading.bu-daily-book-preview [data-insight-preview]{
+  min-width:65px;min-height:34px;padding:6px 9px;font-size:11px
+ }
+}
+
+
+/* TEST only: compact browse-all-30 chapter selector. Keep existing
+   Peter/Nile/Ruth sample buttons, approved page styling and scroll behavior. */
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-select-label{
+ display:flex;align-items:center;justify-content:center;gap:7px;flex-basis:100%;
+ color:#f5ddb0;font:750 10px/1.3 system-ui,sans-serif;letter-spacing:.03em;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-select-label select{
+ appearance:auto;min-width:0;max-width:min(100%,365px);width:min(100%,365px);
+ min-height:39px;padding:7px 9px;border:1px solid #e3bf81;border-radius:9px;
+ background:#215568;color:#fff0cf;cursor:pointer;
+ font:750 12px/1.2 system-ui,sans-serif;
+ box-shadow:inset 0 1px #fff2b12a;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-select-label select:focus-visible{
+ outline:3px solid #f8d68a;outline-offset:2px;
+}
+@media(max-width:370px){
+ #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-select-label{
+  display:block;text-align:center;
+ }
+ #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-select-label span{
+  display:block;margin-bottom:5px;
+ }
+}
+
+/* TEST art-first cover v13: photos are never printed over with decorative overlays. */
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover.bu-book-art-only{
+  aspect-ratio:16/9!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:0!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-color:#c2a47c!important;
+  justify-content:initial!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover.bu-book-art-only::before,
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-insight-cover.bu-book-art-only::after{
+  content:none!important;
+  display:none!important;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-title-band{
+  margin:0 14px;
+  padding:15px 19px 14px;
+  border:8px solid #eddbb8;
+  border-top:0;
+  border-bottom:0;
+  background:linear-gradient(180deg,#f8ecd5 0%,#f3e5c9 100%);
+  color:#342d24;
+  box-shadow:inset 0 1px #fff8e6;
+}
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-title-band h2{
+  color:#3c3023!important;
+  font:700 clamp(26px,5.8vw,38px)/1.13 Georgia,'Times New Roman',serif!important;
+  text-shadow:none!important;
+  margin:0!important;
+  overflow-wrap:break-word;
+}
+@media(max-width:390px){
+  #bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-title-band{
+    margin-inline:9px;
+    border-width:6px;
+    padding:12px 14px 11px;
+  }
+}
