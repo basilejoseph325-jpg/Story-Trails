@@ -47,7 +47,7 @@ expected3=[
     ("insert",None,'Object.assign(BU3857_DATA,{"genesis_ep10"'),
     ("replace","const BU_GENESIS_IDS=","genesis_ep10"),
     ("insert",None,'Object.assign(BU_HQ_WORDS,{"g10-d01"'),
-    ("replace","buHQHintLetters","s.book==='genesis_ep10'?0:"),
+    ("replace","buHQHintLetters","bu3857State.book==='genesis_ep10'?0:"),
     ("insert",None,"if(s.book==='genesis_ep10')"),
 ]
 expected5=[
