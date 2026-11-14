@@ -1,0 +1,29 @@
+name: QA LIVE Leviticus — 27 chapters, existing saves, navigation
+on:
+  push:
+    branches: [feature/leviticus-reader-live-27parts-20261114, main]
+    paths:
+      - 'bible-book-guides/**'
+      - 'scripts/qa_live_leviticus_27_reader_v1.cjs'
+      - '.github/workflows/qa-live-leviticus-reader-v1.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  leviticus-live-chrome:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify JS syntax and 27 chapters
+        run: |
+          node --check bible-book-guides/books-v3.js
+          node --check scripts/qa_live_leviticus_27_reader_v1.cjs
+          python3 -m json.tool bible-book-guides/leviticus-draft.json >/dev/null
+      - name: Chrome Android-sized portrait narrow and landscape, saved progress and refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/bu-live-leviticus-qa puppeteer-core@24 --no-audit --no-fund --silent
+          python3 -m http.server 8899 --bind 127.0.0.1 >/tmp/bu-live-leviticus-http.log 2>&1 &
+          sleep 2
+          NODE_PATH=/tmp/bu-live-leviticus-qa/node_modules node scripts/qa_live_leviticus_27_reader_v1.cjs
