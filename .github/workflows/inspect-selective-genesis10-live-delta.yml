@@ -56,7 +56,10 @@ jobs:
           b=Path('/tmp/bu_test_index.html').read_text()
           def hint_fn(src):
             start=src.index(' bu3857Hint=function(){')
-            stop=src.index('\\n };',start)+len('\\n };')
+            matched=re.search(r'\\n[ \\t]{0,4}\\};',src[start:])
+            assert matched,repr(src[start:start+9000][-2500:])
+            stop=start+matched.end()
+            print('HINT_LAST_SNIP',repr(src[stop-130:stop+160])[:380])
             return src[start:stop]
           av,bv=hint_fn(a),hint_fn(b)
           print('HINT_FUNCTION_LENGTHS',len(av),len(bv))
