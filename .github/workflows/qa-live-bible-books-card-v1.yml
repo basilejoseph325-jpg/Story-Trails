@@ -6,6 +6,7 @@ on:
       - 'bible-books-made-simple-card-v1.js'
       - 'bible-book-guides/**'
       - 'journey-progress-caption.js'
+      - 'index.html'
       - 'scripts/qa_live_bible_books_card_v1.cjs'
       - '.github/workflows/qa-live-bible-books-card-v1.yml'
   workflow_dispatch:
