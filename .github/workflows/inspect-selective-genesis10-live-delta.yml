@@ -1,0 +1,49 @@
+name: Inspect selective Genesis 10 LIVE delta only
+on:
+  push:
+    branches: [release/genesis10-live-photos-hints-20261114]
+    paths: ['.github/workflows/inspect-selective-genesis10-live-delta.yml']
+permissions: {contents: read}
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read/test native data without modifying anything
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sSL --fail --retry 3 --max-time 60 https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/171a599c42ab89030d34b7552779ee427586f319/bible_unfolded_core_part3.js -o /tmp/bu_test_p3.js
+          curl -sSL --fail --retry 3 --max-time 60 https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/171a599c42ab89030d34b7552779ee427586f319/bible_unfolded_core_part5.js -o /tmp/bu_test_p5.js
+          curl -sSL --fail --retry 3 --max-time 60 https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/171a599c42ab89030d34b7552779ee427586f319/index.html -o /tmp/bu_test_index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json,difflib
+          for i in [3,5]:
+            a=Path('bible_unfolded_core_part%d.js'%i).read_text()
+            b=Path('/tmp/bu_test_p%d.js'%i).read_text()
+            def decode(x):
+              m=re.search(r'__BU_STAGE41_CORE_PARTS__\[\d+\] = (".*");',x,re.S)
+              assert m
+              return json.loads(m.group(1))
+            x,y=decode(a),decode(b)
+            print('CORE_PART',i,'LIVE_BYTES',len(x),'TEST_BYTES',len(y),'PREFIX',next((j for j in range(min(len(x),len(y))) if x[j]!=y[j]),'same'))
+            seq=difflib.SequenceMatcher(None,x,y,autojunk=False)
+            ops=[(kind,ai,aj,bi,bj) for kind,ai,aj,bi,bj in seq.get_opcodes() if kind!='equal']
+            print('DIFF_OPS',i,len(ops))
+            for n,(kind,ai,aj,bi,bj) in enumerate(ops[:45]):
+              print('DIFF',i,n,kind,'LIVE',ai,aj,'TEST',bi,bj,
+                'OLD',repr(x[max(0,ai-130):min(len(x),aj+130)])[:900],
+                'NEW',repr(y[max(0,bi-130):min(len(y),bj+130)])[:1100])
+            for label,src in [('LIVE',x),('TEST',y)]:
+              for term in ['genesis_ep10','const BU_GENESIS_IDS','Object.assign(BU3857_DATA,','const BU_EP10_SCENE_ART','Object.assign(BU_HQ_WORDS,','bu3857Hint=function','function bu3857Render(){','Next Genesis Episode','genesis_ep09']:
+                print('ANCHOR',i,label,term,src.count(term))
+          a=Path('index.html').read_text()
+          b=Path('/tmp/bu_test_index.html').read_text()
+          for label,src in [('LIVE',a),('TEST',b)]:
+            for term in ['bu3857Hint=function','genesis_ep10','bible_unfolded_core_part3.js','bible_unfolded_core_part5.js','bu3863Hint','Additional hint','Stronger hint','BU_GENESIS_KEY']:
+              print('HTMLANCHOR',label,term,src.count(term))
+              pos=src.find(term)
+              if pos>=0:print('HTMLSNIP',label,term,repr(src[max(0,pos-250):pos+330])[:680])
+          PY
