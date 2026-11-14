@@ -50,8 +50,29 @@ jobs:
             actual=subprocess.check_output(['git','hash-object',path],text=True).strip()
             assert actual==sha,f"Approved file differs: {path}: {actual}"
           loader=Path('journey-progress-caption.js').read_text()
-          old=subprocess.check_output(['git','show','HEAD^:journey-progress-caption.js'],text=True)
-          assert loader.startswith(old),"LIVE loader was replaced or edited, instead of appended"
+          # Compare against immutable pre-release LIVE backup. The only
+          # approved edits to the shared bootstrap are these four cache URLs.
+          # Protect every existing Trivia, Family, Story and native loader.
+          subprocess.run(['git','fetch','origin',
+            'backup-before-daily60-crosswords33-live-20261114','--depth=1'],
+            check=True,stdout=subprocess.DEVNULL)
+          old=subprocess.check_output(
+            ['git','show','FETCH_HEAD:journey-progress-caption.js'],text=True)
+          expected_loader=old
+          allowed=[
+            ('daily-discovery-illustrated-v1.css?v=20261113-live-daily-illustrated-v1',
+             'daily-discovery-illustrated-v1.css?v=20261114-live-daily60-no-picker-v1'),
+            ('daily-discovery-insights-content-v1.js?v=20261113-live-daily-illustrated-v1',
+             'daily-discovery-insights-content-v1.js?v=20261114-live-daily60-no-picker-v1'),
+            ('daily-discovery-illustrated-v1.js?v=20261113-live-daily-illustrated-v1',
+             'daily-discovery-illustrated-v1.js?v=20261114-live-daily60-no-picker-v1'),
+            ('word-trails-live-bootstrap-v1.js?v=live-word-trails-20261109-r1',
+             'word-trails-live-bootstrap-v1.js?v=live-33-crosswords-20261114-v1')
+          ]
+          for before,after in allowed:
+            assert expected_loader.count(before)==1, f'Original loader anchor drifted: {before}'
+            expected_loader=expected_loader.replace(before,after)
+          assert loader==expected_loader, "Unauthorized LIVE bootstrap change detected"
           for asset in expected:
             assert Path(asset).exists()
           for name in ['trivia-scholar-treasury-v1.css','trivia-scholar-treasury-v1.js',
