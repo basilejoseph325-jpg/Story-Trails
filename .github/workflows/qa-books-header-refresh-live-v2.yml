@@ -1,7 +1,7 @@
 name: QA LIVE Bible Books header + refresh return
 on:
   push:
-    branches: [fix/books-header-refresh-live-20261114, main]
+    branches: [fix/books-header-refresh-live-20261114, feature/exodus-reader-live-30parts-20261114, main]
     paths:
       - 'bible-book-guides/index.html'
       - 'bible-book-guides/books-v3.css'
