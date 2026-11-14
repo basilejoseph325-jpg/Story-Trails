@@ -117,8 +117,9 @@ const browserPath=execSync('command -v google-chrome || command -v chromium',{en
      await page.$eval('a.back-link',el=>el.click());
      await page.waitForFunction(()=>location.pathname.endsWith('/bible-book-guides/index.html'),{timeout:10000});
      await page.$eval('a.book-card[href*="leviticus"]',el=>el.click());
-     await page.waitForFunction(()=>location.search.includes('book=leviticus'),{timeout:12000});
-     assert((await page.$eval('#part-title',el=>el.textContent)).includes('being written'));
+     await page.waitForFunction(()=>location.search.includes('book=leviticus')&&!document.getElementById('reader-controls').hidden,{timeout:16000});
+     assert.equal(await page.$eval('#reading-count',el=>el.textContent),'PART 1 OF 27','Leviticus should now be a fully readable third book');
+     assert.equal(await page.$eval('#part-title',el=>el.textContent),"A Doorway Into Jehovah's Tent");
      assert.equal(await page.evaluate(()=>localStorage.getItem('buGuideLast:1')),'11','Do not modify TEST-origin Exodus progress');
      assert.deepEqual(errors,[],'No page JS exceptions');
      console.log('PASS_EXODUS_40CH_30PARTS_READER',JSON.stringify({viewport,shelf,first,end,genesisProgressUntouched:true,exodusResume:true,exodusReset:true,otherBooksAvailable:true,errors:[]}));
