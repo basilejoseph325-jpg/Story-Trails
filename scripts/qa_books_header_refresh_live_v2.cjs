@@ -48,7 +48,7 @@ const expectedExodus=process.env.EXODUS_READY==='1';
    await page.waitForFunction(()=>location.pathname.endsWith('/bible-book-guides/index.html'),{timeout:12000});
    await page.reload({waitUntil:'domcontentloaded',timeout:65000});
    await page.waitForFunction(()=>location.pathname.endsWith('/index.html')&&new URLSearchParams(location.search).get('fromBooksReload')==='v2',{timeout:60000});
-   const ending=await page.evaluate(()=>({pathname:location.pathname,query:location.search,exodus:localStorage.getItem('buGuideLast:1')}));
+   const ending=await page.evaluate(()=>({pathname:location.pathname,query:location.search,exodus:localStorage.getItem('buLiveGuideLast:1')}));
    if(expectedExodus)assert.equal(ending.exodus,'1','Exodus place should survive the separate Books reload');
    assert.deepEqual(errors,[],'No JS page errors');
    console.log('PASS_BOOKS_TITLE_REFRESH_CHROME',JSON.stringify({viewport,header,ending,expectedExodus,errors:[]}));

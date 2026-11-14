@@ -1,0 +1,29 @@
+name: QA LIVE Exodus 40 chapters and independent Genesis save
+on:
+  push:
+    branches: [feature/exodus-reader-live-30parts-20261114, main]
+    paths:
+      - 'bible-book-guides/**'
+      - 'scripts/qa_live_exodus_40_reader_v1.cjs'
+      - '.github/workflows/qa-live-exodus-40-reader-v1.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  exodus-live-chrome:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script and 40-chapter manuscript
+        run: |
+          node --check bible-book-guides/books-v3.js
+          node --check scripts/qa_live_exodus_40_reader_v1.cjs
+          python3 -m json.tool bible-book-guides/exodus-draft.json >/dev/null
+      - name: Chrome mobile portrait landscape and existing Genesis saves
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/bu-live-exodus-qa puppeteer-core@24 --no-audit --no-fund --silent
+          python3 -m http.server 8899 --bind 127.0.0.1 >/tmp/bu-live-exodus-http.log 2>&1 &
+          sleep 2
+          NODE_PATH=/tmp/bu-live-exodus-qa/node_modules node scripts/qa_live_exodus_40_reader_v1.cjs
