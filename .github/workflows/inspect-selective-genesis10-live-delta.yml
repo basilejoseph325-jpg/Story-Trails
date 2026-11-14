@@ -54,18 +54,11 @@ jobs:
                 print('ANCHOR',i,label,term,src.count(term))
           a=Path('index.html').read_text()
           b=Path('/tmp/bu_test_index.html').read_text()
-          def hint_fn(src):
-            start=src.index(' bu3857Hint=function(){')
-            matched=re.search(r'\\n[ \\t]{0,4}\\};',src[start:])
-            assert matched,repr(src[start:start+9000][-2500:])
-            stop=start+matched.end()
-            print('HINT_LAST_SNIP',repr(src[stop-130:stop+160])[:380])
-            return src[start:stop]
-          av,bv=hint_fn(a),hint_fn(b)
-          print('HINT_FUNCTION_LENGTHS',len(av),len(bv))
-          for ln in difflib.unified_diff(av.splitlines(),bv.splitlines(),fromfile='LIVE',tofile='TEST',n=2):
-            print('HINT_FN_DIFF',ln[:1200])
-
+          for name,src in [('LIVE',a),('TEST',b)]:
+            pos=src.index(' bu3857Hint=function(){')
+            print('HINT_RAW',name,repr(src[pos:pos+3700])[:3950])
+            for delim in ['};','bu3857Reveal=function',' bu3857Check=function','})();','\x3c/script>']:
+              print('HINT_NEXT',name,repr(delim),src.find(delim,pos+120)-pos)
           for label,src in [('LIVE',a),('TEST',b)]:
             for term in ['bu3857Hint=function','genesis_ep10','bible_unfolded_core_part3.js','bible_unfolded_core_part5.js','bu3863Hint','Additional hint','Stronger hint','BU_GENESIS_KEY']:
               print('HTMLANCHOR',label,term,src.count(term))
