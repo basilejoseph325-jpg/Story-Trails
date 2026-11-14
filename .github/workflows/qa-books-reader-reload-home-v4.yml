@@ -1,7 +1,7 @@
-name: QA Books reader refresh returns game home (all three books)
+name: QA Books reader refresh returns game home (all four books)
 on:
   push:
-    branches: [fix/books-reader-and-library-refresh-home-v4, main]
+    branches: [fix/books-reader-and-library-refresh-home-v4, feature/numbers-36-reading-guide-live-20261114, main]
     paths:
       - 'bible-book-guides/read.html'
       - 'scripts/qa_books_reader_reload_home_v4.cjs'
