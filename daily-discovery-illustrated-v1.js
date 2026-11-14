@@ -62,7 +62,7 @@ const BOOK_SCENES=Object.freeze({
 // required when Chrome or an external app strips their query parameters.
 // ?daily_book=0 is a reversible, read-only visual comparison to the old look.
 const bookEnabled=()=>true; // The owner-approved illustrated design is always used in LIVE.
-const bookImage=x=>x&&bookEnabled()?BOOK_SCENES[x.id]||null:null;
+const bookImage=x=>x&&bookEnabled()?(BOOK_SCENES[x.id]||(x.dailyBatch===2?x.art:null)):null;
 const artFor=x=>bookImage(x)||x?.art||fallbackArt(x);
 const $=s=>document.querySelector(s);
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -127,7 +127,7 @@ function tabs(){
  '</nav>';
 }
 /* Only the explicitly enabled TEST editorial QA session may browse the
-   future 30 chapters; an everyday visitor sees today's lesson only.
+   future 60 chapters; an everyday visitor sees today's lesson only.
    Past lessons still remain available via their own Saved collection. */
 function bookPreviewPicker(){
  if(!editorialQA()||!bookEnabled()||!BOOK_SCENES[item()?.id])return '';
@@ -145,7 +145,7 @@ function cover(x,kicker,compact=false){
  // Put only the chapter title below, on the book's parchment.
  if(bookImage(x)){
   return '<header class="bu-insight-cover bu-book-art-only'+(art?'':' no-art')+(compact?' bu-insight-compact':'')+'"'+attr+' role="img" aria-label="Illustration for '+escapeHTML(x.title)+'"></header>'+
-   '<div class="bu-book-title-band"><h2>'+escapeHTML(x.title)+'</h2></div>';
+   '<div class="bu-book-title-band"><h2>'+escapeHTML(x.title)+'</h2>'+(x.dailyBatch===2?'<small class="bu-book-thematic-note">Thematic illustration</small>':'')+'</div>';
  }
  // Keep the original design available for the explicit TEST ?daily_book=0 fallback.
  return '<header class="bu-insight-cover'+(art?'':' no-art')+(compact?' bu-insight-compact':'')+'"'+attr+'>'+
