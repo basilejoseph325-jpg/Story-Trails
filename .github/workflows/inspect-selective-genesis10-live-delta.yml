@@ -29,13 +29,26 @@ jobs:
               return json.loads(m.group(1))
             x,y=decode(a),decode(b)
             print('CORE_PART',i,'LIVE_BYTES',len(x),'TEST_BYTES',len(y),'PREFIX',next((j for j in range(min(len(x),len(y))) if x[j]!=y[j]),'same'))
-            seq=difflib.SequenceMatcher(None,x,y,autojunk=False)
-            ops=[(kind,ai,aj,bi,bj) for kind,ai,aj,bi,bj in seq.get_opcodes() if kind!='equal']
-            print('DIFF_OPS',i,len(ops))
-            for n,(kind,ai,aj,bi,bj) in enumerate(ops[:45]):
-              print('DIFF',i,n,kind,'LIVE',ai,aj,'TEST',bi,bj,
-                'OLD',repr(x[max(0,ai-130):min(len(x),aj+130)])[:900],
-                'NEW',repr(y[max(0,bi-130):min(len(y),bj+130)])[:1100])
+            # Compare linewise; the 4.5MB minified code is expensive to diff
+            # character-by-character with autojunk disabled.
+            first=next((j for j in range(min(len(x),len(y))) if x[j]!=y[j]),min(len(x),len(y)))
+            tail=0
+            while tail<min(len(x),len(y))-first and x[-1-tail]==y[-1-tail]:
+              tail+=1
+            print('DIFF_REGION',i,'START',first,'COMMON_TAIL',tail,
+              'OLD',repr(x[max(0,first-500):min(len(x),first+2000)])[:2600],
+              'NEW',repr(y[max(0,first-500):min(len(y),first+6000)])[:7000])
+            # See all changes as line level opcodes, bounded work on ~5MB inputs.
+            lines1=x.splitlines(keepends=True);lines2=y.splitlines(keepends=True)
+            print('LINE_COUNTS',i,len(lines1),len(lines2))
+            if len(lines1)<30000 and len(lines2)<30000:
+              seq=difflib.SequenceMatcher(None,lines1,lines2)
+              ops=[(kind,ai,aj,bi,bj) for kind,ai,aj,bi,bj in seq.get_opcodes() if kind!='equal']
+              print('LINE_DIFF_OPS',i,len(ops))
+              for n,(kind,ai,aj,bi,bj) in enumerate(ops[:25]):
+                print('LINE_DIFF',i,n,kind,'LINES',ai,aj,bi,bj,
+                  'OLD',repr(''.join(lines1[ai:aj]))[:900],
+                  'NEW',repr(''.join(lines2[bi:bj]))[:1800])
             for label,src in [('LIVE',x),('TEST',y)]:
               for term in ['genesis_ep10','const BU_GENESIS_IDS','Object.assign(BU3857_DATA,','const BU_EP10_SCENE_ART','Object.assign(BU_HQ_WORDS,','bu3857Hint=function','function bu3857Render(){','Next Genesis Episode','genesis_ep09']:
                 print('ANCHOR',i,label,term,src.count(term))
