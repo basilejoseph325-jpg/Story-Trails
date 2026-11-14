@@ -1,0 +1,60 @@
+name: Verify published LIVE Genesis 10 photos and hints in Chrome (read only)
+on:
+  push:
+    branches: [release/genesis10-live-photos-hints-20261114]
+    paths:
+      - '.github/workflows/verify-published-genesis10-live-20261114.yml'
+permissions: {contents: read}
+jobs:
+  public-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait until public GitHub Pages serves the NEW approved LIVE release
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request,time
+          url='https://basilejoseph325-jpg.github.io/Story-Trails/?genesis10-public-release=20261114-v1'
+          for attempt in range(22):
+            try:
+              with urllib.request.urlopen(url,timeout=45) as r:
+                html=r.read().decode('utf-8')
+              if 'live-genesis10-story-and-hints-20261114-v1' in html and 'live-genesis10-all10-scenes-20261114-v1' in html:
+                print('PASS_PUBLIC_LIVE_SERVES_APPROVED_EP10',len(html),'attempt',attempt+1)
+                break
+              print('Public site not switched yet',attempt+1)
+            except Exception as e:
+              print('Public browser preflight retry',attempt+1,str(e)[:180])
+            time.sleep(12)
+          else:raise SystemExit('LIVE Pages has not yet published Episode10; refusing a false success')
+          PY
+      - name: Fetch frozen original Story player-path QA and verify all LIVE photo/hint/gameplay interactions
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/171a599c42ab89030d34b7552779ee427586f319'
+          mkdir -p scripts story-adventure-content
+          for script in qa_genesis10_all10_images_player_test_v1.cjs qa_genesis10_quality_photo_hints_v1.cjs qa_genesis10_real_word_wheel_20261114.cjs; do
+            curl --fail --retry 3 -sSL "$base/scripts/$script" -o "scripts/$script"
+          done
+          curl --fail --retry 3 -sSL "$base/story-adventure-content/genesis-episode10-wordwheel-test-v1.json" -o story-adventure-content/genesis-episode10-wordwheel-test-v1.json
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/qa_genesis10_real_word_wheel_20261114.cjs')
+          s=p.read_text()
+          old='http://127.0.0.1:8893/index.html'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,'https://basilejoseph325-jpg.github.io/Story-Trails/?real-ep10-wheel=20261114-v1'))
+          PY
+          for p in scripts/qa_genesis10*.cjs; do node --check "$p"; done
+          npm install --prefix /tmp/bu-public-ep10 puppeteer-core@24 --no-audit --no-fund --silent
+          export NODE_PATH=/tmp/bu-public-ep10/node_modules
+          export STORY_URL='https://basilejoseph325-jpg.github.io/Story-Trails/?ep10-all-photos=20261114-v1'
+          export STORY_TEST_URL='https://basilejoseph325-jpg.github.io/Story-Trails/?ep10-all-hints=20261114-v1'
+          node scripts/qa_genesis10_all10_images_player_test_v1.cjs
+          node scripts/qa_genesis10_quality_photo_hints_v1.cjs
+          node scripts/qa_genesis10_real_word_wheel_20261114.cjs
+          echo 'PASS_PUBLIC_LIVE_FULL_EP10 all ten pictures, context hints, wheel gameplay, saved progress, no JS exceptions'
