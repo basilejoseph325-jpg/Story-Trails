@@ -18,7 +18,9 @@ const css=[
  '#home #home-cross .cinematic-poster.art-cross{position:relative!important;overflow:visible!important;background-image:linear-gradient(180deg,rgba(2,21,30,.05),rgba(3,22,29,.20)),url("bible-book-art/01_genesis.webp")!important;background-position:center center!important;background-size:cover!important}',
  '#home #home-cross .cin-cross-letters{display:none!important}',
  '#home #home-cross .poster-symbol{z-index:12!important}',
- '#home #home-cross .cinematic-poster.art-cross::after{content:"";display:block;position:absolute;inset:0;background:url("assets/ui/word-trails-home-next-crossword-v1.svg?v=nov09-card1") center/100% 100% no-repeat;z-index:2;pointer-events:none}'
+ '#home #home-cross .cinematic-poster.art-cross::after{content:"";display:block;position:absolute;inset:0;background:url("assets/ui/word-trails-home-next-crossword-v1.svg?v=nov09-card1") center/100% 100% no-repeat;z-index:2;pointer-events:none}',
+ '#cross-pick.wt-crossword-collection #wt-next-entry{display:none!important}',
+ '#cross-pick.wt-crossword-collection .cross-pack-list{display:grid!important}'
 ].join('\n');
 function install(){
  const page=document.getElementById('cross-pick');
@@ -45,6 +47,33 @@ function install(){
  });
  return true;
 }
+
+/* Production-safe separate Bible Crosswords card; leaves Word Trails home
+   navigation and the original 24 saved puzzle pack indices unchanged. */
+function installCrosswordsHomeCard(){
+ if(document.getElementById('home-crossword-packs'))return true;
+ const original=document.querySelector('#home #home-cross');
+ if(!original)return false;
+ const button=original.cloneNode(true);
+ button.id='home-crossword-packs';
+ button.setAttribute('aria-label','Play Bible Crosswords — 33 Scripture and classic puzzle boards');
+ const title=button.querySelector('.cinematic-card-title');
+ const desc=button.querySelector('.cinematic-card-desc');
+ const cta=button.querySelector('.cinematic-card-cta');
+ if(title)title.textContent='Bible Crosswords';
+ if(desc)desc.textContent='33 playable puzzle boards! Find words, learn Bible details, and earn rewards.';
+ if(cta)cta.textContent='PLAY CROSSWORD PACKS ›';
+ button.addEventListener('click',event=>{
+  event.preventDefault();event.stopPropagation();
+  if(typeof openCrossPick!=='function')return;
+  try{window.startAudio?.();window.BUPremiumSFX?.play?.('navigate')}catch(_){}
+  openCrossPick();
+  const pick=document.getElementById('cross-pick');
+  if(pick)pick.classList.add('wt-next-compare','wt-crossword-collection');
+ });
+ original.insertAdjacentElement('afterend',button);
+ return true;
+}
 /* Home card should open the new crossword directly in Visual Lab.
    A deliberate ?trails=previous URL keeps the original test selector available
    for A/B comparison, but this never runs in the live repository. */
@@ -69,6 +98,7 @@ function routeHomeCard(){
 }
 routeHomeCard();
 function start(){
+ installCrosswordsHomeCard();
  if(install())return;
  const observer=new MutationObserver(()=>{if(install())observer.disconnect()});
  observer.observe(document.body,{childList:true,subtree:true});
