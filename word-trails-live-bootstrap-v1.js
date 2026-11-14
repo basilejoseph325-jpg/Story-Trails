@@ -2,8 +2,16 @@
    The original game owns menu, Settings, voice selection and purchases.
    No TEST visual banner or parallel wallet is installed. */
 /* Load new Word Trails selector only within the isolated Bible Unfolded. */
-(()=>{const s=document.createElement('script');s.src='word-trails-next-launcher.js?v=live-30-20261109-r1';s.defer=true;document.head.appendChild(s)})();
+(()=>{const s=document.createElement('script');s.src='word-trails-next-launcher.js?v=live-33-crosswords-20261114-v1';s.defer=true;document.head.appendChild(s)})();
 
+
+
+/* LIVE native Crosswords append-only packs. Original 24 board saves untouched. */
+(()=>{if(document.getElementById('bu-live-crossword-extra-packs'))return;
+ const s=document.createElement('script');s.id='bu-live-crossword-extra-packs';
+ s.src='crossword-scripture-packs-live-v1.js?v=live-33-scripture-20261114-v1';
+ document.head.appendChild(s);
+})();
 
 /* Word Trails standalone page -> existing Bible Unfolded screens.
    The native main game owns these screens. Handoff only changes navigation
