@@ -1,0 +1,62 @@
+name: Assemble guarded LIVE Daily60 Crosswords33 candidate (branch only)
+on:
+  push:
+    branches:
+      - release/daily60-crosswords33-no-editor-20261114
+    paths:
+      - '.github/workflows/assemble-live-daily60-cross33-release-candidate.yml'
+permissions: {contents: write}
+jobs:
+  assemble-branch:
+    if: github.ref == 'refs/heads/release/daily60-crosswords33-no-editor-20261114'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Check all edited scripts before touching native HTML
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/stage_live_daily60_cross33_20261114.py
+          node --check daily-discovery-insights-content-v1.js
+          node --check daily-discovery-illustrated-v1.js
+          node --check crossword-scripture-packs-live-v1.js
+          node --check word-trails-next-launcher.js
+          node --check word-trails-live-bootstrap-v1.js
+          node --check journey-progress-caption.js
+      - name: Stage only native header and two missing art files; protect LIVE main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          branch='release/daily60-crosswords33-no-editor-20261114'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            git reset --hard "origin/$branch"
+            python3 scripts/stage_live_daily60_cross33_20261114.py
+            python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          html=Path('index.html').read_text(encoding='utf-8')
+          start=html.index('<script id="bu-daily-live-early-gate-v1">')+len('<script id="bu-daily-live-early-gate-v1">')
+          end=html.index('</script>',start)
+          subprocess.run(['node','--check','-'],input=html[start:end],text=True,check=True)
+          assert html.index('bu-daily-live-early-gate-v1')<html.index('<style>')
+          print('PASS earliest native gate parses and runs before native UI')
+          PY
+            git add index.html family-worship-menu-art/v1/topic-26-paul-timothy.webp family-worship-menu-art/v1/topic-38-jesus-ministry.webp
+            if git diff --cached --quiet; then
+              echo 'Branch candidate already assembled'
+              exit 0
+            fi
+            git commit -m 'release candidate: fast Daily native guard and verified theme art'
+            if git push origin "HEAD:$branch"; then
+              echo 'PASS: update LIVE candidate branch only; main unchanged'
+              exit 0
+            fi
+            sleep 3
+          done
+          echo 'Candidate branch changed concurrently; no writes to main' >&2
+          exit 1
