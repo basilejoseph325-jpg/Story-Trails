@@ -43,7 +43,7 @@ const browserPath=execSync('command -v google-chrome || command -v chromium',{en
         description:document.querySelector('.shelf-note')?.textContent,
         width:document.documentElement.scrollWidth,inner:innerWidth
      }));
-     assert.deepEqual(shelf.ready,['Genesis','Exodus']);
+     assert.deepEqual(shelf.ready,['Genesis','Exodus','Leviticus']);
      assert.equal(shelf.count,66);
      assert(shelf.description.includes('Genesis')&&shelf.description.includes('Exodus'));
      assert(shelf.width<=shelf.inner+3);
