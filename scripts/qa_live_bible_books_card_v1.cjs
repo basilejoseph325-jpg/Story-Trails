@@ -70,7 +70,8 @@ const chrome=execSync('command -v google-chrome || command -v chromium',{encodin
    assert(intro.body>300);
    await page.$eval('#next-part',el=>el.click());
    assert.equal(await page.$eval('#reading-count',el=>el.textContent),'PART 2 OF 23');
-   assert.equal(await page.evaluate(()=>localStorage.getItem('buGuideLast:0')),'1');
+   assert.equal(await page.evaluate(()=>localStorage.getItem('buLiveGuideLast:0')),'1');
+   assert.equal(await page.evaluate(()=>localStorage.getItem('buGuideLast:0')),null,'LIVE must not write TEST reading progress');
    await page.reload({waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>document.querySelector('#reading-count')?.textContent==='PART 2 OF 23',{timeout:30000});
    await page.$eval('.back-link',el=>el.click());
