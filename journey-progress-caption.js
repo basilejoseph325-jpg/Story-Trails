@@ -203,7 +203,3 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  data.onerror=()=>console.error('Daily Discovery illustrated data unavailable; original Daily screen has not been overwritten');
  document.head.append(data);
 })();
-
-
-/* LIVE: additive homepage card for the independent Bible Books reading library. */
-(()=>{'use strict';if(document.getElementById('bu-books-made-simple-card-loader'))return;const sc=document.createElement('script');sc.id='bu-books-made-simple-card-loader';sc.defer=true;sc.src='bible-books-made-simple-card-v1.js?v=20261114-books-card-live-v1';document.head.appendChild(sc)})();
