@@ -5,8 +5,8 @@ const names='Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|1 S
 const books=names.map((name,i)=>({name,i,slug:name.toLowerCase().replaceAll(' ','_'),image:String(i+1).padStart(2,'0')+'_'+name.toLowerCase().replaceAll(' ','_')+'.webp'}));
 const $=id=>document.getElementById(id);
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
-function savedPart(){try{const v=Number(localStorage.getItem('buGuideLast:0'));return Number.isInteger(v)&&v>=0&&v<23?v:0}catch(_){return 0}}
-function isFinished(){try{return localStorage.getItem('buGuideFinished:0')==='1'}catch(_){return false}}
+function savedPart(){try{const v=Number(localStorage.getItem('buLiveGuideLast:0'));return Number.isInteger(v)&&v>=0&&v<23?v:0}catch(_){return 0}}
+function isFinished(){try{return localStorage.getItem('buLiveGuideFinished:0')==='1'}catch(_){return false}}
 function image(book){return '../bible-book-art/'+book.image}
 function showLibrary(){
  if(!$('hebrew-books')||!$('greek-books'))return;
@@ -54,7 +54,7 @@ async function showReader(){
  const range=s=>'Genesis '+s.startChapter+(s.endChapter>s.startChapter?'–'+s.endChapter:'');
  sections.forEach((s,i)=>{const option=el('option','',(i+1)+'. '+s.title+' ('+range(s)+')');option.value=String(i);picker.append(option)});
  let index=savedPart(),finished=isFinished();
- function save(){try{localStorage.setItem('buGuideLast:0',String(index));localStorage.setItem('buGuideFinished:0',finished?'1':'0')}catch(_){}}
+ function save(){try{localStorage.setItem('buLiveGuideLast:0',String(index));localStorage.setItem('buLiveGuideFinished:0',finished?'1':'0')}catch(_){}}
  function render(){
    const s=sections[index];
    $('reading-count').textContent='PART '+(index+1)+' OF '+sections.length;
