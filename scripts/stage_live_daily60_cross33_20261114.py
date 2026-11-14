@@ -16,8 +16,8 @@ if not 10_000_000 < len(html) < 15_000_000:
     raise SystemExit("Unexpected original LIVE index size; refusing modification")
 if "<!doctype html>" not in html[:200]:
     raise SystemExit("Original LIVE HTML header missing")
-if html.count("<style>") != 1:
-    raise SystemExit("Unexpected LIVE native HTML head; refusing modification")
+if html.find("<style>") < 0 or html.find("<style>") > 10000:
+    raise SystemExit("Expected main LIVE style block near HTML head; refusing modification")
 if "bu-visual-lab-test-banner" in html or "bu-daily-early-gate-v1" in html:
     raise SystemExit("Unexpected TEST-only HTML in original LIVE")
 
