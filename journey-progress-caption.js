@@ -172,7 +172,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 /* LIVE: owner-approved 30-level Word Trails — additive to original game. */
 (()=>{if(document.getElementById('bu-wt-live-bootstrap'))return;
  const s=document.createElement('script');s.id='bu-wt-live-bootstrap';
- s.src='word-trails-live-bootstrap-v1.js?v=live-word-trails-20261109-r1';
+ s.src='word-trails-live-bootstrap-v1.js?v=live-33-crosswords-20261114-v1';
  s.defer=true;document.head.appendChild(s);
 })();
 
@@ -188,16 +188,16 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  if(document.getElementById('bu-live-daily-illustrated-v1'))return;
  const style=document.createElement('link');
  style.rel='stylesheet';style.id='bu-live-daily-illustrated-v1-style';
- style.href='daily-discovery-illustrated-v1.css?v=20261113-live-daily-illustrated-v1';
+ style.href='daily-discovery-illustrated-v1.css?v=20261114-live-daily60-no-picker-v1';
  document.head.append(style);
  const data=document.createElement('script');
  data.id='bu-live-daily-illustrated-v1-data';data.async=false;
- data.src='daily-discovery-insights-content-v1.js?v=20261113-live-daily-illustrated-v1';
+ data.src='daily-discovery-insights-content-v1.js?v=20261114-live-daily60-no-picker-v1';
  data.onload=()=>{
    if(document.getElementById('bu-live-daily-illustrated-v1'))return;
    const app=document.createElement('script');
    app.id='bu-live-daily-illustrated-v1';app.async=false;
-   app.src='daily-discovery-illustrated-v1.js?v=20261113-live-daily-illustrated-v1';
+   app.src='daily-discovery-illustrated-v1.js?v=20261114-live-daily60-no-picker-v1';
    document.head.append(app);
  };
  data.onerror=()=>console.error('Daily Discovery illustrated data unavailable; original Daily screen has not been overwritten');

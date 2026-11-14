@@ -1,0 +1,49 @@
+name: QA LIVE Daily60 Crosswords33 no editorial picker
+on:
+  push:
+    branches:
+      - release/daily60-crosswords33-no-editor-20261114
+    paths:
+      - 'index.html'
+      - 'journey-progress-caption.js'
+      - 'daily-discovery-insights-content-v1.js'
+      - 'daily-discovery-illustrated-v1.js'
+      - 'daily-discovery-illustrated-v1.css'
+      - 'crossword-scripture-packs-live-v1.js'
+      - 'word-trails-next-launcher.js'
+      - 'word-trails-live-bootstrap-v1.js'
+      - 'family-worship-menu-art/v1/topic-26-paul-timothy.webp'
+      - 'family-worship-menu-art/v1/topic-38-jesus-ministry.webp'
+      - 'scripts/qa_live_daily60_crosswords33_no_editor.cjs'
+      - '.github/workflows/qa-live-daily60-crosswords33-no-editor.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  browser-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate candidate scripts and original protected game unchanged
+        run: |
+          set -euo pipefail
+          node --check daily-discovery-insights-content-v1.js
+          node --check daily-discovery-illustrated-v1.js
+          node --check crossword-scripture-packs-live-v1.js
+          node --check word-trails-live-bootstrap-v1.js
+          node --check word-trails-next-launcher.js
+          node --check scripts/qa_live_daily60_crosswords33_no_editor.cjs
+          test ! -f visual-lab-test-banner.js
+          git fetch origin main --depth=1
+          for p in bible_unfolded_core_part1.js bible_unfolded_core_part2.js bible_unfolded_core_part3.js bible_unfolded_core_part4.js bible_unfolded_core_part5.js bu-platform-saves-v2.js; do
+            test "$(git hash-object "$p")" = "$(git rev-parse "origin/main:$p")"
+            echo "PASS original native or save core untouched: $p"
+          done
+      - name: Test complete 60 Daily entries, no dropdown, 33 Crosswords, first-tap safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/bu-live-release-qa puppeteer-core@24 --no-audit --no-fund --silent
+          python3 -m http.server 8899 --bind 127.0.0.1 >/tmp/bu-live-qa-http.log 2>&1 &
+          sleep 2
+          NODE_PATH=/tmp/bu-live-release-qa/node_modules node scripts/qa_live_daily60_crosswords33_no_editor.cjs

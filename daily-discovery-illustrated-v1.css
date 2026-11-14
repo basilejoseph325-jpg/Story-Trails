@@ -614,3 +614,9 @@
     padding:12px 14px 11px;
   }
 }
+
+/* LIVE: honest label for illustrations reused with the additional 30 lessons. */
+#bu375-body.bu-insight-reading.bu-daily-book-preview .bu-book-thematic-note{
+ display:block;margin-top:8px;font:700 11px/1.4 system-ui,sans-serif;
+ letter-spacing:.09em;text-transform:uppercase;color:#705d40;
+}
