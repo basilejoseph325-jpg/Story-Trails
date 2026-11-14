@@ -54,6 +54,15 @@ jobs:
                 print('ANCHOR',i,label,term,src.count(term))
           a=Path('index.html').read_text()
           b=Path('/tmp/bu_test_index.html').read_text()
+          def hint_fn(src):
+            start=src.index(' bu3857Hint=function(){')
+            stop=src.index('\\n };',start)+len('\\n };')
+            return src[start:stop]
+          av,bv=hint_fn(a),hint_fn(b)
+          print('HINT_FUNCTION_LENGTHS',len(av),len(bv))
+          for ln in difflib.unified_diff(av.splitlines(),bv.splitlines(),fromfile='LIVE',tofile='TEST',n=2):
+            print('HINT_FN_DIFF',ln[:1200])
+
           for label,src in [('LIVE',a),('TEST',b)]:
             for term in ['bu3857Hint=function','genesis_ep10','bible_unfolded_core_part3.js','bible_unfolded_core_part5.js','bu3863Hint','Additional hint','Stronger hint','BU_GENESIS_KEY']:
               print('HTMLANCHOR',label,term,src.count(term))
