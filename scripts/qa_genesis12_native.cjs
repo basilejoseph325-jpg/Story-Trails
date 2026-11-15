@@ -90,23 +90,23 @@ for(const [width,height] of [[320,568],[390,844]]){
   await page.$eval('#bu3857-continue',b=>b.click());
   if(i===2){
    console.log('G12_BEFORE_RELOAD',JSON.stringify(await page.evaluate(()=>{
-    const saved=bu3857ReadSave(BU_GENESIS_KEY)?.genesis_ep12;
+    const saved=JSON.parse(localStorage.getItem(BU_GENESIS_KEY)||'{}')?.genesis_ep12;
     return {step:bu3857State.step,solved:Object.keys(bu3857State.solved||{}).length,
      stored:!!saved,storedKeys:Object.keys(saved||{}),savedStep:saved?.step,savedSolved:Object.keys(saved?.solved||{}).length,
-     memoStep:bu3857Saved?.genesis_ep12?.step};
+     memoStep:(typeof bu3857Saved==='undefined'?null:bu3857Saved?.genesis_ep12?.step)};
    })));
    await page.reload({waitUntil:'load',timeout:120000});
    await page.waitForFunction(()=>window.BUStoryGenesis12Test?.chapterId==='genesis_ep12');
    assert(await page.$eval('#home',x=>!x.hidden),'Refresh must return Home');
    console.log('G12_AFTER_RELOAD_BEFORE_OPEN',JSON.stringify(await page.evaluate(()=>{
-    const saved=bu3857ReadSave(BU_GENESIS_KEY)?.genesis_ep12;
+    const saved=JSON.parse(localStorage.getItem(BU_GENESIS_KEY)||'{}')?.genesis_ep12;
     return {stored:!!saved,storedKeys:Object.keys(saved||{}),savedStep:saved?.step,savedSolved:Object.keys(saved?.solved||{}).length,
-     memoStep:bu3857Saved?.genesis_ep12?.step,completed:!!completedChapters.genesis_ep12};
+     memoStep:(typeof bu3857Saved==='undefined'?null:bu3857Saved?.genesis_ep12?.step),completed:!!completedChapters.genesis_ep12};
    })));
    await page.evaluate(()=>bu3857Open('genesis_ep12'));
    console.log('G12_AFTER_OPEN',JSON.stringify(await page.evaluate(()=>{
-    const saved=bu3857ReadSave(BU_GENESIS_KEY)?.genesis_ep12;
-    return {step:bu3857State.step,solved:Object.keys(bu3857State.solved||{}).length,savedStep:saved?.step,memStep:bu3857Saved?.genesis_ep12?.step};
+    const saved=JSON.parse(localStorage.getItem(BU_GENESIS_KEY)||'{}')?.genesis_ep12;
+    return {step:bu3857State.step,solved:Object.keys(bu3857State.solved||{}).length,savedStep:saved?.step,memStep:(typeof bu3857Saved==='undefined'?null:bu3857Saved?.genesis_ep12?.step)};
    })));
    assert.equal(await page.evaluate(()=>bu3857State.step),3,'Resume checkpoint lost');
   }
