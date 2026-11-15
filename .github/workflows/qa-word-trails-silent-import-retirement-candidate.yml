@@ -65,6 +65,7 @@ jobs:
             sparks:[],claimedSparks:[],boardBible:[],paidWords:[],paidBonuses:[],claimedFreeHints:[],
             sound:true,progress:null,ownerSavedMarker:'existing-live-must-survive'});
           const wallet='{"coins":741,"points":38,"purchases":["seawheel"]}',wheels='{"owned":["seawheel"]}',voice='{"mode":"rotate","volume":60}';
+          (async()=>{
           const browser=await puppeteer.launch({headless:true,
             executablePath:execSync('command -v google-chrome || command -v chromium',{encoding:'utf8'}).trim(),
             args:['--no-sandbox','--disable-setuid-sandbox','--disable-dev-shm-usage'],protocolTimeout:120000});
@@ -139,4 +140,5 @@ jobs:
             }
           }finally{await browser.close()}
           console.log('PASS_WT_NO_SILENT_IMPORT_8_MOBILE_SCENARIOS');
+          })().catch(e=>{console.error('FAIL_WT_NO_SILENT_IMPORT',e.stack||e);process.exitCode=1});
           JS
