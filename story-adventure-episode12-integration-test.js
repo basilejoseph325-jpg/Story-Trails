@@ -72,8 +72,16 @@ bu3857Render=function(){
 if(!BU_GENESIS_IDS.includes(ID))BU_GENESIS_IDS.push(ID);
 if(!EPISODES.some(e=>e[0]===chapter.title))EPISODES.push([chapter.title,'Genesis 32–33 · 13 interactive discoveries']);
 try{
- const saved=bu3857ReadSave(BU_GENESIS_KEY)[ID];
- if(saved&&typeof saved==='object'&&!Array.isArray(saved)){bu3857Saved[ID]=saved;if(saved.complete)completedChapters[ID]=true;}
+ // LIVE Episode 11 predates the TEST bu3857ReadSave helper. Accept both
+ // save readers without creating a new key or resetting previous chapters.
+ const allSaved=typeof bu3857ReadSave==='function'
+  ? bu3857ReadSave(BU_GENESIS_KEY)
+  : JSON.parse(localStorage.getItem(BU_GENESIS_KEY)||'{}');
+ const saved=allSaved?.[ID];
+ if(saved&&typeof saved==='object'&&!Array.isArray(saved)){
+  if(typeof bu3857Saved!=='undefined')bu3857Saved[ID]=saved;
+  if(saved.complete)completedChapters[ID]=true;
+ }
 }catch(e){console.warn('[G12] Chapter save recovery failed',e)}
 const originalEpisodes=makeEpisodes;
 makeEpisodes=function(){
