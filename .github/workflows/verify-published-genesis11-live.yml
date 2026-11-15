@@ -1,0 +1,49 @@
+name: Verify real published LIVE Genesis Episode 11 in Chrome (read only)
+on:
+  push:
+    branches: [release/genesis11-haran-live-20261114]
+    paths: ['.github/workflows/verify-published-genesis11-live.yml']
+permissions: {contents: read}
+jobs:
+  public-live-episode11:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait until LIVE GitHub Pages serves the verified Genesis 11 release
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request,time
+          url='https://basilejoseph325-jpg.github.io/Story-Trails/?gen11-release-verified=20261114-v1'
+          for attempt in range(26):
+            try:
+              req=urllib.request.Request(url,headers={'Cache-Control':'no-cache','User-Agent':'Bible-Unfolded-LIVE-Release-Check'})
+              with urllib.request.urlopen(req,timeout=45) as r:
+                html=r.read().decode('utf-8')
+              if html.count('live-genesis11-haran-20261114-v1')==2:
+                print('PASS_PUBLIC_LIVE_SERVES_GENESIS11_V1',len(html),'attempt',attempt+1)
+                break
+              print('Waiting for GitHub Pages new main build',attempt+1)
+            except Exception as e:
+              print('LIVE site publish check retry',attempt+1,str(e)[:160])
+            time.sleep(9)
+          else:
+            raise SystemExit('LIVE Pages has not yet published this Genesis11 revision')
+          PY
+      - name: Play actual LIVE site all 10 discoveries, photos, hints, saving and next link
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/2bb6888a96ef85a648e5a77746c96746b9db3bf1'
+          mkdir -p scripts story-adventure-content
+          for file in scripts/qa_genesis11_complete_native_playpath_v1.cjs scripts/qa_genesis11_three_thinking_hints_v1.cjs story-adventure-content/genesis-episode11-haran-v1.json; do
+            curl -sSL --fail --retry 3 --max-time 90 "$base/$file" -o "$file"
+          done
+          npm install --prefix /tmp/bu-public-live-gen11 puppeteer-core@24 --silent --no-audit --no-fund
+          export NODE_PATH=/tmp/bu-public-live-gen11/node_modules
+          export STORY_URL='https://basilejoseph325-jpg.github.io/Story-Trails/?gen11-full-public-player-qa=20261114-v1'
+          node scripts/qa_genesis11_complete_native_playpath_v1.cjs
+          node scripts/qa_genesis11_three_thinking_hints_v1.cjs
+          echo 'PASS_PUBLIC_LIVE_GENESIS11 all 10 photos, all 10 playable actual word wheels, free+15+25 thinking hints, save/refresh, earlier episodes and no JS errors'
