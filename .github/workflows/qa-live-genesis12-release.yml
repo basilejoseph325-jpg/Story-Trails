@@ -1,0 +1,46 @@
+name: Verify selective Genesis 12 LIVE release
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'journey-progress-caption.js'
+      - 'story-adventure-episode12-integration-test.js'
+      - 'story-adventure-art/genesis12/**'
+      - 'story-adventure-content/genesis-episode12-return-to-esau-v1.json'
+      - 'scripts/qa_genesis12_native.cjs'
+      - 'scripts/qa_live_genesis12_boundaries.cjs'
+      - '.github/workflows/qa-live-genesis12-release.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'journey-progress-caption.js'
+      - 'story-adventure-episode12-integration-test.js'
+      - 'story-adventure-art/genesis12/**'
+      - 'scripts/qa_genesis12_native.cjs'
+      - 'scripts/qa_live_genesis12_boundaries.cjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  selective-live-story:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+      - name: Start candidate web game locally
+        run: |
+          mkdir -p work
+          python3 -m http.server 8893 --bind 127.0.0.1 > work/http.log 2>&1 &
+          for attempt in $(seq 1 25); do
+            if curl --silent --fail http://127.0.0.1:8893/index.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Check LIVE Story saves, old chapter, progression and 13 image paths
+        run: NODE_PATH="$GITHUB_WORKSPACE/work/node_modules" node scripts/qa_live_genesis12_boundaries.cjs
+      - name: Play all 13 native Episode 12 wheels on two phone sizes
+        run: NODE_PATH="$GITHUB_WORKSPACE/work/node_modules" node scripts/qa_genesis12_native.cjs

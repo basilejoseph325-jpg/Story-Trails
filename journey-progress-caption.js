@@ -203,3 +203,17 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  data.onerror=()=>console.error('Daily Discovery illustrated data unavailable; original Daily screen has not been overwritten');
  document.head.append(data);
 })();
+
+
+/* LIVE — Genesis Episode 12 (Jacob and Esau: The Road Home).
+ * Loads the validated, image-backed native chapter without changing existing
+ * Story chapters, hints, reward balances, storage keys, or other modes. */
+(()=>{'use strict';
+ const id='bu-story-genesis12-live-loader';
+ if(document.getElementById(id))return;
+ const script=document.createElement('script');
+ script.id=id;script.async=false;
+ script.src='story-adventure-episode12-integration-test.js?v=20261115-episode12-live-v1';
+ script.onerror=()=>console.warn('[Genesis12] LIVE chapter script failed to load');
+ document.head.appendChild(script);
+})();
