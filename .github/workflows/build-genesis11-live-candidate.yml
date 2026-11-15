@@ -1,0 +1,108 @@
+name: Build and test selective Genesis 11 LIVE release candidate
+on:
+  push:
+    branches: [release/genesis11-haran-live-20261114]
+    paths: ['.github/workflows/build-genesis11-live-candidate.yml']
+permissions: {contents: write}
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify LIVE backup and import approved TEST Episode 11 only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object bible_unfolded_core_part3.js)" = ff1d480d0ac034e3e201f244128ff3bea8cbf93a
+          test "$(git hash-object bible_unfolded_core_part5.js)" = fe1cac870794684665c2baf20b493bd6fba60dac
+          test "$(git hash-object index.html)" = 2cc10f22a600b611a741bcb66ef7baab76752c29
+          base='https://raw.githubusercontent.com/basilejoseph325-jpg/Bible-Unfolded-Visual-Lab/2bb6888a96ef85a648e5a77746c96746b9db3bf1'
+          mkdir -p scripts story-adventure-content story-adventure-art/genesis11
+          for file in scripts/install_genesis11_native_story_test_v1.py scripts/qa_genesis11_complete_native_playpath_v1.cjs scripts/qa_genesis11_three_thinking_hints_v1.cjs story-adventure-content/genesis-episode11-haran-v1.json; do
+            curl --fail --retry 4 --max-time 90 -sSL "$base/$file" -o "$file"
+          done
+          for i in $(seq -w 1 10); do
+            curl --fail --retry 4 --max-time 90 -sSL "$base/story-adventure-art/genesis11/g11-d${i}.webp" -o "story-adventure-art/genesis11/g11-d${i}.webp"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          expected={'01':'53bee7447a2c13cef8aa420f8fbebb560994ca4a',
+                    '02':'9b12650841b67b6ecd60d3cced81d07ad3293d45',
+                    '03':'38492a96cd005e630d49a54f65b2568578092d3c',
+                    '04':'cc94c0a34c68ce22e67747b279de0811d52a81a8',
+                    '05':'ce36fbc6f62e68c4d932d01aab3711097d809ba7',
+                    '06':'f47a8ed3abb03bc1a908589e862b216f4a3e8416',
+                    '07':'982def2153bd682b836ebc6a9560fe6cf1ccc2bc',
+                    '08':'fdd750db5475c46592aafa138f6aca66b1d3cc12',
+                    '09':'ad6b1b337458f5564d1687403d3e200bbe178a98',
+                    '10':'c7bcc37f302971822f09598621d5ffa04b5c7949'}
+          import subprocess
+          for i,sha in expected.items():
+            p=Path(f'story-adventure-art/genesis11/g11-d{i}.webp')
+            assert p.read_bytes()[:4]==b'RIFF' and b'WEBP' in p.read_bytes()[:16]
+            got=subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+            assert got==sha,f'Not the approved image {i}: {got}'
+          print('PASS exactly all ten previously approved source photos')
+          PY
+          python3 -m py_compile scripts/install_genesis11_native_story_test_v1.py
+          python3 scripts/install_genesis11_native_story_test_v1.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,subprocess
+          # Original LIVE HTML must remain unchanged outside one Episode 11
+          # condition and versioning of exactly 2 Story script assets.
+          p=Path('index.html')
+          html=p.read_text()
+          assert html.count('genesis11-haran-test-v1')==2
+          html=html.replace('?v=genesis11-haran-test-v1','?v=live-genesis11-haran-20261114-v1')
+          p.write_text(html)
+          old=subprocess.check_output(['git','show','HEAD:index.html'],text=True)
+          new=html.replace("const ep10=(st.book==='genesis_ep10'||st.book==='genesis_ep11')&&!!entry;","const ep10=st.book==='genesis_ep10'&&!!entry;")
+          def normalize(src):
+            return re.sub(r'(<script src="bible_unfolded_core_part[35]\.js)\?v=[^"]+',r'\1',src)
+          assert new!=html, 'Episode 11 contextual hint popup not installed'
+          assert normalize(new)==normalize(old), 'Unrelated LIVE HTML change detected'
+          expected={3:'1286e0042f709791534a8737dee69f362b14ae42',
+                    5:'b905f4677e49b69bdc116ad8657131dc3a5f13ab'}
+          for n,sha in expected.items():
+            f=f'bible_unfolded_core_part{n}.js'
+            got=subprocess.check_output(['git','hash-object',f],text=True).strip()
+            assert got==sha,f'Native part {n} differs from validated TEST! {got}'
+          for n in (1,2,4):
+            f=f'bible_unfolded_core_part{n}.js'
+            assert subprocess.check_output(['git','diff','HEAD','--',f]).strip()==b'',f'Original protected core part {n} changed'
+          print('PASS exact original TEST Genesis11 native code, strictly one hint condition + 2 cache tags in LIVE HTML')
+          PY
+          for p in bible_unfolded_core_part*.js scripts/qa_genesis11*.cjs; do node --check "$p"; done
+      - name: Run actual original LIVE Story Adventure play paths in both mobile Chrome widths
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/genesis11-live-approved-qa puppeteer-core@24 --no-audit --no-fund --silent
+          python3 -m http.server 8893 --bind 127.0.0.1 >/tmp/bu-gen11-live.log 2>&1 &
+          sleep 2
+          export NODE_PATH=/tmp/genesis11-live-approved-qa/node_modules
+          node scripts/qa_genesis11_complete_native_playpath_v1.cjs
+          node scripts/qa_genesis11_three_thinking_hints_v1.cjs
+          echo 'PASS LIVE release candidate: 10 real pictures/wheels, 3 thinking hints, episode 10→11, saving and resume'
+      - name: Commit only approved Genesis 11 changes to candidate (NEVER main)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html bible_unfolded_core_part3.js bible_unfolded_core_part5.js story-adventure-art/genesis11
+          python3 - <<'PY'
+          import subprocess
+          names=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          expected={'index.html','bible_unfolded_core_part3.js','bible_unfolded_core_part5.js'}
+          expected.update(f'story-adventure-art/genesis11/g11-d{i:02d}.webp' for i in range(1,11))
+          assert set(names)==expected,f'Unexpected LIVE candidate file delta: {set(names)^expected}'
+          print('PASS 13 release files only; no other original LIVE modes overwritten')
+          PY
+          git commit -m 'release candidate: Genesis 11 Jacob in Haran with 10 approved scenes and 3 thoughtful hints'
+          git push origin HEAD:release/genesis11-haran-live-20261114
+          echo 'PASS candidate staged; main remains unmodified'
