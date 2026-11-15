@@ -46,8 +46,11 @@ const base=process.env.STORY_URL||'http://127.0.0.1:8893/index.html';
    for(let n=1;n<=13;n++){
     const name='g12-d'+String(n).padStart(2,'0')+'.webp';
     const response=await page.goto(new URL('story-adventure-art/genesis12/'+name,base).href,{waitUntil:'domcontentloaded',timeout:20000});
-    assert.equal(response.status(),200,'Missing art '+name);
-    assert(/image\/webp/.test(response.headers()['content-type']||''),'Wrong image mime '+name);
+    // Chrome may return 304 for an image already loaded by the real
+    // Story renderer. The dedicated wheel QA also checks decoded 640×360 pixels.
+    assert([200,304].includes(response.status()),'Missing art '+name);
+    if(response.status()===200)
+     assert(/image\/webp/.test(response.headers()['content-type']||''),'Wrong image mime '+name);
    }
    assert.deepEqual(errors,[],'LIVE JavaScript errors');
    console.log('PASS_LIVE_G12_BOUNDARIES',JSON.stringify({width,height,scenes:13,images:13,preservedGenesis11:true,lockedUntil11:true}));
