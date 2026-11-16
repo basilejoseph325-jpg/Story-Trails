@@ -11,6 +11,12 @@
   }
   return {};
  }
+ // If a verified Genesis checkpoint is used after a corrupt primary record,
+ // hydrate missing earlier chapters too. Never replace a valid in-memory save.
+ const checkpoint=readSave(BU_GENESIS_KEY);
+ for(const id of BU_GENESIS_IDS)if(!object(bu3857Saved[id])&&object(checkpoint[id])){
+  bu3857Saved[id]=checkpoint[id];if(checkpoint[id].complete)completedChapters[id]=true;
+ }
  const oldSave=bu3857Save;
  let saveFailed=false;
  bu3857Save=function(...args){
