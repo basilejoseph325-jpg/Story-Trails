@@ -399,12 +399,32 @@ function install(){
  // legacy native v1 handler, which had a blind delete/rewrite/rollback path.
  btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();download()},true);
  picker.onchange=e=>acceptFile(picker,e);
+ // PR #15's earliest index guard deliberately captures file/click events
+ // before the native v1 importer. Window CAPTURE runs first, so the reviewed
+ // coordinator can handle verified restores while the old guard still protects
+ // pages where this script did not load.
  const importButton=document.getElementById('save-import');
  if(importButton){
   importButton.onclick=()=>picker.click();
   importButton.setAttribute('aria-label','Import a Bible Unfolded backup safely');
   importButton.title='Restore an older or complete Bible Unfolded backup';
  }
+ // A window capture handler precedes the old document-level safety guard
+ // and calls only our verified v1/v2 importer. No old native restore executes.
+ window.addEventListener('click',event=>{
+  const target=event.target;
+  if(target?.closest?.('#save-import')){
+   event.preventDefault();event.stopImmediatePropagation();picker.click();return;
+  }
+  if(target?.closest?.('#save-export')){
+   event.preventDefault();event.stopImmediatePropagation();download();
+  }
+ },true);
+ window.addEventListener('change',event=>{
+  if(event.target!==picker)return;
+  event.preventDefault();event.stopImmediatePropagation();
+  void acceptFile(picker,event);
+ },true);
  getStatus();installReview();
 }
 const recovered=recoverPending();
