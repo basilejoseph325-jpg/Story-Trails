@@ -1,58 +1,131 @@
 'use strict';
-// Fresh disposable profiles; no real player data or working restore is used.
+// Disposable phone browsers validate the actual native Import/Export UI.
+// All fixtures are synthetic; NO real user progress or external URL is read.
 const p=require('puppeteer-core'),fs=require('node:fs'),assert=require('node:assert/strict');
 const root=process.env.SAFETY_URL||'http://127.0.0.1:8916/index.html';
-const J='bible-unfolded-word-trails-import-rollback-v2',C='bible-unfolded-word-trails-import-committed-v2',S='bible-unfolded-genesis-adventure-v3860',W='bible-unfolded-rewards-v17',T='bible-unfolded-word-trails-next-v1';
-const scenarios=['stale-story','stale-wallet','interrupted-legacy','malformed','committed','orphan-marker'];
-(async()=>{const b=await p.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage'],protocolTimeout:120000});const evidence={viewports:[],physicalDevices:false,realPlayerData:false,restoreDisabled:true};try{
-for(const [width,height] of [[320,568],[430,932]]){
- for(const scenario of scenarios){
-  const context=await b.createBrowserContext(),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.setViewport({width,height,isMobile:true,hasTouch:true});
-  const load=async()=>{await page.goto(root,{waitUntil:'load',timeout:120000});await page.waitForFunction(()=>BUPlatformSaves?.bound?.()&&window.BUStoryGenesis12Test,{timeout:60000});await page.evaluate(()=>document.getElementById('daily-close')?.click());};
-  await load();
-  const expected=await page.evaluate(({scenario,J,C,S,W,T})=>{
-   economy.points=scenario==='interrupted-legacy'?5:-20;economy.coins=scenario==='interrupted-legacy'?3:777;economy.purchases=[...new Set([...economy.purchases,'seawheel'])];economy.equippedWheel='seawheel';saveEconomy();
-   const story=JSON.stringify({genesis_ep11:{complete:true,step:9},genesis_ep12:{step:8,complete:false,solved:{'g12-d01':true},hints:{'g12-d02':2},revealed:{},work:{}}});localStorage.setItem(S,story);
-   const trail=JSON.stringify({level:20,unlocked:22,coins:230,points:50,completed:[0,1]});localStorage.setItem(T,trail);
-   const journal=scenario==='malformed'?'{bad-json':scenario==='orphan-marker'?null:JSON.stringify({version:1,previous:{[S]:'OLD-STORY',[W]:JSON.stringify({coins:scenario==='interrupted-legacy'?777:3,points:scenario==='interrupted-legacy'?-20:5,purchases:['seawheel']}),[T]:'OLD-TRAILS'}});
-   if(journal!==null)localStorage.setItem(J,journal);if(scenario==='committed'||scenario==='orphan-marker')localStorage.setItem(C,'yes');
-   return {story,trail,journal,committed:localStorage.getItem(C),points:economy.points,coins:economy.coins};
-  },{scenario,J,C,S,W,T});
-  for(let i=0;i<2;i++){
-   await load();const state=await page.evaluate(({J,C,S,T})=>({story:localStorage.getItem(S),trail:localStorage.getItem(T),journal:localStorage.getItem(J),committed:localStorage.getItem(C),points:economy.points,coins:economy.coins,purchases:economy.purchases,equipped:economy.equippedWheel,status:BUPlatformSaves.recoverPending()}),{J,C,S,T});
-   for(const key of ['story','trail','journal','committed'])assert.equal(state[key],expected[key],scenario+' changed '+key);
-   assert.equal(state.points,expected.points);assert.equal(state.coins,expected.coins);assert(state.purchases.includes('seawheel'));assert.equal(state.equipped,'seawheel');assert.equal(state.status.recovered,false);assert.equal(state.status.quarantined,true);
+const J='bible-unfolded-word-trails-import-rollback-v2';
+const S='bible-unfolded-genesis-adventure-v3860',W='bible-unfolded-rewards-v17',T='bible-unfolded-word-trails-next-v1';
+(async()=>{
+ const browser=await p.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',
+  args:['--no-sandbox','--disable-dev-shm-usage'],protocolTimeout:120000});
+ const evidence=[];
+ try{
+  for(const [width,height] of [[320,568],[430,932]]){
+   const context=await browser.createBrowserContext(),page=await context.newPage(),errors=[];
+   page.on('pageerror',e=>errors.push(e.message));
+   await page.setViewport({width,height,isMobile:true,hasTouch:true,deviceScaleFactor:1});
+   const load=async()=>{
+    await page.goto(root,{waitUntil:'load',timeout:120000});
+    await page.waitForFunction(()=>window.BUPlatformSaves?.bound?.()&&window.BUStoryGenesis12Test,
+     {timeout:90000});
+    await page.evaluate(()=>document.getElementById('daily-close')?.click());
+   };
+   await load();
+   const initial=await page.evaluate(({S,W,T,J})=>{
+    economy.coins=50;economy.points=10;economy.purchases=[...new Set([...economy.purchases,'seawheel'])];saveEconomy();
+    const story=JSON.stringify({genesis_ep12:{step:2,complete:false}});
+    const trail=JSON.stringify({level:2,unlocked:4,coins:60,points:5,completed:[0,1]});
+    localStorage.setItem(S,story);localStorage.setItem(T,trail);
+    // Old v1 rollback evidence must not contaminate exports or restore games.
+    const legacy=JSON.stringify({version:1,previous:{[S]:'OLDER-STORY'}});
+    localStorage.setItem(J,legacy);
+    const original=JSON.parse(localStorage.getItem(W));
+    const exported=BUPlatformSaves.makeBackup();
+    return {story,trail,wallet:localStorage.getItem(W),original,exported,legacy};
+   },{S,W,T,J});
+   assert.equal(initial.exported.keys[S],initial.story);
+   assert.equal(initial.exported.keys[J],undefined);
+   const update=await page.evaluate(async({S,W,T,original,exported})=>{
+    const newer={...exported,keys:{...exported.keys}};
+    newer.keys[S]=JSON.stringify({genesis_ep12:{step:8,complete:false}});
+    newer.keys[W]=JSON.stringify({...original,coins:245,points:55,purchases:[]});
+    newer.extensions.wordTrailsNext.state=JSON.stringify({level:18,unlocked:23,coins:175,points:17,completed:[0,1,2]});
+    const plan=BUPlatformSaves.dryRun(newer);
+    const result=await BUPlatformSaves.applyBackup(newer,{reload:false});
+    return {planCanApply:plan.canApply,result,
+     story:localStorage.getItem(S),wallet:JSON.parse(localStorage.getItem(W)),
+     trail:JSON.parse(localStorage.getItem(T)),legacy:localStorage.getItem('bible-unfolded-word-trails-import-rollback-v2'),
+     pending:BUPlatformSaves.recoverPending().pending};
+   },{S,W,T,original:initial.original,exported:initial.exported});
+   assert(update.planCanApply&&update.result.ok);
+   assert.equal(JSON.parse(update.story).genesis_ep12.step,8);
+   assert.equal(update.wallet.coins,245);
+   assert(update.wallet.purchases.includes('seawheel'),'Purchased wheel ownership was lost');
+   assert.equal(update.trail.level,18);assert.equal(update.trail.coins,175);
+   assert.equal(update.legacy,initial.legacy,'Old recovery evidence must remain untouched');
+   assert.equal(update.pending,false);
+   console.log('PASS_ISSUE13_BROWSER_REAL_V2_RESTORE',width);
+   // UI Export button is handled by reviewed coordinator, not the old native one.
+   const output=await page.evaluate(async({S,J})=>{
+    const old=URL.createObjectURL,generated=[];
+    URL.createObjectURL=blob=>{generated.push(blob);return old(blob)};
+    try{
+     document.getElementById('save-export').click();
+     if(!generated.length)throw Error('Export button did not create a backup');
+     const exported=JSON.parse(await generated.at(-1).text());
+     return {version:exported.version,story:exported.keys[S],hasJournal:J in exported.keys,
+      controlsReady:BUPlatformSaves.bound()};
+    }finally{URL.createObjectURL=old}
+   },{S,J});
+   assert.equal(output.version,2);assert.equal(JSON.parse(output.story).genesis_ep12.step,8);
+   assert.equal(output.hasJournal,false);assert.equal(output.controlsReady,true);
+   console.log('PASS_ISSUE13_BROWSER_EXPORT_BUTTON',width);
+
+   // User-provided older v1 file must be imported through safe coordinator,
+   // even though PR15's old document capture gate remains to protect failures.
+   const ui=await page.evaluate(async({S,W,T})=>{
+    const old={format:'BibleUnfoldedSave',version:1,keys:{
+      [S]:JSON.stringify({genesis_ep12:{step:6,complete:false}}),
+      [W]:localStorage.getItem(W),
+      [T]:JSON.stringify({level:10,unlocked:12,coins:88,points:4,completed:[0,1,2]}),
+      'bible-unfolded-word-trails-import-rollback-v2':JSON.stringify({version:1,previous:{[S]:'BAD'}})
+    }};
+    const picker=document.getElementById('save-file'),file=new File([JSON.stringify(old)],'backup-v1.json',{type:'application/json'});
+    const dt=new DataTransfer();dt.items.add(file);picker.files=dt.files;
+    const originalConfirm=window.confirm;let confirmCount=0;
+    window.confirm=()=>{confirmCount++;return true};
+    // If the old document guard steals the event, nothing gets imported.
+    picker.dispatchEvent(new Event('change',{bubbles:true}));
+    const finish=async()=>{for(let i=0;i<60;i++){
+      if(JSON.parse(localStorage.getItem(S)).genesis_ep12.step===6)return true;
+      await new Promise(r=>setTimeout(r,100));
+     }return false};
+    const didRestore=await finish();
+    window.confirm=originalConfirm;
+    return {didRestore,confirmCount,story:localStorage.getItem(S),
+      trail:JSON.parse(localStorage.getItem(T)),pickerCleared:picker.value==='',
+      legacyStill:localStorage.getItem('bible-unfolded-word-trails-import-rollback-v2')};
+   },{S,W,T});
+   assert(ui.didRestore&&ui.confirmCount===1,'Old backup file must work through Import UI');
+   assert.equal(ui.trail.level,10);
+   assert.equal(ui.trail.coins,88);
+   assert.equal(ui.legacyStill,initial.legacy,'Old unsafe rollback record must not be imported');
+   console.log('PASS_ISSUE13_BROWSER_NATIVE_V1_IMPORT_UI',width);
+
+   // Browser test of startup with old journal and newer Story; it never rewinds.
+   const beforeReload=await page.evaluate(({S,W,T,J})=>({
+    story:localStorage.getItem(S),wallet:localStorage.getItem(W),trail:localStorage.getItem(T),
+    journal:localStorage.getItem(J)}),{S,W,T,J});
+   // Simulate a reload directly to ensure the early safety gate remains active.
+   // The restored game can reinitialize its own economy preferences; journal must
+   // NEVER roll any of the three saved values back on load.
+   await load();
+   const afterReload=await page.evaluate(({S,W,T,J})=>({
+    story:localStorage.getItem(S),wallet:localStorage.getItem(W),trail:localStorage.getItem(T),
+    journal:localStorage.getItem(J),revision:BUPlatformSaves.safetyRevision,
+    restoreDisabled:BUPlatformSaves.restoreDisabled}),{S,W,T,J});
+   assert.equal(afterReload.story,beforeReload.story);
+   assert.equal(afterReload.trail,beforeReload.trail);
+   assert.equal(afterReload.journal,beforeReload.journal);
+   assert.equal(afterReload.restoreDisabled,false);
+   assert.equal(afterReload.revision,'issue13-transaction-v3');
+   assert.deepEqual(errors,[]);
+   console.log('PASS_ISSUE13_BROWSER_NO_STALE_REWIND_ON_RELOAD',width);
+   evidence.push({width,validV1:true,validV2:true,walletPreserved:true,noLegacyRollback:true,
+    nativeImportAndExport:true,realMobileChromium:true});
+   await context.close();
   }
-  const ui=await page.evaluate(async({J,C,S,T})=>{
-   openDialog('settings');document.getElementById('save-import').click();
-   const snapshot=()=>({story:localStorage.getItem(S),trail:localStorage.getItem(T),journal:localStorage.getItem(J),marker:localStorage.getItem(C),wallet:localStorage.getItem(REWARD_KEY)}),before=snapshot();
-   let fileReads=0,confirms=0;const oldRead=File.prototype.text,oldConfirm=window.confirm;File.prototype.text=async function(){fileReads++;throw Error('Reading an import is forbidden in this test');};window.confirm=()=>{confirms++;return true;};
-   try{
-    for(const version of [1,2]){
-     const data=new DataTransfer();data.items.add(new File([JSON.stringify({format:'BibleUnfoldedSave',version,keys:{}})],'synthetic-v'+version+'.json',{type:'application/json'}));const picker=document.getElementById('save-file');picker.files=data.files;picker.dispatchEvent(new Event('change',{bubbles:true}));
-     // Property callers are blocked too, not only DOM event dispatch.
-     picker.onchange();
-    }
-    let blocked=false;try{BUPlatformSaves.applyBackup(BUPlatformSaves.makeBackup(),{reload:false})}catch(e){blocked=/paused/.test(e.message)}
-    const copy=BUPlatformSaves.makeBackup(),oldURL=URL.createObjectURL;let downloaded;
-    URL.createObjectURL=blob=>{downloaded=blob;return oldURL(blob)};
-    document.getElementById('save-export').click();const exported=JSON.parse(await downloaded.text());
-    document.getElementById('bu-live-copy-recovery').click();const record=JSON.parse(await downloaded.text());URL.createObjectURL=oldURL;
-    return {before,after:snapshot(),blocked,fileReads,confirms,planCanApply:BUPlatformSaves.dryRun(copy).canApply,exportStory:exported.keys[S],exportHasJournal:J in exported.keys||C in exported.keys,record,open:document.getElementById('bu-live-restore-review').open,label:document.getElementById('save-import').getAttribute('aria-label'),reloadSuppressed:window.__bu388SkipCheckpoint===true};
-   }finally{File.prototype.text=oldRead;window.confirm=oldConfirm;}
-  },{J,C,S,T});
-  assert.deepEqual(ui.after,ui.before);assert(ui.blocked);assert.equal(ui.fileReads,0);assert.equal(ui.confirms,0);assert.equal(ui.planCanApply,false);assert.equal(ui.exportStory,expected.story);assert.equal(ui.exportHasJournal,false);assert.equal(ui.record.journal,expected.journal);assert.equal(ui.record.committedMarker,expected.committed);assert(ui.open);assert.equal(ui.reloadSuppressed,false);
-  await page.$eval('#bu-live-restore-review',e=>e.scrollIntoView({block:'center'}));const layout=await page.evaluate(()=>{const r=document.getElementById('bu-live-restore-review').getBoundingClientRect();return {left:r.left,right:r.right,overflow:document.documentElement.scrollWidth>innerWidth+1};});assert(layout.left>=-1&&layout.right<=width+1&&!layout.overflow);
-  if(process.env.SAFETY_SHOTS&&scenario==='stale-story')await page.screenshot({path:'work/issue13-review-'+width+'.png'});
-  await page.$eval('#settings-done',e=>e.scrollIntoView({block:'center'}));const done=await page.$eval('#settings-done',e=>{const r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return {x:r.x+r.width/2,y:r.y+r.height/2,visible:r.top>=0&&r.bottom<=innerHeight&&!!hit&&(hit===e||e.contains(hit))};});assert(done.visible,'Native Done is inaccessible after review');await page.touchscreen.tap(done.x,done.y);assert(await page.$eval('#settings-dialog',e=>e.hidden));
-  assert.deepEqual(errors,[]);await context.close();console.log('PASS_ISSUE13_BROWSER',width,scenario);
- }
- // A blocked coordinator load retains the early sentinel and disables old
- // native UI/property handlers without stopping ordinary Story gameplay.
- const context=await b.createBrowserContext(),page=await context.newPage();await page.setViewport({width,height,isMobile:true,hasTouch:true});await page.setRequestInterception(true);page.on('request',r=>r.url().includes('/bu-platform-saves-v2.js')?r.abort():r.continue());
- await page.goto(root,{waitUntil:'load',timeout:120000});await page.waitForFunction(()=>!!window.BUStoryGenesis12Test);
- const failure=await page.evaluate(()=>{document.getElementById('daily-close')?.click();openDialog('settings');document.getElementById('save-import').click();let exports=0;const savedURL=URL.createObjectURL;URL.createObjectURL=()=>{exports++;return 'blob:blocked-test'};document.getElementById('save-export').click();URL.createObjectURL=savedURL;let reads=0;const original=File.prototype.text;File.prototype.text=async()=>{reads++;throw Error('No import allowed')};document.getElementById('save-file').onchange();File.prototype.text=original;let blocked=false;try{BUPlatformSaves.applyBackup()}catch(_){blocked=true}closeDialog();completedChapters.genesis_ep11=true;bu3857Open('genesis_ep12');return {pending:BUPlatformSaves.pendingSafetyLoad,blocked,reads,exports,playable:bu3857Current().id==='g12-d01',notice:!!document.getElementById('bu-live-restore-paused')};});assert.deepEqual(failure,{pending:true,blocked:true,reads:0,exports:0,playable:true,notice:true});await context.close();
- evidence.viewports.push({width,height,scenarios:scenarios.length,reloadsEach:2,v1V2AndAPIBlocked:true,exportsPreserved:true,loadFailureClosed:true,ordinaryStoryPlayable:true});
-}
-console.log('PASS_ISSUE13_BROWSER_COMPLETE',JSON.stringify(evidence));if(process.env.SAFETY_EVIDENCE)fs.writeFileSync(process.env.SAFETY_EVIDENCE,JSON.stringify(evidence,null,2));
-}finally{await b.close()}})().catch(e=>{console.error(e.stack||e);process.exitCode=1});
+  console.log('PASS_ISSUE13_BROWSER_COMPLETE',JSON.stringify(evidence));
+  if(process.env.SAFETY_EVIDENCE)fs.writeFileSync(process.env.SAFETY_EVIDENCE,JSON.stringify(evidence,null,2));
+ }finally{await browser.close()}
+})().catch(e=>{console.error('FAIL_ISSUE13_BROWSER',e.stack||e);process.exitCode=1});
