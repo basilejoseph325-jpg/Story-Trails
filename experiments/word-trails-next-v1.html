@@ -9,30 +9,50 @@
 <script>
 (()=>{'use strict';try{
  const args=new URLSearchParams(location.search);
- if(window.top===window && args.get('standalone')!=='qa' &&
-    (location.hostname.endsWith('.github.io')||args.get('native')==='1')){
+ // Published links always load the real native menu/Settings host.
+ // Only local standalone test URLs can bypass that host via standalone=qa.
+ if(window.top===window &&
+    (location.hostname.endsWith('.github.io')||
+     (args.get('native')==='1'&&args.get('standalone')!=='qa'))){
   location.replace('../index.html?wt_launch=native');
  }
-}catch(_){}})();
+ }catch(_){}})();
+</script>
+<script>
+// Intercept actual Android touch-generated clicks inside the iframe itself.
+document.addEventListener('click',event=>{
+ const entry=event.target?.closest?.('[data-wt-open-daily]');
+ if(!entry)return;
+ event.preventDefault();event.stopImmediatePropagation();
+ try{
+  const host=window.parent!==window&&window.parent.BUWTNativeShell;
+  if(host?.active?.()&&host.openDaily?.())return;
+ }catch(_){}
+ // Direct standalone QA retains a separate page; embedded play never unloads.
+ if(window.parent===window)window.location.assign('word-trails-daily-v1.html');
+},true);
 </script>
 <!-- Embedded Word Trails reload still resumes its protected crossword save. -->
 
-<meta name="description" content="Bible Unfolded — 30-level Word Trails adventure.">
-<title>Word Trails · 30 Bible Levels • Bible Unfolded</title>
-<link rel="stylesheet" href="word-trails-next-v1.css?v=scenic-map-seals-v8">
+<meta name="description" content="Bible Unfolded Bible Unfolded — next-generation Word Trails puzzle preview.">
+<title>Word Trails NEXT · 50 Bible Levels • Bible Unfolded</title>
+<link rel="stylesheet" href="word-trails-next-v1.css?v=daily-real-touch-no-navigation-20261116-v5">
 <link rel="stylesheet" href="word-trails-feel-v2.css?v=gold-win-v5-final-20261107">
 <link rel="stylesheet" href="word-trails-unified-menu-v1.css?v=standard-menu-v1">
 <link rel="stylesheet" href="word-trails-native-wheel-v1.css?v=faithful-ocean-solid-20261109">
 <link rel="stylesheet" href="word-trails-main-settings-v1.css?v=shared-native-settings-20261109">
 <script src="../bu-platform-rewards-v1.js?v=shared-wheel-core-20261109" defer></script>
-<script src="word-trails-feel-v2.js?v=native-settings-20261109" defer></script>
+<script src="word-trails-feel-v2.js?v=native-settings-owner-20261113-v23" defer></script>
 <script src="word-trails-unified-menu-v1.js?v=native-settings-20261109" defer></script>
 <script src="word-trails-announcer-v1.js?v=live-original-recordings-20261109-r1" defer></script>
-<script src="word-trails-main-settings-v1.js?v=native-settings-20261109" defer></script>
+<script src="word-trails-main-settings-v1.js?v=single-audio-owner-20261113" defer></script>
 <script src="word-trails-native-wheel-v1.js?v=faithful-ocean-holdfix-20261109" defer></script>
-<script src="word-trails-levels-12-30-v1.js?v=source-novelty-14-reviews-20261109" defer></script>
-<script src="word-trails-live-migration-v1.js?v=live-progress-only-20261109" defer></script>
-<script src="word-trails-next-v1.js?v=live-progress-20261109-r1" defer></script>
+<script src="word-trails-levels-12-30-v1.js?v=word-trails-marah-itinerary-20261113-v27" defer></script>
+<script src="word-trails-levels-31-35-v1.js?v=wordtrails-levels35-nov15-v1" defer></script>
+<script src="word-trails-levels-36-40-v1.js?v=wordtrails-levels40-nov15-v1" defer></script>
+<script src="word-trails-levels-41-45-v1.js?v=wordtrails-levels45-nov15-v1" defer></script>
+<script src="word-trails-levels-46-50-v1.js?v=wordtrails-levels50-nov15-v1" defer></script>
+<script src="word-trails-next-v1.js?v=daily-keep-theme-20261116-v3" defer></script>
 </head>
 <body>
 <div id="app">
@@ -43,11 +63,11 @@
     </div>
     <div class="heading">
       <h1>Word Trails</h1>
-      <span><b id="scene-title">The Beginning</b> · <b id="level-label">LEVEL 1 / 30</b></span>
+      <span><b id="scene-title">The Beginning</b> · <b id="level-label">LEVEL 1 / 50</b></span>
       <div class="progress-line"><div class="progress-track" aria-hidden="true"><i id="progress-fill"></i></div><strong id="solved-count" aria-label="Words solved">0 / 4</strong></div>
     </div>
     <div class="top-actions">
-      <div class="points" title="Trail Coins — separate from Insight Tokens"><span>✦</span><strong id="points">60</strong></div>
+      <div class="points" title="Trail Coins earned and spent only in Word Trails"><span>✦</span><strong id="points">60</strong></div>
       <button id="audio" type="button" aria-label="Open Bible Unfolded menu" aria-pressed="false" title="Bible Unfolded menu">☰</button>
     </div>
   </header>
@@ -65,12 +85,13 @@
     <button type="button" id="hint" class="side-control hint" aria-label="Reveal a letter">
       <img src="../assets/ui/daily-gold-hint-v3.svg" alt=""><span id="hint-cost">FREE</span>
     </button>
-    <div class="combo" id="combo" aria-live="polite"></div>
+    <button type="button" class="daily-float" id="daily-trail-entry" data-wt-open-daily aria-label="Play today’s Daily Word Trail" title="Daily Word Trail"><span class="daily-float-sun" aria-hidden="true">☀</span><span class="daily-float-label">DAILY</span></button>
+    <div class="combo" id="combo" aria-live="polite" style="left:10px!important;right:auto!important"></div>
   </section>
   <footer class="bottom">
     <span>✦ BONUS <strong id="bonus-count">0</strong></span>
-    <button type="button" id="level-map" aria-label="Open unlocked levels">1 / 30</button>
-    <span class="lab-tag">BIBLE · 30 LEVELS</span>
+    <button type="button" id="level-map" aria-label="Open unlocked levels">1 / 50</button>
+
   </footer>
   <div id="particles" class="particles" aria-hidden="true"></div>
 </div>
@@ -95,9 +116,10 @@
     <h2 id="finish-level">LEVEL COMPLETE!</h2>
     <p class="victory-intro">Every word brings a new discovery.</p>
     <div class="finish-seal" id="finish-seal" hidden aria-label="Journey milestone collectible"><span id="finish-seal-symbol" aria-hidden="true">✦</span><span class="finish-seal-copy"><strong id="finish-seal-title">Journey Seal</strong><small id="finish-seal-note">Five-level milestone collected</small></span></div>
-    <div class="reward-coin" aria-label="Level reward"><span>✦</span><strong id="finish-reward">+20 TRAIL COINS</strong></div>
+    <div class="reward-coin" aria-label="Level reward"><span>✦</span><strong id="finish-reward">+20 TEST COINS</strong></div>
     <div class="finish-stats" id="finish-words"></div>
     <p class="finish-spark" id="finish-spark"></p>
+    <p class="finish-next-seal" id="finish-next-seal" aria-live="polite"></p>
     <button type="button" class="primary-action" id="next-level">Next Level</button>
     <button type="button" class="secondary-action" id="stay">Keep exploring</button>
   </div>
@@ -105,13 +127,19 @@
 <dialog id="map" aria-labelledby="map-title">
   <div class="map-panel">
     <button type="button" id="map-x" class="map-x" aria-label="Close level map">×</button>
-    <div class="finish-small">BIBLE UNFOLDED</div>
+    <div class="finish-small">VISUAL LAB ONLY</div>
     <h2 id="map-title">Your Word Journey</h2>
-    <p>Levels unlock in order. Trail Coins are for crossword hints and bonuses; Insight Tokens and purchased wheels are part of your shared Bible Unfolded rewards.</p>
+    <p>Earn TEST coins from Bible words, bonus words and levels. Spend 15 on extra letter hints after your free hint. Every five levels earns a Journey Seal and +60 bonus TEST coins.</p>
+    <section id="wt-map-seal-progress" class="wt-seal-progress" aria-labelledby="wt-map-seal-title">
+      <strong id="wt-map-seal-title">NEXT JOURNEY SEAL</strong>
+      <span id="wt-map-seal-detail">0 of 5 levels completed</span>
+      <div id="wt-map-seal-track" class="wt-seal-progress-track" role="progressbar" aria-label="Next Journey Seal progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><i id="wt-map-seal-fill"></i></div>
+    </section>
     <div id="map-list" class="map-list"></div>
     <div class="map-actions">
+      <button type="button" data-wt-open-daily aria-label="Open the Daily Word Trail challenge" style="display:block;width:100%;text-align:center;background:linear-gradient(#f8dfad,#c39244);color:#153640;border:1px solid #fff0bf;border-radius:12px;padding:12px;font-size:14px;font-weight:900;min-height:44px">☀ Play Today’s Daily Word Trail</button>
       <button type="button" id="reset-level">↻ Restart current puzzle</button>
-      <button type="button" id="reset-test">Reset Word Trails progress</button>
+      <button type="button" id="reset-test">Reset all test progress</button>
     </div>
   </div>
 </dialog>

@@ -172,7 +172,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 /* LIVE: owner-approved 30-level Word Trails — additive to original game. */
 (()=>{if(document.getElementById('bu-wt-live-bootstrap'))return;
  const s=document.createElement('script');s.id='bu-wt-live-bootstrap';
- s.src='word-trails-live-bootstrap-v1.js?v=live-33-crosswords-20261114-v1';
+ s.src='word-trails-live-bootstrap-v1.js?v=live-word-trails50-daily-20261115-v1';
  s.defer=true;document.head.appendChild(s);
 })();
 

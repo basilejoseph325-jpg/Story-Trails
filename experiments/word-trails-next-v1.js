@@ -1,7 +1,4 @@
-/* Visual Lab QA candidate: 30 Bible levels, milestone prizes and authentic announcer clips.
-   Visual Lab thirty-level regression runner verifies puzzle completion and save persistence.
-   LIVE RELEASE BLOCKED until docs/WORD_TRAILS_PRE_LIVE_SHARED_CORE_RELEASE_GATE.md
-   is satisfied; TEST gameplay uses its own protected Trail Coins. */
+/* LIVE Word Trails 50-level release candidate, preserving the existing LIVE save key. No automatic TEST import. */
 /* BIBLE UNFOLDED | WORD TRAILS NEXT V1
    Visual Lab-only replacement experience. Never reads or writes live-game scores.
    Original Web Audio cues; the existing game-owned Word Trails music is reused.
@@ -146,6 +143,31 @@ if(Array.isArray(window.BUWTAdditionalLevels)){
   LEVELS.push(next);EXTRA_SPARKS.push(next.extraSparks);
  }
 }
+// New content only: reuse the same crossword engine and existing LIVE Word Trails save key.
+if(Array.isArray(window.BUWTLevels31to35)){
+ for(const next of window.BUWTLevels31to35){
+  if(!next||!Array.isArray(next.words)||!Array.isArray(next.extraSparks))throw Error('Broken 31–35 level data');
+  LEVELS.push(next);EXTRA_SPARKS.push(next.extraSparks);
+ }
+}
+if(Array.isArray(window.BUWTLevels36to40)){
+ for(const next of window.BUWTLevels36to40){
+  if(!next||!Array.isArray(next.words)||!Array.isArray(next.extraSparks))throw Error('Broken 36–40 level data');
+  LEVELS.push(next);EXTRA_SPARKS.push(next.extraSparks);
+ }
+}
+if(Array.isArray(window.BUWTLevels41to45)){
+ for(const next of window.BUWTLevels41to45){
+  if(!next||!Array.isArray(next.words)||!Array.isArray(next.extraSparks))throw Error('Broken 41–45 level data');
+  LEVELS.push(next);EXTRA_SPARKS.push(next.extraSparks);
+ }
+}
+if(Array.isArray(window.BUWTLevels46to50)){
+ for(const next of window.BUWTLevels46to50){
+  if(!next||!Array.isArray(next.words)||!Array.isArray(next.extraSparks))throw Error('Broken 46–50 level data');
+  LEVELS.push(next);EXTRA_SPARKS.push(next.extraSparks);
+ }
+}
 const BIBLE_SPARKS=LEVELS.map((lev,i)=>[
  {word:lev.spark,clue:lev.clue,reference:lev.reference,url:lev.url,insight:lev.insight},
  ...EXTRA_SPARKS[i]
@@ -156,9 +178,13 @@ const MILESTONE_SEALS=Object.freeze({
  15:{symbol:'✶',name:'Wisdom Lantern',detail:'Fifteen paths discovered'},
  20:{symbol:'✦',name:'Steadfast Seal',detail:'Twenty trails explored'},
  25:{symbol:'✥',name:'Discovery Compass',detail:'Twenty-five journeys finished'},
- 30:{symbol:'✺',name:'Scripture Scholar',detail:'Thirty levels completed'}
+ 30:{symbol:'✺',name:'Scripture Scholar',detail:'Thirty levels completed'},
+ 35:{symbol:'✧',name:'Scripture Explorer',detail:'Thirty-five levels completed'},
+ 40:{symbol:'✦',name:'Steady Journey',detail:'Forty levels completed'},
+ 45:{symbol:'✧',name:'Purposeful Paths',detail:'Forty-five levels completed'},
+ 50:{symbol:'✺',name:'Listening Heart',detail:'Fifty levels completed'}
 });
-const MAP_CHAPTERS=['The First Steps','Courage & Discovery','Stories of Faith','People & Places','Across the Scriptures','The Journey Continues'];
+const MAP_CHAPTERS=['The First Steps','Courage & Discovery','Stories of Faith','People & Places','Across the Scriptures','The Journey Continues','Faith and Discovery','Growing in Knowledge','Paths of Purpose','Hope and Understanding'];
 const STORAGE='bible-unfolded-word-trails-next-v1';
 const $=id=>document.getElementById(id);
 const F=(name,value)=>document.documentElement.style.setProperty(name,value);
@@ -219,6 +245,12 @@ function load(){
   x.unlocked=Math.max(0,Math.min(LEVELS.length-1,Number(x.unlocked)||0));
   x.coins=Math.max(0,Number(x.coins)||0);x.points=Math.max(0,Number(x.points)||0);
   for(const key of ['completed','sparks','paidWords','paidBonuses','claimedFreeHints'])if(!Array.isArray(x[key]))x[key]=[];
+  // A player who had finished Level 30 before the 35-level update had no
+  // Level 31 to unlock. Allow entry without replaying or paying rewards again.
+  if(LEVELS.length>30&&x.completed.includes(29))x.unlocked=Math.max(x.unlocked,30);
+  if(LEVELS.length>35&&x.completed.includes(34))x.unlocked=Math.max(x.unlocked,35);
+  if(LEVELS.length>40&&x.completed.includes(39))x.unlocked=Math.max(x.unlocked,40);
+  if(LEVELS.length>45&&x.completed.includes(44))x.unlocked=Math.max(x.unlocked,45);
   if(!Array.isArray(x.claimedSparks))x.claimedSparks=[];
   if(!Array.isArray(x.boardBible))x.boardBible=[];
   // Migration: a completed old single star was the FIRST Bible word in its level.
@@ -233,10 +265,39 @@ function load(){
  }catch(_){return DEFAULT()}
 }
 let save=load(),index=save.level,level=LEVELS[index],cells=BOARDS[index];
+/* Motivating next-step preview based ONLY on existing completed-level IDs.
+   Does not create rewards, change coin totals, or write a new save key. */
+function nextSealProgress(){
+ const completed=new Set(save.completed.filter(n=>Number.isInteger(n)&&n>=0&&n<LEVELS.length));
+ const targets=Object.keys(MILESTONE_SEALS).map(Number).sort((a,b)=>a-b);
+ const target=targets.find(n=>!completed.has(n-1));
+ if(!target)return {all:true,done:5,goal:5,title:'All ten Journey Seals collected'};
+ const start=target-5;
+ const done=Array.from({length:5},(_,offset)=>start+offset).filter(n=>completed.has(n)).length;
+ return {all:false,done,goal:5,title:MILESTONE_SEALS[target].name,target};
+}
+function renderNextSealProgress(){
+ const seal=nextSealProgress();
+ const mapLabel=$('wt-map-seal-title'),mapDetail=$('wt-map-seal-detail'),
+  mapBar=$('wt-map-seal-track'),mapFill=$('wt-map-seal-fill'),
+  finishLabel=$('finish-next-seal');
+ if(mapLabel)mapLabel.textContent=seal.all?'✦ All ten Journey Seals collected':
+  'NEXT JOURNEY SEAL · '+seal.title;
+ if(mapDetail)mapDetail.textContent=seal.all?'Your 50-level journey is complete!':
+  seal.done+' of '+seal.goal+' levels completed · +60 bonus Trail Coins at Level '+seal.target;
+ if(mapBar){
+  mapBar.setAttribute('aria-valuenow',String(seal.done));
+  mapBar.setAttribute('aria-label',seal.all?'All ten Journey Seals collected':
+   seal.title+': '+seal.done+' of 5 levels complete');
+ }
+ if(mapFill)mapFill.style.width=(seal.done/seal.goal*100)+'%';
+ if(finishLabel)finishLabel.textContent=seal.all?'✦ All ten Journey Seals collected!':
+  'UP NEXT · '+seal.title+' · '+seal.done+'/5 levels toward your next seal';
+}
 let found=new Set(),bonuses=new Set(),hinted=new Set(),chosen=[],letters=[],combo=0;
 let dragging=false,dragActive=false,start=null,pointer=null,suppressClickUntil=0;
 let timer=null,locked=false,completionShown=false;
-let music=null,ctx=null,unlockedSound=false;
+let music=null,ctx=null,unlockedSound=false,dailyOverlayActive=false;
 const wheel=$('wheel'),board=$('board'),preview=$('preview');
 const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function store(){
@@ -296,7 +357,19 @@ function cue(kind){
 }
 function haptic(ms){if(window.BUWTPolish){window.BUWTPolish.haptic(ms);return;}
  try{if(!reducedMotion&&navigator.vibrate)navigator.vibrate(ms)}catch(_){}}
-function startMusicFromGesture(){if(window.BUWTPolish?window.BUWTPolish.musicEnabled():save.sound)soundReady()}
+function startMusicFromGesture(){
+ if(!dailyOverlayActive&&(window.BUWTPolish?window.BUWTPolish.musicEnabled():save.sound))soundReady()
+}
+// Daily is an overlay in the SAME Word Trails session. Do not pause, restart,
+// or create another soundtrack when it opens: keep this exact theme playing.
+window.addEventListener('bu-wt-daily-enter',()=>{dailyOverlayActive=true});
+window.addEventListener('bu-wt-daily-leave',()=>{
+ dailyOverlayActive=false;
+ // Normal playback stays uninterrupted. Recover only if the browser itself
+ // suspended this already-unlocked track while switching overlay focus.
+ if(music?.paused&&unlockedSound&&(window.BUWTPolish?window.BUWTPolish.musicEnabled():save.sound))
+  music.play().catch(()=>{});
+});
 window.addEventListener('pointerdown',startMusicFromGesture,{capture:true});
 window.addEventListener('keydown',startMusicFromGesture,{capture:true});
 function shuffleArray(a){
@@ -514,9 +587,10 @@ function completeLevel(){
   $('finish-seal-title').textContent=seal.name;
   $('finish-seal-note').textContent=already?'Journey Seal previously collected':seal.detail+' · +60 extra Trail Coins';
  }
- $('finish-reward').textContent=already?'Replay complete':('+'+reward+' TRAIL COINS');
+ $('finish-reward').textContent=already?'Replay complete':('+'+reward+' Trail Coins');
  $('finish-words').textContent=level.words.length+' crossword words · '+bonuses.size+' bonus '+(bonuses.size===1?'word':'words');
  $('finish-spark').textContent='★ '+sparksFound()+' / '+sparkTotal()+' Bible discoveries collected';
+ renderNextSealProgress();
  $('next-level').textContent=index===LEVELS.length-1?'Explore Level Map':'Next Level';
  $('stay').textContent=sparksFound()===sparkTotal()?'Replay this level':'Find more Bible words';
  $('finish').showModal();
@@ -612,6 +686,7 @@ function toggleSound(){
  else{music?.pause();ctx?.suspend().catch(()=>{})}
 }
 function levelMap(){
+ renderNextSealProgress();
  const host=$('map-list');host.replaceChildren();
  LEVELS.forEach((lev,i)=>{
   if(i%5===0){
@@ -652,6 +727,9 @@ function levelMap(){
 }
 wheel.addEventListener('pointerdown',e=>{
  if(locked)return;const b=e.target.closest('.wheel-letter');if(!b)return;
+ // The click guard blocks only the synthetic click AFTER the last swipe.
+ // A separate new finger press must be allowed immediately, even within 200ms.
+ suppressClickUntil=0;
  window.BUWTWheelNative?.begin?.(e);
  dragging=true;dragActive=false;pointer=e.pointerId;
  start={x:e.clientX,y:e.clientY,index:Number(b.dataset.letterIndex)};
@@ -698,7 +776,7 @@ $('spark-x').addEventListener('click',()=>$('discovery').close());
 $('map-x').addEventListener('click',()=>$('map').close());
 $('reset-level').addEventListener('click',()=>{$('map').close();resetLevel()});
 $('reset-test').addEventListener('click',()=>{
- if(!confirm('Reset Word Trails progress, Trail Coins and unlocks? Insight Tokens and other Bible Unfolded modes are unaffected.'))return;
+ if(!confirm('Reset Word Trails progress and Trail Coins? Other game modes and Insight Tokens are unaffected.'))return;
  save=DEFAULT();store();showLevel(0);cue('touch');
 });
 window.addEventListener('keydown',e=>{
