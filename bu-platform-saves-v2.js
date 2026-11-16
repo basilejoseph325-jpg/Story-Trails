@@ -177,23 +177,128 @@ function protectedNative(incoming,previous){
  }
  return next;
 }
-// Never infer ownership of current values from a previous-only journal.
-// Even a COMMITTED marker has no transaction identity linking it to a journal.
-// Quarantine is logical: retain both raw records byte-for-byte for review.
-function recoverPending(){
- try{
-  const raw=read(JOURNAL),committed=read(COMMITTED);
-  if(raw===null&&committed===null)return Object.freeze({recovered:false,quarantined:false,restoreDisabled:true,kind:'none'});
-  const journal=raw===null?null:getJson(raw);
-  const kind=raw===null?'orphan-marker':!journal?'malformed':
-   journal.version===1&&own(journal.previous)?'legacy-previous-only':'unsupported-format';
-  return Object.freeze({recovered:false,quarantined:true,restoreDisabled:true,
-   kind,committedMarkerPresent:committed!==null,
-   reason:'The retained record cannot prove which current values belong to the old restore. Nothing was rolled back or cleared.'});
- }catch(_){return Object.freeze({recovered:false,quarantined:true,restoreDisabled:true,kind:'storage-unavailable',reason:'Saved recovery records could not be read. Nothing was changed.'});}
+// Version-1 journals have only PREVIOUS, without intended AFTER values.
+// Their meaning cannot be proved. Retain them, never apply their old data.
+function legacyEvidence(){
+ const raw=read(JOURNAL),marker=read(COMMITTED);
+ if(raw===null&&marker===null)return null;
+ const j=raw===null?null:getJson(raw);
+ return {kind:raw===null?'orphan-marker':!j?'malformed':
+   j.version===1&&own(j.previous)?'legacy-previous-only':'unsupported-format',
+  committedMarkerPresent:marker!==null};
 }
-function applyBackup(){
- throw Error('Backup restores are paused to protect current progress. Export current progress and review the retained recovery record; no import was performed.');
+function validatedTransaction(raw){
+ const tx=getJson(raw);
+ if(!tx||tx.version!==3||!/^[a-f0-9-]{16,64}$/.test(tx.id)||!own(tx.changes)||
+    !['prepared','conflict'].includes(tx.phase))return null;
+ const entries=Object.entries(tx.changes);
+ if(!entries.length||entries.length>MAX_KEYS+2)return null;
+ for(const [k,v] of entries){
+  if((!allowed(k)&&!keysToKeep.includes(k))||CONTROLS.includes(k)||!own(v)||
+    !Object.prototype.hasOwnProperty.call(v,'before')||
+    !Object.prototype.hasOwnProperty.call(v,'after')||
+    !dataStr(v.before,MAX_NATIVE_VALUE)||!dataStr(v.after,MAX_NATIVE_VALUE))return null;
+ }
+ return tx;
+}
+function recoverPending(){
+ const legacy=legacyEvidence(),raw=read(TX),done=read(TX_DONE);
+ if(raw===null){
+  return Object.freeze({recovered:false,quarantined:!!legacy||done!==null,
+   legacy:legacy?.kind||null,kind:done!==null?'orphan-commit':legacy?.kind||'none',
+   restoreDisabled:false,pending:false});
+ }
+ const tx=validatedTransaction(raw);
+ if(!tx)return Object.freeze({recovered:false,quarantined:true,kind:'invalid-new-journal',
+  legacy:legacy?.kind||null,pending:true,restoreDisabled:false});
+ if(tx.phase==='conflict'||(done!==null&&done!==tx.id))
+  return Object.freeze({recovered:false,quarantined:true,kind:'conflict',
+   legacy:legacy?.kind||null,pending:true,restoreDisabled:false});
+ const entries=Object.entries(tx.changes);
+ const changed=entries.filter(([k,v])=>read(k)!==v.before&&read(k)!==v.after);
+ if(changed.length){
+  // Never "fix" a different current value, even if an old transaction failed.
+  // Also do NOT repeatedly retry this rollback after another tab progressed.
+  try{
+   if(read(TX)===raw)setExact(TX,JSON.stringify({...tx,phase:'conflict'}));
+  }catch(_){}
+  return Object.freeze({recovered:false,quarantined:true,kind:'newer-progress-conflict',
+   keys:changed.map(x=>x[0]),legacy:legacy?.kind||null,pending:true,restoreDisabled:false});
+ }
+ if(done===tx.id){
+  if(entries.every(([k,v])=>read(k)===v.after)){
+   // The completed transaction is verified. Delete transaction first; an
+   // orphan COMMIT marker cannot ever trigger a rollback after a crash.
+   localStorage.removeItem(TX);localStorage.removeItem(TX_DONE);
+   return Object.freeze({recovered:false,committed:true,quarantined:!!legacy,
+    legacy:legacy?.kind||null,kind:legacy?.kind||'committed',pending:false,restoreDisabled:false});
+  }
+  return Object.freeze({recovered:false,quarantined:true,kind:'committed-conflict',
+   pending:true,legacy:legacy?.kind||null,restoreDisabled:false});
+ }
+ // No matching commit marker: roll back only exact AFTER values that this
+ // transaction wrote. Never replay old PREVIOUS values over newer values.
+ try{
+  for(const [k,v] of entries.reverse()){
+   if(read(k)===v.after&&v.before!==v.after)setExact(k,v.before);
+   else if(read(k)!==v.before)throw Error('Current data changed during recovery');
+  }
+  localStorage.removeItem(TX);
+  return Object.freeze({recovered:true,quarantined:!!legacy,legacy:legacy?.kind||null,
+   kind:legacy?.kind||'rolled-back',pending:false,restoreDisabled:false});
+ }catch(e){
+  return Object.freeze({recovered:false,quarantined:true,kind:'recovery-conflict',
+   pending:true,reason:e.message,legacy:legacy?.kind||null,restoreDisabled:false});
+ }
+}
+function uniqueId(){
+ const a=new Uint8Array(16);crypto.getRandomValues(a);
+ return Array.from(a,x=>x.toString(16).padStart(2,'0')).join('');
+}
+async function applyBackup(candidate,{reload=true}={}){
+ const c=normalizeBackup(candidate),plan=dryRun(c);
+ if(!navigator.locks?.request)throw Error('Safe restore needs a newer browser with Web Locks support. Please update Chrome or Safari.');
+ return navigator.locks.request(LOCK,{mode:'exclusive',ifAvailable:true},async lock=>{
+  if(!lock)throw Error('Another game tab is restoring a backup. Close it and try again.');
+  const pending=recoverPending();
+  if(pending.pending)throw Error('An interrupted restore needs review; current progress has not been replaced.');
+  const existing=currentSnapshot();
+  const desired=protectedNative(c.keys,existing.keys);
+  if(c.extensions.wordTrailsNext.state!==null)desired[TEST]=c.extensions.wordTrailsNext.state;
+  if(c.extensions.wordTrailsNext.feel!==null)desired[FEEL]=c.extensions.wordTrailsNext.feel;
+  const changes={};
+  for(const [k,after] of Object.entries(desired)){
+   const before=read(k);
+   if(before!==after)changes[k]={before,after};
+  }
+  if(!Object.keys(changes).length)return {ok:true,unchanged:true,plan};
+  const transaction={version:3,id:uniqueId(),phase:'prepared',
+   createdAt:new Date().toISOString(),changes};
+  const original=JSON.stringify(transaction);
+  // The complete BEFORE/AFTER journal must be durable before the first write.
+  // A QuotaExceeded error here leaves every saved game value untouched.
+  setExact(TX,original);
+  window.__bu388SkipCheckpoint=true;
+  try{
+   for(const [k,v] of Object.entries(changes)){
+    if(read(k)!==v.before)throw Error('Another game tab changed '+k+' during restore.');
+    setExact(k,v.after);
+   }
+   setExact(TX_DONE,transaction.id);
+   // Verify all writes again before declaring the restore complete.
+   for(const [k,v] of Object.entries(changes))
+    if(read(k)!==v.after)throw Error('Restore verification failed for '+k);
+   localStorage.removeItem(TX);
+   localStorage.removeItem(TX_DONE);
+  }catch(e){
+   const status=recoverPending();
+   window.__bu388SkipCheckpoint=false;
+   throw Error(status.pending?'Restore interrupted: '+e.message+
+    '. Newer progress has been left untouched.':'Restore cancelled safely: '+e.message);
+  }
+  if(reload)location.reload();
+  return {ok:true,changed:Object.keys(changes).length,plan};
+ });
 }
 function getStatus(){
  let el=document.getElementById('bu-wt-save-status');
