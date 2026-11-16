@@ -71,18 +71,7 @@ jobs:
       - name: Combine the two reviewed candidates only in disposable QA files
         run: |
           git fetch origin 1e2f3636fb054497a4fae65a283401c2ad96e026
-          mkdir -p work/combined/work work/baseline
-          git archive 169294536e6bdf3047cd556e8ee0d84a50d9f1ff | tar -x -C work/baseline
-          git archive 1e2f3636fb054497a4fae65a283401c2ad96e026 | tar -x -C work/combined
-          python3 - <<'PY'
-          from pathlib import Path
-          import re,shutil
-          source=Path('index.html').read_text()
-          gate=re.search(r'\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-reliable-restore-v3"></script>\n',source).group(0)
-          target=Path('work/combined/index.html');old=target.read_text();assert old.count('<head>')==1
-          target.write_text(old.replace('<head>','<head>'+gate))
-          shutil.copyfile('bu-platform-saves-v2.js','work/combined/bu-platform-saves-v2.js')
-          PY
+          COMBINED_DIR=work/combined BASELINE_DIR=work/baseline python3 scripts/qa_issue13_prepare_combined.py
           echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
           python3 -m http.server 8918 --bind 127.0.0.1 --directory work/baseline > work/baseline-http.log 2>&1 &
           python3 -m http.server 8917 --bind 127.0.0.1 --directory work/combined > work/combined-http.log 2>&1 &

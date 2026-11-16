@@ -4,6 +4,8 @@ if(window.BUPlatformSaves&&!window.BUPlatformSaves.pendingSafetyLoad)return;
 const NATIVE=/^(?:bible-unfolded|story-trails)-[a-z0-9_.-]+$/i;
 const TEST='bible-unfolded-word-trails-next-v1';
 const FEEL='bu-wt-next-feel-v2';
+const SHARED_AUDIO='bu-platform-audio-preferences-v1',DAILY='bu-visual-lab-daily-word-trail-v1';
+const EXTRA={sharedAudio:SHARED_AUDIO,dailyWordTrail:DAILY};
 const JOURNAL='bible-unfolded-word-trails-import-rollback-v2';
 const COMMITTED='bible-unfolded-word-trails-import-committed-v2';
 const TRANSACTION='bible-unfolded-restore-transaction-v3', EVIDENCE='bible-unfolded-restore-conflict-v3';
@@ -37,7 +39,7 @@ function monitorStorage(w){
  try{
   const proto=w.Storage.prototype,storage=w.localStorage,original=proto.setItem;
   proto.setItem=function(key,value){
-   if(this!==storage||!(NATIVE.test(String(key))||key===FEEL))return original.call(this,key,value);
+   if(this!==storage||!(NATIVE.test(String(key))||key===FEEL||Object.values(EXTRA).includes(key)))return original.call(this,key,value);
    try{original.call(this,key,value);if(storage.getItem(String(key))!==String(value))throw Error('Save verification failed.');}
    catch(e){saveFailure();throw e;}
   };
@@ -132,6 +134,16 @@ function validateNative(key,raw){
   }
  }else if(/-adventure-v|rewards-v|wheel-ownership/.test(key))throw Error('Damaged saved data: '+key);
 }
+function validateDaily(raw){
+ if(raw===null)return;
+ if(!dataStr(raw,MAX_NATIVE_VALUE))throw Error('Daily Word Trail save exceeds the safe limit.');
+ const d=getJson(raw);if(!d||d.version!==1||!own(d.days)||Object.keys(d.days).length>400)throw Error('Invalid Daily Word Trail save.');
+ for(const [day,entry] of Object.entries(d.days)){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||!own(entry)||!Number.isInteger(entry.board)||entry.board<0||entry.board>38||typeof entry.completed!=='boolean'||
+   !Array.isArray(entry.solved)||entry.solved.length>12||entry.solved.some(w=>typeof w!=='string'||!/^[A-Z]{2,20}$/.test(w))||
+   !Array.isArray(entry.hints)||entry.hints.length>2||entry.hints.some(h=>typeof h!=='string'||!/^[0-6]-[0-6]$/.test(h)))throw Error('Invalid Daily Word Trail entry.');
+ }
+}
 function nativeData(data){
  if(!own(data)||data.format!=='BibleUnfoldedSave'||data.version!==BACKUP_VERSION||
     !own(data.keys))throw Error('This is not a compatible complete LIVE backup.');
@@ -143,6 +155,8 @@ function nativeData(data){
  const ext=data.extensions;
  if(!own(ext)||!own(ext.wordTrailsNext)||ext.wordTrailsNext.format!=='WordTrailsNextLIVE'||
      ext.wordTrailsNext.version!==1)throw Error('Missing versioned Word Trails save section.');
+ if(ext.sharedAudio!==undefined)validateFeel(ext.sharedAudio);
+ if(ext.dailyWordTrail!==undefined)validateDaily(ext.dailyWordTrail);
  const t=ext.wordTrailsNext;
  if(!dataStr(t.state,220000)||!dataStr(t.feel,10000))throw Error('Invalid Word Trails backup content.');
  const test=validateTrails(t.state);validateFeel(t.feel);
@@ -159,7 +173,7 @@ function walletSummary(kv){
 }
 function currentSnapshot(){
  const keys=inventory();
- return {keys,trail:read(TEST),feel:read(FEEL)};
+ return {keys,trail:read(TEST),feel:read(FEEL),extras:Object.fromEntries(Object.entries(EXTRA).map(([name,key])=>[name,read(key)]))};
 }
 function makeBackup(){
  const state=currentSnapshot();
@@ -169,7 +183,7 @@ function makeBackup(){
  validateTrails(state.trail);validateFeel(state.feel);
  const backup={format:'BibleUnfoldedSave',version:BACKUP_VERSION,
   exportedAt:new Date().toISOString(),scope:'Bible Unfolded LIVE',
-  keys:state.keys,extensions:{wordTrailsNext:{format:'WordTrailsNextLIVE',
+  keys:state.keys,extensions:{...state.extras,wordTrailsNext:{format:'WordTrailsNextLIVE',
     version:1,state:state.trail,feel:state.feel,coinsNeverConvertToInsightTokens:true}}};
  backup.integrity={algorithm:'fnv1a32-utf16-v1',value:backupChecksum(backup)};
  nativeData(backup);
@@ -246,7 +260,7 @@ function exact(key,value){
  if(value===null)storageRemove(key);else storageSet(key,value);
  if(read(key)!==value)throw Error('Saved data could not be verified. Free device storage and try again.');
 }
-const transactionKey=k=>k===TEST||k===FEEL||allowed(k);
+const transactionKey=k=>k===TEST||k===FEEL||Object.values(EXTRA).includes(k)||allowed(k);
 function transaction(raw){
  const t=getJson(raw);
  if(!t||t.version!==3||typeof t.id!=='string'||!['applying','committed'].includes(t.phase)||!Array.isArray(t.entries)||t.entries.length>MAX_KEYS*2+6)throw Error('Unrecognized recovery record.');
@@ -318,6 +332,7 @@ async function applyBackup(candidate,options={}){
   // Native-only v1 backups and absent optional sections do not erase Word Trails.
   if(c.extensions.wordTrailsNext.state!==null)desired[TEST]=c.extensions.wordTrailsNext.state;
   if(c.extensions.wordTrailsNext.feel!==null)desired[FEEL]=c.extensions.wordTrailsNext.feel;
+  for(const [name,key] of Object.entries(EXTRA)){const value=c.extensions[name];if(value!==null&&value!==undefined)desired[key]=value;}
   const entries=Object.entries(desired).map(([key,after])=>({key,before:read(key),after})).filter(e=>e.before!==e.after);
   if(!entries.length)return {restored:true,changed:0};
   const t={version:3,id:crypto.randomUUID(),phase:'applying',createdAt:new Date().toISOString(),entries};
@@ -466,7 +481,7 @@ if(hasTransaction){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
 window.BUPlatformSaves=Object.freeze({
- version:'2.1.0-live',safetyRevision:'reliable-restore-v3',restoreDisabled:false,keys:Object.freeze({TEST,FEEL,JOURNAL,COMMITTED,TRANSACTION,EVIDENCE}),
+ version:'2.1.0-live',safetyRevision:'reliable-restore-v3',restoreDisabled:false,keys:Object.freeze({TEST,FEEL,SHARED_AUDIO,DAILY,JOURNAL,COMMITTED,TRANSACTION,EVIDENCE}),
  get startupRecovery(){return startupRecovery;},makeBackup,dryRun,applyBackup,validateTrails,recoverPending,reviewRestore,recoveryEvidence,bound:()=>installed
 });
 })();

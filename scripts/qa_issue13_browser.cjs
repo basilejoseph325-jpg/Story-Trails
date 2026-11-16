@@ -10,7 +10,7 @@ for(const engine of (process.env.RESTORE_ENGINES||'chromium,webkit').split(','))
  const browser=await (engine==='webkit'?webkit:chromium).launch(engine==='webkit'?{headless:true}:{headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});
  try{for(const [width,height] of [[320,568],[430,932]]){
  const context=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- const load=async()=>{await page.goto(url,{waitUntil:'load',timeout:120000});await page.waitForFunction(()=>window.BUPlatformSaves?.bound?.()&&window.BUStoryGenesis12Test,{timeout:60000});await page.evaluate(()=>document.getElementById('daily-close')?.click());};
+ const load=async()=>{await page.goto(url,{waitUntil:'load',timeout:120000});await page.waitForFunction(()=>window.BUPlatformSaves?.bound?.()&&window.BUStoryGenesis12Test,{timeout:60000});await page.waitForFunction(()=>localStorage.getItem('bu-platform-audio-preferences-v1')!==null,{timeout:60000});await page.evaluate(()=>document.getElementById('daily-close')?.click());};
  await load();
  const backup=await page.evaluate(({S,T,J})=>{
   economy.points=-20;economy.coins=777;economy.purchases=['seawheel'];economy.equippedWheel='seawheel';if(!saveEconomy())throw Error('Native wallet save failed');
