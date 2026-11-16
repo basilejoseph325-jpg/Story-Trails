@@ -73,7 +73,10 @@ const S='bible-unfolded-genesis-adventure-v3860',W='bible-unfolded-rewards-v17',
 
    // User-provided older v1 file must be imported through safe coordinator,
    // even though PR15's old document capture gate remains to protect failures.
-   const ui=await page.evaluate(async({S,W,T})=>{
+   // The successful UI import intentionally reloads the game. Listen for
+   // that navigation instead of continuing inside its destroyed JS context.
+   const reloading=page.waitForNavigation({waitUntil:'domcontentloaded',timeout:90000});
+   await page.evaluate(({S,W,T})=>{
     const old={format:'BibleUnfoldedSave',version:1,keys:{
       [S]:JSON.stringify({genesis_ep12:{step:6,complete:false}}),
       [W]:localStorage.getItem(W),
@@ -82,20 +85,17 @@ const S='bible-unfolded-genesis-adventure-v3860',W='bible-unfolded-rewards-v17',
     }};
     const picker=document.getElementById('save-file'),file=new File([JSON.stringify(old)],'backup-v1.json',{type:'application/json'});
     const dt=new DataTransfer();dt.items.add(file);picker.files=dt.files;
-    const originalConfirm=window.confirm;let confirmCount=0;
-    window.confirm=()=>{confirmCount++;return true};
-    // If the old document guard steals the event, nothing gets imported.
+    window.confirm=()=>{sessionStorage.setItem('qa-v1-import-confirmed','1');return true};
     picker.dispatchEvent(new Event('change',{bubbles:true}));
-    const finish=async()=>{for(let i=0;i<60;i++){
-      if(JSON.parse(localStorage.getItem(S)).genesis_ep12.step===6)return true;
-      await new Promise(r=>setTimeout(r,100));
-     }return false};
-    const didRestore=await finish();
-    window.confirm=originalConfirm;
-    return {didRestore,confirmCount,story:localStorage.getItem(S),
-      trail:JSON.parse(localStorage.getItem(T)),pickerCleared:picker.value==='',
-      legacyStill:localStorage.getItem('bible-unfolded-word-trails-import-rollback-v2')};
    },{S,W,T});
+   await reloading;
+   await page.waitForFunction(()=>window.BUPlatformSaves?.bound?.(),{timeout:90000});
+   const ui=await page.evaluate(({S,T})=>({
+    didRestore:JSON.parse(localStorage.getItem(S)||'{}').genesis_ep12?.step===6,
+    confirmCount:sessionStorage.getItem('qa-v1-import-confirmed')==='1'?1:0,
+    trail:JSON.parse(localStorage.getItem(T)||'null'),
+    legacyStill:localStorage.getItem('bible-unfolded-word-trails-import-rollback-v2')
+   }),{S,T});
    assert(ui.didRestore&&ui.confirmCount===1,'Old backup file must work through Import UI');
    assert.equal(ui.trail.level,10);
    assert.equal(ui.trail.coins,88);
