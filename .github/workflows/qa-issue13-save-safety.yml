@@ -12,7 +12,7 @@ permissions:
   contents: read
 jobs:
   safety:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       NODE_PATH: '${{ github.workspace }}/work/node_modules'
@@ -56,11 +56,12 @@ jobs:
             work/issue13-review-*.png
           if-no-files-found: ignore
   chapter-candidate-compatibility:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     env:
       NODE_PATH: '${{ github.workspace }}/work/node_modules'
       STORY_URL: http://127.0.0.1:8917/index.html
+      BU_WT_NATIVE_PARITY_URL: http://127.0.0.1:8917/index.html
       LIVE_BASELINE_URL: http://127.0.0.1:8918/index.html
     steps:
       - uses: actions/checkout@v4
