@@ -1,4 +1,29 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.9.231 WORKING — Genesis Word Adventure</title><meta name="build-version" content="v3.9.72-noah-editorial-working">
+<!doctype html><html lang="en"><head>
+<script id="bu-live-restore-safety-gate">
+/* Issue #13: fail closed before native import handlers or cached loaders run. */
+window.BUPlatformSaves=Object.freeze({pendingSafetyLoad:true,restoreDisabled:true,
+ applyBackup:function(){throw Error('Backup restore is paused; no progress was changed.');}});
+(function(){
+ function report(target){
+  if(target&&target.id==='save-file')target.value='';
+  if(window.BUPlatformSaves.reviewRestore)window.BUPlatformSaves.reviewRestore();
+  else{var status=document.getElementById('bu-live-restore-paused');if(!status){status=document.createElement('p');status.id='bu-live-restore-paused';status.setAttribute('role','status');document.getElementById('save-import').parentNode.appendChild(status);}status.textContent='Backup tools are not ready. Restore stays paused to protect progress. No saved data was replaced.';}
+ }
+ function block(event){
+  var target=event.target;
+  if(!((event.type==='click'&&target.closest&&(target.closest('#save-import')||((window.BUPlatformSaves.pendingSafetyLoad||!window.BUPlatformSaves.bound||!window.BUPlatformSaves.bound())&&target.closest('#save-export'))))||(event.type==='change'&&target.id==='save-file')))return;
+  event.preventDefault();event.stopImmediatePropagation();report(target);
+ }
+ document.addEventListener('click',block,true);document.addEventListener('change',block,true);
+ document.addEventListener('DOMContentLoaded',function(){
+  var picker=document.getElementById('save-file'),button=document.getElementById('save-import');
+  if(picker)picker.onchange=function(e){if(e)block(e);else report(picker);};
+  if(button)button.onclick=function(e){if(e)block(e);else report(button);};
+ },{once:true});
+})();
+</script>
+<script src="bu-platform-saves-v2.js?v=live-issue13-quarantine-v1"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#092c35"><title>Bible Unfolded v3.9.231 WORKING — Genesis Word Adventure</title><meta name="build-version" content="v3.9.72-noah-editorial-working">
 <script id="bu-daily-live-early-gate-v1">
 /* LIVE: hold rapid Daily Discovery taps until the illustrated reader is ready.
    No dropdown, editor, legacy quiz, score, wallet or save migration. */

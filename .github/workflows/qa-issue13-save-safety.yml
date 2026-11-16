@@ -1,0 +1,103 @@
+name: Issue 13 narrow LIVE save safety (no deployment)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'bu-platform-saves-v2.js'
+      - 'index.html'
+      - 'scripts/qa_issue13_*'
+      - 'docs/ISSUE13_SAVE_SAFETY.md'
+      - '.github/workflows/qa-issue13-save-safety.yml'
+permissions:
+  contents: read
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      SAFETY_URL: http://127.0.0.1:8916/index.html
+      STORY_URL: http://127.0.0.1:8916/index.html
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+      - name: Syntax, no-write model cases, old cached code and narrow scope
+        run: |
+          node --check bu-platform-saves-v2.js
+          node scripts/qa_issue13_safety.cjs
+      - name: Private local server
+        run: |
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8916 --bind 127.0.0.1 > work/http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8916/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Real browser stale/partial/malformed/committed journals, restore entry points and exports
+        env:
+          SAFETY_SHOTS: '1'
+          SAFETY_EVIDENCE: work/issue13-browser-evidence.json
+        run: node scripts/qa_issue13_browser.cjs
+      - name: Existing LIVE Episode 12 gameplay regression
+        run: node scripts/qa_genesis12_native.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue13-safety-evidence
+          path: |
+            work/issue13-browser-evidence.json
+            work/issue13-review-*.png
+          if-no-files-found: ignore
+  chapter-candidate-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      STORY_URL: http://127.0.0.1:8917/index.html
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+      - name: Combine the two reviewed candidates only in disposable QA files
+        run: |
+          git fetch origin 1e2f3636fb054497a4fae65a283401c2ad96e026
+          mkdir -p work/combined/work
+          git archive 1e2f3636fb054497a4fae65a283401c2ad96e026 | tar -x -C work/combined
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,shutil
+          source=Path('index.html').read_text()
+          gate=re.search(r'\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-issue13-quarantine-v1"></script>\n',source).group(0)
+          target=Path('work/combined/index.html');old=target.read_text();assert old.count('<head>')==1
+          target.write_text(old.replace('<head>','<head>'+gate))
+          shutil.copyfile('bu-platform-saves-v2.js','work/combined/bu-platform-saves-v2.js')
+          PY
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8917 --bind 127.0.0.1 --directory work/combined > work/combined-http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8917/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Episode 13 all touch puzzles, hints, rewards and native 12/13/14 progression
+        working-directory: work/combined
+        env:
+          STORY_EVIDENCE: work/combined-genesis13-evidence.json
+        run: node scripts/qa_release_genesis13.cjs
+      - name: Episode 14 all touch puzzles, hints, checkpoints and finale
+        working-directory: work/combined
+        env:
+          STORY_EVIDENCE: work/combined-genesis14-evidence.json
+        run: node scripts/qa_release_genesis14.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue13-chapter-candidate-compatibility
+          path: work/combined/work/combined-genesis*-evidence.json
+          if-no-files-found: ignore
