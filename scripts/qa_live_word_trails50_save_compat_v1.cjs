@@ -38,6 +38,7 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
      unrelated:localStorage.getItem('qa-unrelated-preserve'),
      hasDaily:!!frame.querySelector('[data-wt-open-daily]')};
    });
+   console.log('SAVE_COMPAT_DIAGNOSTIC',JSON.stringify({width,height,level:state.level,livePresent:!!state.live,live:state.live,test:state.test,unrelated:state.unrelated}));
    assert(state.hasDaily,'Daily must remain available');
    assert.equal(state.unrelated,'keep','Unrelated data may not be changed');
    assert.deepEqual(state.test,testSaved,'TEST save must never be imported or rewritten');
