@@ -1,4 +1,4 @@
-name: Issue 13 narrow LIVE save safety (no deployment)
+name: Issue 13 working safe backup restore (no deployment)
 on:
   pull_request:
     branches: [main]
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: '24'}
       - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
-      - name: Syntax, no-write model cases, old cached code and narrow scope
+      - name: Working version 1/2 imports, before-after journal, old cached code and unsafe rollback prevention
         run: |
           node --check bu-platform-saves-v2.js
           node scripts/qa_issue13_safety.cjs
@@ -37,7 +37,7 @@ jobs:
             sleep 1
           done
           exit 1
-      - name: Real browser stale/partial/malformed/committed journals, restore entry points and exports
+      - name: Real mobile browser Import/Export, v1/v2 restoration, old journals and reload
         env:
           SAFETY_SHOTS: '1'
           SAFETY_EVIDENCE: work/issue13-browser-evidence.json
