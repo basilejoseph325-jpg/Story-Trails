@@ -136,6 +136,7 @@ const chrome=execSync('command -v google-chrome || command -v chromium',{encodin
   assert.equal(shared.restored,true);
   assert.equal(shared.duringVolume,shared.target);
   assert.equal(shared.feelUnchanged,true,'No duplicate local audio snapshot');
+  console.log('DEBUG_LIVE_NATIVE_AUDIO_OWNERSHIP',JSON.stringify(shared));
   assert.equal(shared.shadowParentOwned,true,'Native Settings alone must own the shared audio record');
 
   // The real native announcer must remain the only playback owner.
