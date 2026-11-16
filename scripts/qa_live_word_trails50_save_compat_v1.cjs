@@ -29,7 +29,15 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
    await page.goto(URL,{waitUntil:'domcontentloaded',timeout:120000});
    await page.waitForFunction(()=>window.BUWTNativeShell?.nativeReady?.(),{timeout:90000});
    await page.evaluate(()=>document.getElementById('home-cross').click());
-   await page.waitForFunction(()=>document.getElementById('bu-wt-native-game')?.contentDocument?.querySelector('#level-label')?.textContent.includes('/ 50'),{timeout:90000});
+   // The HTML already contains a static LEVEL 1 / 50 label. Wait for the
+   // actual engine to draw its wheel and persist its restored LIVE save.
+   await page.waitForFunction(()=>{
+    const child=document.getElementById('bu-wt-native-game')?.contentWindow;
+    return !!(child?.BUWTPolish&&
+     child.document.querySelectorAll('.wheel-letter').length>=4&&
+     child.document.querySelector('#level-label')?.textContent.includes('/ 50')&&
+     localStorage.getItem('bible-unfolded-word-trails-next-v1')!==null);
+   },{timeout:90000});
    const state=await page.evaluate(()=>{
     const frame=document.getElementById('bu-wt-native-game').contentDocument;
     return {level:frame.querySelector('#level-label')?.textContent,
@@ -38,7 +46,6 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
      unrelated:localStorage.getItem('qa-unrelated-preserve'),
      hasDaily:!!frame.querySelector('[data-wt-open-daily]')};
    });
-   console.log('SAVE_COMPAT_DIAGNOSTIC',JSON.stringify({width,height,level:state.level,livePresent:!!state.live,live:state.live,test:state.test,unrelated:state.unrelated}));
    assert(state.hasDaily,'Daily must remain available');
    assert.equal(state.unrelated,'keep','Unrelated data may not be changed');
    assert.deepEqual(state.test,testSaved,'TEST save must never be imported or rewritten');
