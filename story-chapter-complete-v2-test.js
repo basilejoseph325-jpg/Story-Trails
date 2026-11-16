@@ -45,6 +45,7 @@
  // Reuse the chapter's existing artwork rather than flattening a mockup
  // (which would bake in text and buttons). Missing art leaves teal untouched.
  function chapterArt(modern,ending=false){
+  if(modern&&typeof bu3857State!=='undefined'&&bu3857State?.book==='genesis_ep13')return window.BUStoryGenesis13Test?.currentArtwork?.()||null;
   if(!modern){
    const frame=document.querySelector('#scene .scene-img.show');
    const image=frame?.style.backgroundImage||'';

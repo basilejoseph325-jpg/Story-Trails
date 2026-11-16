@@ -217,3 +217,32 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  script.onerror=()=>console.warn('[Genesis12] LIVE chapter script failed to load');
  document.head.appendChild(script);
 })();
+
+/* Genesis Episodes 13/14 — selective release candidate. Preserve every LIVE
+ * loader entry above; this append adds no TEST bootstrap or save coordinator. */
+(()=>{'use strict';
+ const deadline=Date.now()+60000;
+ const wait=ready=>new Promise((resolve,reject)=>{
+  function check(){if(ready())return resolve();if(Date.now()>deadline)return reject(Error('Story registration timed out'));setTimeout(check,60);}check();
+ });
+ const script=(id,src)=>new Promise((resolve,reject)=>{
+  const tag=document.createElement('script');tag.id=id;tag.async=false;tag.src=src;
+  tag.onload=resolve;tag.onerror=()=>reject(Error('Story release script unavailable: '+src));document.head.append(tag);
+ });
+ async function load(){
+  if(window.BUStoryReleaseLoad)return;
+  window.BUStoryReleaseLoad={status:'loading'};
+  try{
+   await wait(()=>!!window.BUStoryGenesis12Test);
+   await script('bu-story-release-compat','story-adventure-release-compat.js?v=genesis13-14-rc-v1');
+   await script('bu-story-genesis13-release-loader','story-adventure-episode13-release.js?v=genesis13-14-rc-v1');
+   await wait(()=>['ready','failed'].includes(window.BUStoryGenesis13Test?.status));
+   if(window.BUStoryGenesis13Test.status!=='ready')throw Error(window.BUStoryGenesis13Test.error);
+   await script('bu-story-genesis14-release-loader','story-adventure-episode14-release.js?v=genesis13-14-rc-v1');
+   await wait(()=>['ready','failed'].includes(window.BUStoryGenesis14Test?.status));
+   if(window.BUStoryGenesis14Test.status!=='ready')throw Error(window.BUStoryGenesis14Test.error);
+   window.BUStoryReleaseLoad.status='ready';
+  }catch(error){window.BUStoryReleaseLoad={status:'failed',error:error.message};console.error('Genesis release chapters unavailable',error);}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else load();
+})();
