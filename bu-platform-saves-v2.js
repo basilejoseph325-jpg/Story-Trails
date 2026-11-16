@@ -1,6 +1,6 @@
-/* LIVE issue #13 safety hold: preserve native saves and backup export.
-   Legacy recovery records are evidence only; no startup rollback or restore
-   writer is enabled. No experimental backup implementation is imported. */
+/* LIVE issue #13 permanent safe restore: validated v1/v2 backups, versioned
+   before/after transactions and conflict-aware recovery. Never replay a legacy
+   rollback record over newer progress. No experimental save importer. */
 (()=>{'use strict';
 if(window.BUPlatformSaves&&!window.BUPlatformSaves.pendingSafetyLoad)return;
 const NATIVE=/^(?:bible-unfolded|story-trails)-[a-z0-9_.-]+$/i;
@@ -96,7 +96,7 @@ function nativeData(data){
  if(!own(data)||data.format!=='BibleUnfoldedSave'||data.version!==BACKUP_VERSION||
     !own(data.keys))throw Error('This is not a compatible complete LIVE backup.');
  const pairs=Object.entries(data.keys);
- if(!pairs.length||pairs.length>MAX_KEYS||
+ if((!pairs.length&&data.extensions?.wordTrailsNext?.state===null)||pairs.length>MAX_KEYS||
    pairs.some(([k,v])=>!allowed(k)||CONTROLS.includes(k)||typeof v!=='string'||v.length>MAX_NATIVE_VALUE))
   throw Error('The native game backup contains invalid keys.');
  const ext=data.extensions;
@@ -327,7 +327,8 @@ function recoveryEvidence(){
  // A review copy is deliberately NOT a BibleUnfoldedSave import payload.
  return {format:'BibleUnfoldedRecoveryEvidence',version:1,capturedAt:new Date().toISOString(),
   warning:'Evidence only. Current progress may be partly restored; this does not reconstruct an earlier known-good save.',
-  journal:read(JOURNAL),committedMarker:read(COMMITTED)};
+  journal:read(JOURNAL),committedMarker:read(COMMITTED),
+  transactionJournal:read(TX),transactionMarker:read(TX_DONE)};
 }
 function downloadEvidence(){
  try{
@@ -342,26 +343,49 @@ function installReview(){
  if(!panel){
   panel=document.createElement('details');panel.id='bu-live-restore-review';
   panel.style.cssText='margin-top:10px;padding:9px;border:1px solid currentColor;border-radius:8px;max-width:100%;box-sizing:border-box';
-  const summary=document.createElement('summary');summary.textContent='Review backup safety';panel.append(summary);
-  const text=document.createElement('p');text.id='bu-live-recovery-description';text.style.cssText='white-space:normal;overflow-wrap:anywhere;line-height:1.45';panel.append(text);
-  const copy=document.createElement('button');copy.type='button';copy.id='bu-live-copy-current';copy.textContent='Download current progress';copy.style.cssText='min-height:44px;max-width:100%;white-space:normal;margin:5px';copy.onclick=download;panel.append(copy);
-  const evidence=document.createElement('button');evidence.type='button';evidence.id='bu-live-copy-recovery';evidence.textContent='Download retained recovery record';evidence.style.cssText=copy.style.cssText;evidence.onclick=downloadEvidence;panel.append(evidence);
+  const summary=document.createElement('summary');summary.textContent='Backup recovery details';panel.append(summary);
+  const text=document.createElement('p');text.id='bu-live-recovery-description';
+  text.style.cssText='white-space:normal;overflow-wrap:anywhere;line-height:1.45';panel.append(text);
+  const copy=document.createElement('button');copy.type='button';
+  copy.id='bu-live-copy-current';copy.textContent='Download current progress';
+  copy.style.cssText='min-height:44px;max-width:100%;white-space:normal;margin:5px';
+  copy.onclick=download;panel.append(copy);
+  const evidence=document.createElement('button');evidence.type='button';
+  evidence.id='bu-live-copy-recovery';evidence.textContent='Download recovery details';
+  evidence.style.cssText=copy.style.cssText;evidence.onclick=downloadEvidence;panel.append(evidence);
   status.parentNode.append(panel);
  }
  const state=recoverPending();
- panel.querySelector('#bu-live-recovery-description').textContent=state.quarantined?
-  'An older backup restore record needs review. Your current progress has not been replaced or rolled back. It may contain a partly restored game; a current copy cannot recreate an earlier known-good save. Keep a copy of both current progress and the retained record. Older open game tabs can still change progress. Close other tabs of the game, and keep the files for review.':
-  'Backup restores are paused to protect progress. You can still play and download your current progress. Restore will stay paused until its safety review is complete.';
- panel.querySelector('#bu-live-copy-recovery').hidden=!state.quarantined||state.kind==='storage-unavailable';
+ panel.querySelector('#bu-live-recovery-description').textContent=state.pending?
+  'An interrupted backup needs review. The game has not overwritten newer progress. Download both files for safekeeping; another restore is unavailable until this conflict is resolved.':
+  state.legacy?'An older interrupted-backup record was preserved for review. New backups and safe restores are still available.':
+  'Backups and restores are available. Restore checks each saved value and will stop if another tab changes it.';
+ panel.querySelector('#bu-live-copy-recovery').hidden=!state.quarantined;
  if(state.quarantined)panel.open=true;
  return panel;
 }
-function reviewRestore(picker,event){
+async function acceptFile(picker,event){
  event?.preventDefault?.();event?.stopImmediatePropagation?.();
- if(picker)picker.value='';
- notice('Backup restores are paused. No progress was imported, rolled back or cleared.');
- const panel=installReview();if(panel)panel.open=true;
- return {restoreDisabled:true};
+ const file=picker.files?.[0];if(!file)return;
+ try{
+  if(file.size>MAX_BYTES)throw Error('The backup file exceeds 2 MB.');
+  const input=parse(await file.text());
+  const candidate=normalizeBackup(input),plan=dryRun(candidate);
+  const n=plan.incomingWallet,c=plan.currentWallet;
+  const wallet=n?'Backup wallet: '+n.insightTokens+' Insight Tokens and '+n.points+' Points. ':'';
+  const current=c?'Current wallet: '+c.insightTokens+' Insight Tokens and '+c.points+' Points. ':'';
+  const t=plan.incomingWordTrails;
+  const trail=t.present?' Word Trails: '+t.completedCount+' completed levels, '+t.coins+' Trail Coins.':'';
+  if(!confirm('Restore this Bible Unfolded '+(input.version===1?'older':'complete')+' backup?\n\n'+
+    current+'\n'+wallet+trail+
+    '\n\nMatching game progress will be replaced. Purchased wheels remain owned and Trail Coins stay separate from Insight Tokens.\n\nDownload a current backup first if you need it.'))return;
+  const result=await applyBackup(candidate);
+  if(result.unchanged)notice('This backup is already current. Nothing was changed.');
+ }catch(e){
+  window.__bu388SkipCheckpoint=false;
+  notice('Backup restore was not completed: '+e.message);
+  installReview();
+ }finally{picker.value='';}
 }
 let installed=false,attempts=0;
 function install(){
@@ -371,21 +395,25 @@ function install(){
   if(attempts++<45)setTimeout(install,250);return;
  }
  installed=true;
-
- // The root's original Settings UI remains the only player-facing save interface.
+ // Only this reviewed coordinator accepts files; never call the original
+ // legacy native v1 handler, which had a blind delete/rewrite/rollback path.
  btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();download()},true);
- // Block direct property calls too; the early document capture gate blocks
- // normal clicks/changes even before this coordinator finishes loading.
- picker.onchange=e=>reviewRestore(picker,e);
+ picker.onchange=e=>acceptFile(picker,e);
  const importButton=document.getElementById('save-import');
- if(importButton){importButton.onclick=e=>reviewRestore(null,e);importButton.setAttribute('aria-label','Review backups; restore is paused');importButton.title='Restore paused: current progress will not be replaced';}
+ if(importButton){
+  importButton.onclick=()=>picker.click();
+  importButton.setAttribute('aria-label','Import a Bible Unfolded backup safely');
+  importButton.title='Restore an older or complete Bible Unfolded backup';
+ }
  getStatus();installReview();
 }
-// No startup recovery write, record cleanup, or automatic reload.
+const recovered=recoverPending();
+if(recovered.quarantined)console.warn('Bible Unfolded backup recovery record retained:',recovered.kind);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
 window.BUPlatformSaves=Object.freeze({
- version:'2.0.0-test',safetyRevision:'issue13-quarantine-v1',restoreDisabled:true,keys:Object.freeze({TEST,FEEL,JOURNAL,COMMITTED}),
- makeBackup,dryRun,applyBackup,validateTrails,recoverPending,reviewRestore,recoveryEvidence,bound:()=>installed
+ version:'2.1.0-live',safetyRevision:'issue13-transaction-v3',restoreDisabled:false,
+ pendingSafetyLoad:false,restoreReady:true,keys:Object.freeze({TEST,FEEL,JOURNAL,COMMITTED,TX,TX_DONE}),
+ makeBackup,dryRun,applyBackup,validateTrails,recoverPending,recoveryEvidence,bound:()=>installed
 });
 })();
