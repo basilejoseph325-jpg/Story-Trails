@@ -181,6 +181,10 @@ function protectedNative(incoming,previous){
  }
  return next;
 }
+function setExact(k,value){
+ if(value===null)localStorage.removeItem(k);else localStorage.setItem(k,value);
+ if(read(k)!==value)throw Error('Saved data verification failed for '+k);
+}
 // Version-1 journals have only PREVIOUS, without intended AFTER values.
 // Their meaning cannot be proved. Retain them, never apply their old data.
 function legacyEvidence(){
