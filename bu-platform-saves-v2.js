@@ -9,6 +9,9 @@ const FEEL='bu-wt-next-feel-v2';
 const JOURNAL='bible-unfolded-word-trails-import-rollback-v2';
 const COMMITTED='bible-unfolded-word-trails-import-committed-v2';
 const BACKUP_VERSION=2,MAX_BYTES=2000000,MAX_KEYS=100,MAX_NATIVE_VALUE=300000;
+const TX='bible-unfolded-import-transaction-v3',TX_DONE='bible-unfolded-import-commit-v3';
+const CONTROLS=[JOURNAL,COMMITTED,TX,TX_DONE];
+const LOCK='bible-unfolded-live-backup-restore-v3';
 const WALLETS=['bible-unfolded-rewards-v17','bible-unfolded-rewards-v17-recovery-v3811'];
 const OWNERSHIP=['bible-unfolded-wheel-ownership-v3825','bible-unfolded-wheel-ownership-v3825-backup'];
 const WHEELS=['goldwheel','moonwheel','seawheel'];
@@ -24,7 +27,7 @@ function inventory(){
  const a={};
  for(let i=0;i<localStorage.length;i++){
   const k=localStorage.key(i);
-  if(allowed(k)&&k!==JOURNAL&&k!==COMMITTED){const v=read(k);if(v!==null)a[k]=v}
+  if(allowed(k)&&!CONTROLS.includes(k)){const v=read(k);if(v!==null)a[k]=v}
  }
  return a;
 }
@@ -33,7 +36,7 @@ function validateTrails(raw){
  if(!dataStr(raw,220000))throw Error('Word Trails save exceeds the safe size limit.');
  const s=getJson(raw);if(!s)throw Error('Word Trails save is not a valid object.');
  for(const k of ['level','unlocked']){
-  if(!Number.isInteger(s[k])||s[k]<0||s[k]>29)throw Error('Word Trails '+k+' is out of range.');
+  if(!Number.isInteger(s[k])||s[k]<0||s[k]>49)throw Error('Word Trails '+k+' is out of range.');
  }
  for(const k of ['coins','points'])if(!safeNum(s[k]))throw Error('Word Trails '+k+' is invalid.');
  const fields=['completed','sparks','claimedSparks','boardBible','paidWords','paidBonuses','claimedFreeHints'];
@@ -43,13 +46,13 @@ function validateTrails(raw){
   if(s[k]===undefined)continue;
   if(!Array.isArray(s[k])||s[k].length>6000)throw Error('Word Trails '+k+' is invalid.');
   for(const item of s[k]){
-   if(typeof item==='number'){if(!Number.isSafeInteger(item)||item<0||item>29)throw Error('Bad Word Trails '+k+' level.')}
+   if(typeof item==='number'){if(!Number.isSafeInteger(item)||item<0||item>49)throw Error('Bad Word Trails '+k+' level.')}
    else if(typeof item==='string'){if(item.length>90||!/^[a-z0-9_:|.-]+$/i.test(item))throw Error('Bad Word Trails '+k+' value.')}
    else throw Error('Bad Word Trails '+k+' entry.');
   }
  }
  if(s.progress!==null&&s.progress!==undefined){
-  if(!own(s.progress)||!Number.isInteger(s.progress.level)||s.progress.level<0||s.progress.level>29)throw Error('Word Trails in-progress level is invalid.');
+  if(!own(s.progress)||!Number.isInteger(s.progress.level)||s.progress.level<0||s.progress.level>49)throw Error('Word Trails in-progress level is invalid.');
   for(const k of ['found','bonuses','hinted']){
    if(s.progress[k]===undefined)continue;
    if(!Array.isArray(s.progress[k])||s.progress[k].length>120||
@@ -66,11 +69,35 @@ function validateFeel(raw){
  for(const k of ['music','sfx','motion','haptics'])if(k in p&&typeof p[k]!=='boolean')throw Error('Invalid Word Trails '+k+' preference.');
  for(const k of ['musicVolume','sfxVolume'])if(k in p&&(!Number.isFinite(Number(p[k]))||Number(p[k])<0||Number(p[k])>100))throw Error('Invalid Word Trails '+k+'.');
 }
+function normalizeBackup(raw){
+ const data=typeof raw==='string'?parse(raw):raw;
+ if(!own(data)||data.format!=='BibleUnfoldedSave'||!own(data.keys)||![1,2].includes(data.version))
+  throw Error('This is not a compatible Bible Unfolded backup.');
+ if(data.version===2)return data;
+ // Historical version-1 exports had only a keys object. Convert that into
+ // the existing version-2 format WITHOUT invoking the unsafe native importer.
+ const pairs=Object.entries(data.keys);
+ if(!pairs.length||pairs.length>MAX_KEYS)throw Error('Old backup has an invalid number of keys.');
+ const keys={};let trail=null;
+ for(const [k,v] of pairs){
+  if(!allowed(k)&&k!==TEST)throw Error('Old backup contains an invalid key.');
+  if(typeof v!=='string'||v.length>MAX_NATIVE_VALUE)throw Error('Old backup contains invalid saved data.');
+  if(CONTROLS.includes(k))continue; // old import-journal control records are never replayed
+  if(k===TEST)trail=v;
+  else keys[k]=v;
+ }
+ if(!Object.keys(keys).length&&trail===null)throw Error('Old backup has no usable game data.');
+ return {format:'BibleUnfoldedSave',version:BACKUP_VERSION,exportedAt:data.exportedAt||null,
+  scope:'Converted older Bible Unfolded backup',keys,
+  extensions:{wordTrailsNext:{format:'WordTrailsNextLIVE',version:1,
+   state:trail,feel:null,coinsNeverConvertToInsightTokens:true}}};
+}
 function nativeData(data){
  if(!own(data)||data.format!=='BibleUnfoldedSave'||data.version!==BACKUP_VERSION||
     !own(data.keys))throw Error('This is not a compatible complete LIVE backup.');
  const pairs=Object.entries(data.keys);
- if(!pairs.length||pairs.length>MAX_KEYS||pairs.some(([k,v])=>!allowed(k)||typeof v!=='string'||v.length>MAX_NATIVE_VALUE))
+ if(!pairs.length||pairs.length>MAX_KEYS||
+   pairs.some(([k,v])=>!allowed(k)||CONTROLS.includes(k)||typeof v!=='string'||v.length>MAX_NATIVE_VALUE))
   throw Error('The native game backup contains invalid keys.');
  const ext=data.extensions;
  if(!own(ext)||!own(ext.wordTrailsNext)||ext.wordTrailsNext.format!=='WordTrailsNextLIVE'||
@@ -105,19 +132,18 @@ function makeBackup(){
     version:1,state:state.trail,feel:state.feel,coinsNeverConvertToInsightTokens:true}}};
 }
 function dryRun(candidate){
- const c=typeof candidate==='string'?parse(candidate):candidate;
+ const c=normalizeBackup(candidate);
  const v=nativeData(c);
  const existing=currentSnapshot();
  const incoming=walletSummary(c.keys),current=walletSummary(existing.keys);
  const protectedWheels=wheelSet({...existing.keys,...c.keys},existing.keys);
  const sameKeys=Object.entries(c.keys).every(([k,val])=>existing.keys[k]===val);
  return Object.freeze({
-  valid:true,version:BACKUP_VERSION,nativeKeys:v.nativeKeys,
+  valid:true,version:BACKUP_VERSION,sourceVersion:typeof candidate==='string'?parse(candidate).version:candidate.version,nativeKeys:v.nativeKeys,
   incomingWallet:incoming,currentWallet:current,
   incomingWordTrails:v.test,currentWordTrails:validateTrails(existing.trail),
   preservedOwnedWheels:[...protectedWheels],
-  testCoinsQuarantined:true,canApply:false,restoreDisabled:true,
-  restoreReason:'Backup restores are paused until safe recovery is independently reviewed.',
+  testCoinsQuarantined:true,canApply:true,restoreDisabled:false,
   noChangesRequired:sameKeys&&(c.extensions.wordTrailsNext.state===existing.trail||
     c.extensions.wordTrailsNext.state===null)&&
     (c.extensions.wordTrailsNext.feel===existing.feel||c.extensions.wordTrailsNext.feel===null)
