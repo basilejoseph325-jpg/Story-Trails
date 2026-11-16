@@ -1,4 +1,4 @@
-name: Issue 13 working safe backup restore (no deployment)
+name: Reliable LIVE backup and restore (no deployment)
 on:
   pull_request:
     branches: [main]
@@ -23,8 +23,9 @@ jobs:
         with: {fetch-depth: 0}
       - uses: actions/setup-node@v4
         with: {node-version: '24'}
-      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
-      - name: Working version 1/2 imports, before-after journal, old cached code and unsafe rollback prevention
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0 playwright@1.58.2
+      - run: ./work/node_modules/.bin/playwright install --with-deps webkit
+      - name: Syntax, restore/failure/recovery models, cached code and original-file scope
         run: |
           node --check bu-platform-saves-v2.js
           node scripts/qa_issue13_safety.cjs
@@ -37,11 +38,13 @@ jobs:
             sleep 1
           done
           exit 1
-      - name: Real mobile browser Import/Export, v1/v2 restoration, old journals and reload
+      - name: Chromium and WebKit mobile export/restore and resilience
         env:
           SAFETY_SHOTS: '1'
           SAFETY_EVIDENCE: work/issue13-browser-evidence.json
-        run: node scripts/qa_issue13_browser.cjs
+        run: |
+          node scripts/qa_issue13_browser.cjs
+          node scripts/qa_issue13_resilience.cjs
       - name: Existing LIVE Episode 12 gameplay regression
         run: node scripts/qa_genesis12_native.cjs
       - uses: actions/upload-artifact@v4
@@ -54,10 +57,11 @@ jobs:
           if-no-files-found: ignore
   chapter-candidate-compatibility:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     env:
       NODE_PATH: '${{ github.workspace }}/work/node_modules'
       STORY_URL: http://127.0.0.1:8917/index.html
+      LIVE_BASELINE_URL: http://127.0.0.1:8918/index.html
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
@@ -67,18 +71,20 @@ jobs:
       - name: Combine the two reviewed candidates only in disposable QA files
         run: |
           git fetch origin 1e2f3636fb054497a4fae65a283401c2ad96e026
-          mkdir -p work/combined/work
+          mkdir -p work/combined/work work/baseline
+          git archive 169294536e6bdf3047cd556e8ee0d84a50d9f1ff | tar -x -C work/baseline
           git archive 1e2f3636fb054497a4fae65a283401c2ad96e026 | tar -x -C work/combined
           python3 - <<'PY'
           from pathlib import Path
           import re,shutil
           source=Path('index.html').read_text()
-          gate=re.search(r'\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-issue13-quarantine-v1"></script>\n',source).group(0)
+          gate=re.search(r'\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-reliable-restore-v3"></script>\n',source).group(0)
           target=Path('work/combined/index.html');old=target.read_text();assert old.count('<head>')==1
           target.write_text(old.replace('<head>','<head>'+gate))
           shutil.copyfile('bu-platform-saves-v2.js','work/combined/bu-platform-saves-v2.js')
           PY
           echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8918 --bind 127.0.0.1 --directory work/baseline > work/baseline-http.log 2>&1 &
           python3 -m http.server 8917 --bind 127.0.0.1 --directory work/combined > work/combined-http.log 2>&1 &
           for attempt in $(seq 1 20); do
             if curl -fsS http://127.0.0.1:8917/index.html -o /dev/null; then exit 0; fi
@@ -95,6 +101,13 @@ jobs:
         env:
           STORY_EVIDENCE: work/combined-genesis14-evidence.json
         run: node scripts/qa_release_genesis14.cjs
+      - name: Existing modes, audio, settings and saved-progress parity
+        run: node scripts/qa_issue13_regression.cjs
+      - name: Full Story regression and Word Trails/audio regression
+        working-directory: work/combined
+        run: |
+          node scripts/qa_release_story_regression.cjs
+          node scripts/qa_release_word_trails_audio.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

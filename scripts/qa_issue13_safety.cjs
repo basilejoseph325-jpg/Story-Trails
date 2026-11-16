@@ -1,141 +1,58 @@
 'use strict';
-// Issue 13: require SAFE, WORKING restores rather than a disabled Import button.
-const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const {execFileSync}=require('node:child_process');
-const src=fs.readFileSync('bu-platform-saves-v2.js','utf8');
-const J='bible-unfolded-word-trails-import-rollback-v2',C='bible-unfolded-word-trails-import-committed-v2';
-const TX='bible-unfolded-import-transaction-v3',DONE='bible-unfolded-import-commit-v3';
-const STORY='bible-unfolded-genesis-adventure-v3860',W='bible-unfolded-rewards-v17',T='bible-unfolded-word-trails-next-v1';
-const oldStory='{"chapter":11,"step":2}',newStory='{"chapter":12,"step":8}';
-const oldWallet=JSON.stringify({coins:90,points:20,purchases:['seawheel'],equippedWheel:'seawheel'});
-const newWallet=JSON.stringify({coins:190,points:55,purchases:[],equippedWheel:'classic'});
-const oldTrail=JSON.stringify({level:2,unlocked:3,coins:35,points:4,completed:[0,1]});
-const newTrail=JSON.stringify({level:29,unlocked:30,coins:140,points:4,completed:[0,1,29]});
-function boot(seed={},options={}){
- const map=new Map(Object.entries(seed)),writes=[];
- const localStorage={get length(){return map.size},key:i=>[...map.keys()][i]??null,
-  getItem:k=>map.has(k)?map.get(k):null,
-  setItem(k,v){const val=String(v);if(options.reject?.(k,val))throw Error('QuotaExceededError fixture');writes.push(['set',k,val]);map.set(k,val)},
-  removeItem(k){writes.push(['remove',k]);map.delete(k)}};
- const scope={
-  window:{BUPlatformSaves:Object.freeze({pendingSafetyLoad:true,restoreDisabled:true})},
-  localStorage,document:{readyState:'loading',addEventListener(){}},
-  navigator:{locks:{request:async(_name,_opts,fn)=>fn({name:'lock'})}},
-  crypto:{getRandomValues(a){a.fill(171);return a}},
-  console,Date,setTimeout(){},Blob,URL,Uint8Array,Math};
- vm.createContext(scope);vm.runInContext(src,scope,{timeout:3000});
- return {api:scope.window.BUPlatformSaves,map,writes,scope};
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),cp=require('node:child_process');
+const code=fs.readFileSync('bu-platform-saves-v2.js','utf8');
+const S='bible-unfolded-genesis-adventure-v3860',W='bible-unfolded-rewards-v17',T='bible-unfolded-word-trails-next-v1',J='bible-unfolded-word-trails-import-rollback-v2',C='bible-unfolded-word-trails-import-committed-v2',TX='bible-unfolded-restore-transaction-v3';
+const seed={[S]:JSON.stringify({genesis_ep12:{step:8,complete:false}}),[W]:JSON.stringify({coins:777,points:-20,purchases:['seawheel'],equippedWheel:'seawheel'}),[T]:JSON.stringify({level:20,unlocked:22,coins:230,points:50,completed:[0,1]})};
+function boot(initial,hook=()=>{}){
+ const map=new Map(Object.entries(initial)),writes=[];let n=0;
+ const storage={get length(){return map.size},key:i=>[...map.keys()][i]??null,getItem:k=>map.get(k)??null,setItem(k,v){hook(++n,k,v,map);writes.push(k);map.set(k,String(v));},removeItem(k){hook(++n,k,null,map);writes.push(k);map.delete(k);}};
+ const window={addEventListener(){}};
+ const scope={window,localStorage:storage,navigator:{locks:{request:async(_,options,run)=>run()}},crypto:require('node:crypto').webcrypto,location:{reload(){}},document:{readyState:'loading',addEventListener(){},getElementById(){return null;}},console,Date,setTimeout(){},Blob,URL};
+ vm.createContext(scope);vm.runInContext(code,scope);return {api:window.BUPlatformSaves,map,writes,scope};
 }
-const seed=()=>({[STORY]:oldStory,[W]:oldWallet,[T]:oldTrail,'qa-unrelated':'untouched'});
-const snapshot=b=>Object.fromEntries(b.map);
-function backup(b){return JSON.parse(JSON.stringify(b.api.makeBackup()))}
-async function main(){
- // Old previous-only journals can NEVER overwrite newer Story or wallet data.
- for(const records of [
-  {[J]:JSON.stringify({version:1,previous:{[STORY]:'OLD', [W]:'OLD-WALLET'}})},
-  {[J]:'{malformed'}, {[J]:JSON.stringify({version:1,previous:{[STORY]:'OLD'}}),[C]:'yes'},
-  {[C]:'yes'}, {[J]:JSON.stringify({version:2,entries:[]})}
- ]){
-  const original={...seed(),...records},b=boot(original);
-  assert.equal(b.api.restoreDisabled,false);
-  assert.equal(b.api.recoverPending().recovered,false);
-  assert.deepEqual(snapshot(b),original,'Startup must not replace legacy records or current progress');
-  assert.deepEqual(b.writes,[],'Unsafe older journal must NEVER write at startup');
-  const exportFile=backup(b);
-  assert.equal(exportFile.keys[J],undefined);assert.equal(exportFile.keys[C],undefined);
-  console.log('PASS_ISSUE13_LEGACY_QUARANTINE',b.api.recoverPending().kind);
+function seal(t){let h=2166136261;const s=JSON.stringify([t.version,t.id,t.phase,t.createdAt,t.entries]);for(let i=0;i<s.length;i++)h=Math.imul(h^s.charCodeAt(i),16777619);t.checksum=(h>>>0).toString(16).padStart(8,'0');return t;}
+const json=x=>JSON.parse(JSON.stringify(x));
+(async()=>{
+ let cases=0;
+ for(const records of [{},{[J]:'{bad'},{[J]:JSON.stringify({version:1,previous:{[S]:'old',[W]:'older'}})},{[J]:'', [C]:'yes'},{[C]:'yes'},{[J]:JSON.stringify({version:99})}]){
+  const b=boot({...seed,...records});b.api.recoverPending();b.api.recoverPending();assert.equal(b.writes.length,0);assert.deepEqual(Object.fromEntries(b.map),{...seed,...records});const copy=b.api.makeBackup();assert(!Object.keys(copy.keys).some(k=>[J,C,TX].includes(k)));cases++;
  }
- // Current complete (version 2) backup must be importable and retain purchase ownership.
- const b=boot(seed()),data=backup(b);
- data.keys[STORY]=newStory;data.keys[W]=newWallet;data.extensions.wordTrailsNext.state=newTrail;
- assert.equal(b.api.dryRun(data).canApply,true);
- let result=await b.api.applyBackup(data,{reload:false});
- assert(result.ok&&!result.unchanged);
- assert.equal(b.map.get(STORY),newStory);
- assert.equal(JSON.parse(b.map.get(W)).coins,190);
- assert(JSON.parse(b.map.get(W)).purchases.includes('seawheel'),'Paid wheel ownership must survive import');
- assert.equal(b.map.get(T),newTrail);
- assert(!b.map.has(TX)&&!b.map.has(DONE),'Finished restore must clear new journal');
- assert.equal(b.map.get('qa-unrelated'),'untouched');
- assert.equal(b.api.recoverPending().recovered,false);
- console.log('PASS_ISSUE13_REAL_V2_IMPORT_AND_WHEEL_OWNERSHIP');
-
- // Older version 1 export must use the SAME safe transaction path.
- const older={format:'BibleUnfoldedSave',version:1,keys:{
-  [STORY]:oldStory,[W]:oldWallet,[T]:oldTrail,
-  [J]:JSON.stringify({version:1,previous:{[STORY]:'DANGEROUS'}}),[C]:'yes'}};
- const v1=boot({[STORY]:newStory,[W]:newWallet,[T]:newTrail});
- result=await v1.api.applyBackup(older,{reload:false});
- assert(result.ok);assert.equal(v1.map.get(STORY),oldStory);
- assert.equal(v1.map.get(T),oldTrail);
- assert.equal(v1.map.get(J),undefined,'Legacy journal inside old backup must not be restored');
- assert.equal(v1.map.get(C),undefined);
- assert(!v1.map.has(TX)&&!v1.map.has(DONE));
- console.log('PASS_ISSUE13_REAL_V1_IMPORT_WITHOUT_UNSAFE_NATIVE_HANDLER');
-
- // A failed write must roll back only verified writes, without deleting newer progress.
- let failedOnce=false;
- const broken=boot(seed(),{reject:(k,v)=>{
-  if(k===W&&v.includes('"coins":190')&&!failedOnce){failedOnce=true;return true}
-  return false
- }});
- await assert.rejects(()=>broken.api.applyBackup(data,{reload:false}),/Restore cancelled safely/);
- assert.equal(broken.map.get(STORY),oldStory);assert.equal(broken.map.get(W),oldWallet);
- assert(!broken.map.has(TX)&&!broken.map.has(DONE));
- console.log('PASS_ISSUE13_INTERRUPTED_RESTORE_ROLLS_BACK_OWN_WRITES');
-
- // Reboot midway through a new transaction: recover only exact AFTER values.
- const changes={[STORY]:{before:oldStory,after:newStory},[W]:{before:oldWallet,after:newWallet}};
- const tx={version:3,id:'abababababababababababababababab',phase:'prepared',changes};
- const midway=boot({...seed(),[STORY]:newStory,[TX]:JSON.stringify(tx)});
- assert.equal(midway.map.get(STORY),oldStory);
- assert.equal(midway.map.get(W),oldWallet);
- assert(!midway.map.has(TX));
- console.log('PASS_ISSUE13_MID_TRANSACTION_IDEMPOTENT_RECOVERY');
-
- // If another tab made NEWER progress, neither recovery nor reload may replay old values.
- const newerWallet=JSON.stringify({coins:444,points:111,purchases:['seawheel']});
- const conflicting={...seed(),[STORY]:newStory,[W]:newerWallet,[TX]:JSON.stringify(tx)};
- const conflict=boot(conflicting);
- assert.equal(conflict.api.recoverPending().pending,true);
- assert.equal(conflict.map.get(W),newerWallet);
- assert.equal(conflict.map.get(STORY),newStory);
- assert.equal(JSON.parse(conflict.map.get(TX)).phase,'conflict');
- const repeated=boot(snapshot(conflict));
- assert.equal(repeated.map.get(W),newerWallet);
- assert.equal(repeated.map.get(STORY),newStory);
- await assert.rejects(()=>repeated.api.applyBackup(data,{reload:false}),/interrupted restore needs review/);
- console.log('PASS_ISSUE13_CONFLICT_PRESERVES_NEWER_VALUES_AND_BLOCKS_OTHER_RESTORE');
-
- // Committed transaction with transaction-bound ID stays committed on reload.
- const committed=boot({...seed(),[STORY]:newStory,[W]:newWallet,[TX]:JSON.stringify(tx),[DONE]:tx.id});
- assert.equal(committed.map.get(STORY),newStory);assert.equal(committed.map.get(W),newWallet);
- assert(!committed.map.has(TX)&&!committed.map.has(DONE));
- console.log('PASS_ISSUE13_COMMIT_MARKER_VERIFICATION');
-
- // Malformed new journal fails closed, without changing any player data.
- const malformed=boot({...seed(),[TX]:'not-json'});
- assert.equal(malformed.api.recoverPending().pending,true);
- assert.equal(malformed.map.get(STORY),oldStory);
- await assert.rejects(()=>malformed.api.applyBackup(data,{reload:false}),/interrupted restore needs review/);
- console.log('PASS_ISSUE13_MALFORMED_JOURNAL_NO_OVERWRITE');
-
- // Bad imports and missing secure locks must not mutate a single game key.
- const invalid=boot(seed());
- await assert.rejects(()=>invalid.api.applyBackup({format:'BibleUnfoldedSave',version:1,keys:{bad:'x'}},{reload:false}),/invalid key/);
- assert.equal(invalid.map.get(STORY),oldStory);
- invalid.scope.navigator.locks=undefined;
- await assert.rejects(()=>invalid.api.applyBackup(data,{reload:false}),/Web Locks support/);
- console.log('PASS_ISSUE13_VALIDATION_AND_BROWSER_LOCK_GATE');
-
- // Old cached coordinator must exit behind PR #15's early protection sentinel.
- const before=boot({...seed(),[J]:JSON.stringify({version:1,previous:{[STORY]:'OLD'}})});
- const oldCode=execFileSync('git',['show','1692945:bu-platform-saves-v2.js'],{encoding:'utf8'});
- const guarded={window:{BUPlatformSaves:{pendingSafetyLoad:true}},localStorage:before.scope.localStorage,
-  document:{readyState:'loading',addEventListener(){}},console,setTimeout(){}};
- vm.runInNewContext(oldCode,guarded);
- assert.equal(before.map.get(STORY),oldStory);
- console.log('PASS_ISSUE13_OLD_CACHED_COORDINATOR_BLOCKED');
- console.log('PASS_ISSUE13_SAFE_RESTORE_MODEL_FINAL');
-}
-main().catch(e=>{console.error(e.stack||e);process.exitCode=1});
+ const high=boot({...seed,[T]:JSON.stringify({level:49,unlocked:49,coins:800,points:1000,completed:[29,30,49]})});const highBackup=high.api.makeBackup();assert.equal(high.api.dryRun(highBackup).incomingWordTrails.level,50);cases++;
+ const source=boot(seed),copy=source.api.makeBackup();assert.equal(source.api.dryRun(copy).canApply,true);
+ const incoming=json(copy);delete incoming.integrity;incoming.keys[S]=JSON.stringify({genesis_ep12:{step:10,complete:true}});incoming.keys[W]=JSON.stringify({coins:12,points:-50,purchases:[],equippedWheel:'classic'});incoming.extensions.wordTrailsNext.state=JSON.stringify({level:22,unlocked:23,coins:99,points:90,completed:[0,1,2]});
+ const b=boot(seed);await b.api.applyBackup(incoming,{reload:false});assert.equal(b.map.get(S),incoming.keys[S]);assert.equal(b.map.get(T),incoming.extensions.wordTrailsNext.state);assert.equal(JSON.parse(b.map.get(W)).coins,12);assert.equal(JSON.parse(b.map.get(W)).points,-50);assert(JSON.parse(b.map.get(W)).purchases.includes('seawheel'));assert.equal(b.map.get(W),b.map.get('bible-unfolded-rewards-v17-recovery-v3811'));assert(!b.map.has(TX));cases++;
+ const repair=boot({...seed,[T]:'{damaged'});assert.equal(repair.api.dryRun(copy).canApply,true);await repair.api.applyBackup(copy,{reload:false});assert.equal(repair.map.get(T),seed[T]);cases++;
+ const corrupt=json(copy);corrupt.keys[S]=incoming.keys[S];const untouched=boot(seed);await assert.rejects(untouched.api.applyBackup(corrupt),/checksum/);assert.equal(untouched.writes.length,0);cases++;
+ const v1=boot(seed);await v1.api.applyBackup({format:'BibleUnfoldedSave',version:1,keys:{[S]:incoming.keys[S],[J]:'old'}},{reload:false});assert.equal(v1.map.get(T),seed[T]);cases++;
+ for(const modify of [c=>c.version=77,c=>c.keys[S]='{bad',c=>c.keys[W]='{"coins":-5,"points":0}',c=>c.extensions.wordTrailsNext.state='{}',c=>c.keys[TX]='{}',c=>c.keys[S]='{"genesis_ep12":{"step":-1}}']){
+  const bad=json(copy);delete bad.integrity;modify(bad);const t=boot(seed);await assert.rejects(t.api.applyBackup(bad,{reload:false}));assert.equal(t.writes.length,0);cases++;
+ }
+ // Inject a single write failure at every boundary (journal, each save, commit,
+ // cleanup). Failed transactions recover the original values; committed cleanup
+ // failures retain a transaction that startup only cleans, never rolls back.
+ const count=b.writes.length;
+ for(let fail=1;fail<=count;fail++){
+  let tripped=false;const t=boot(seed,(n)=>{if(n===fail&&!tripped){tripped=true;throw Error('quota');}});
+  try{await t.api.applyBackup(incoming,{reload:false});}catch(_){}
+  const next=boot(Object.fromEntries(t.map));await new Promise(r=>setImmediate(r));
+  const committed=JSON.parse(t.map.get(S))?.genesis_ep12.complete===true;
+  assert.equal(next.map.get(S),committed?incoming.keys[S]:seed[S],'failure boundary '+fail);
+  assert(!next.map.has(TX));cases++;
+ }
+ const entries=Object.keys(seed).map(key=>({key,before:seed[key],after:key===S?incoming.keys[S]:key===W?incoming.keys[W]:incoming.extensions.wordTrailsNext.state}));
+ for(let applied=0;applied<=entries.length;applied++){
+  const data={...seed,[TX]:JSON.stringify(seal({version:3,id:'crash',phase:'applying',entries}))};for(let i=0;i<applied;i++)data[entries[i].key]=entries[i].after;
+  const t=boot(data);await new Promise(r=>setImmediate(r));for(const [k,v] of Object.entries(seed))assert.equal(t.map.get(k),v);const again=boot(Object.fromEntries(t.map));assert.equal(again.writes.length,0);cases++;
+ }
+ const conflict={...seed,[S]:'newer-independent-progress',[W]:incoming.keys[W],[TX]:JSON.stringify(seal({version:3,id:'conflict',phase:'applying',entries}))};
+ const t=boot(conflict);await new Promise(r=>setImmediate(r));assert.equal(t.map.get(S),'newer-independent-progress');assert.equal(t.map.get(W),seed[W]);assert(t.map.has('bible-unfolded-restore-conflict-v3'));assert(!t.map.has(TX));cases++;
+ for(const raw of ['{bad',JSON.stringify({version:3,id:'bad',phase:'applying',entries:[{key:J,before:null,after:'x'}]})]){const t=boot({...seed,[TX]:raw});await new Promise(r=>setImmediate(r));assert.equal(t.writes.length,0);assert.equal(t.api.startupRecovery.kind,'blocked');cases++;}
+ const html=fs.readFileSync('index.html','utf8'),original=cp.execFileSync('git',['show','67a9020:index.html'],{encoding:'utf8',maxBuffer:40000000});
+ const insertion=html.match(/\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-reliable-restore-v3"><\/script>\n/)[0];const originalInsertion=original.match(/\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-issue13-quarantine-v1"><\/script>\n/)[0];assert.equal(html.replace(insertion,''),original.replace(originalInsertion,''));
+ let scripts=0;for(const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){if(/\bsrc\s*=|application\/(?:json|ld\+json)/i.test(m[1]))continue;new vm.Script(m[2]);scripts++;}
+ // Actual cached old writer exits behind the early sentinel.
+ const old=cp.execFileSync('git',['show','1692945:bu-platform-saves-v2.js'],{encoding:'utf8'}),scope={window:{BUPlatformSaves:{pendingSafetyLoad:true}}};vm.createContext(scope);vm.runInContext(old,scope);
+ const protectedFiles=cp.execFileSync('git',['ls-tree','-r','--name-only','67a9020'],{encoding:'utf8'}).trim().split('\n');
+ for(const file of protectedFiles)if(!['index.html','bu-platform-saves-v2.js','.github/workflows/qa-issue13-save-safety.yml','docs/ISSUE13_SAVE_SAFETY.md','scripts/qa_issue13_safety.cjs','scripts/qa_issue13_browser.cjs'].includes(file))assert(fs.readFileSync(file).equals(cp.execFileSync('git',['show','67a9020:'+file],{maxBuffer:40000000})),file);
+ console.log('PASS_RELIABLE_RESTORE_MODEL',cases,'cases; syntax',scripts,'inline scripts;',protectedFiles.length-6,'original files byte-identical');
+})().catch(e=>{console.error(e);process.exit(1);});

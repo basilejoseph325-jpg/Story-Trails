@@ -1,6 +1,4 @@
-/* LIVE issue #13 permanent safe restore: validated v1/v2 backups, versioned
-   before/after transactions and conflict-aware recovery. Never replay a legacy
-   rollback record over newer progress. No experimental save importer. */
+/* LIVE coordinated backup/restore. Legacy journals are evidence only. */
 (()=>{'use strict';
 if(window.BUPlatformSaves&&!window.BUPlatformSaves.pendingSafetyLoad)return;
 const NATIVE=/^(?:bible-unfolded|story-trails)-[a-z0-9_.-]+$/i;
@@ -8,26 +6,54 @@ const TEST='bible-unfolded-word-trails-next-v1';
 const FEEL='bu-wt-next-feel-v2';
 const JOURNAL='bible-unfolded-word-trails-import-rollback-v2';
 const COMMITTED='bible-unfolded-word-trails-import-committed-v2';
+const TRANSACTION='bible-unfolded-restore-transaction-v3', EVIDENCE='bible-unfolded-restore-conflict-v3';
+const PREVIOUS_TX='bible-unfolded-import-transaction-v3',PREVIOUS_DONE='bible-unfolded-import-commit-v3';
+const CONTROL=new Set([JOURNAL,COMMITTED,TRANSACTION,EVIDENCE,PREVIOUS_TX,PREVIOUS_DONE]);
 const BACKUP_VERSION=2,MAX_BYTES=2000000,MAX_KEYS=100,MAX_NATIVE_VALUE=300000;
-const TX='bible-unfolded-import-transaction-v3',TX_DONE='bible-unfolded-import-commit-v3';
-const CONTROLS=[JOURNAL,COMMITTED,TX,TX_DONE];
-const LOCK='bible-unfolded-live-backup-restore-v3';
 const WALLETS=['bible-unfolded-rewards-v17','bible-unfolded-rewards-v17-recovery-v3811'];
 const OWNERSHIP=['bible-unfolded-wheel-ownership-v3825','bible-unfolded-wheel-ownership-v3825-backup'];
 const WHEELS=['goldwheel','moonwheel','seawheel'];
 const keysToKeep=[TEST,FEEL];
 const own=o=>o!==null&&typeof o==='object'&&!Array.isArray(o);
-const allowed=k=>typeof k==='string'&&k.length<=160&&NATIVE.test(k)&&k!==TEST;
+const allowed=k=>typeof k==='string'&&k.length<=160&&NATIVE.test(k)&&k!==TEST&&!CONTROL.has(k)&&!['__proto__','constructor','prototype'].includes(k);
 const parse=s=>JSON.parse(s);
 const safeNum=x=>Number.isSafeInteger(x)&&x>=0&&x<=1000000000;
 const dataStr=(v,max)=>v===null||(typeof v==='string'&&v.length<=max);
 const read=k=>localStorage.getItem(k);
+const rawSet=window.Storage?window.Storage.prototype.setItem:localStorage.setItem,rawRemove=window.Storage?window.Storage.prototype.removeItem:localStorage.removeItem;
+const storageSet=(key,value)=>rawSet.call(localStorage,key,value),storageRemove=key=>rawRemove.call(localStorage,key);
 const getJson=s=>{try{const v=parse(s);return own(v)?v:null}catch(_){return null}};
+function saveFailure(){
+ const show=()=>{
+  let el=document.getElementById('bu-save-health');
+  if(!el){el=document.createElement('div');el.id='bu-save-health';el.setAttribute('role','alert');el.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483646;padding:12px;background:#712d22;color:white;font:14px/1.4 system-ui';document.body.append(el);}
+  el.textContent='Progress could not be saved on this device. Free some device storage before continuing. Keep this game tab open; recent progress may not survive a reload.';
+ };
+ if(document.body)show();else document.addEventListener('DOMContentLoaded',show,{once:true});
+}
+// Native save functions already catch storage errors. Make silent browser write
+// failures visible too, without replacing any game mode's save implementation.
+function monitorStorage(w){
+ try{
+  const proto=w.Storage.prototype,storage=w.localStorage,original=proto.setItem;
+  proto.setItem=function(key,value){
+   if(this!==storage||!(NATIVE.test(String(key))||key===FEEL))return original.call(this,key,value);
+   try{original.call(this,key,value);if(storage.getItem(String(key))!==String(value))throw Error('Save verification failed.');}
+   catch(e){saveFailure();throw e;}
+  };
+ }catch(_){}
+}
+monitorStorage(window);
+// Word Trails owns its existing save code in a same-origin frame. Monitor that
+// storage boundary too; keep its puzzle/audio/reward implementation untouched.
+document.addEventListener('load',event=>{
+ if(event.target?.tagName==='IFRAME')monitorStorage(event.target.contentWindow);
+},true);
 function inventory(){
  const a={};
  for(let i=0;i<localStorage.length;i++){
   const k=localStorage.key(i);
-  if(allowed(k)&&!CONTROLS.includes(k)){const v=read(k);if(v!==null)a[k]=v}
+  if(allowed(k)&&k!==JOURNAL&&k!==COMMITTED){const v=read(k);if(v!==null)a[k]=v}
  }
  return a;
 }
@@ -39,6 +65,7 @@ function validateTrails(raw){
   if(!Number.isInteger(s[k])||s[k]<0||s[k]>49)throw Error('Word Trails '+k+' is out of range.');
  }
  for(const k of ['coins','points'])if(!safeNum(s[k]))throw Error('Word Trails '+k+' is invalid.');
+ if(!Array.isArray(s.completed))throw Error('Word Trails completed levels are missing.');
  const fields=['completed','sparks','claimedSparks','boardBible','paidWords','paidBonuses','claimedFreeHints'];
  for(const k of fields){
   // Older Word Trails prototypes did not save every discovery/bonus ledger.
@@ -69,40 +96,50 @@ function validateFeel(raw){
  for(const k of ['music','sfx','motion','haptics'])if(k in p&&typeof p[k]!=='boolean')throw Error('Invalid Word Trails '+k+' preference.');
  for(const k of ['musicVolume','sfxVolume'])if(k in p&&(!Number.isFinite(Number(p[k]))||Number(p[k])<0||Number(p[k])>100))throw Error('Invalid Word Trails '+k+'.');
 }
-function normalizeBackup(raw){
- const data=typeof raw==='string'?parse(raw):raw;
- if(!own(data)||data.format!=='BibleUnfoldedSave'||!own(data.keys)||![1,2].includes(data.version))
-  throw Error('This is not a compatible Bible Unfolded backup.');
- if(data.version===2){
-  // Previous v2 exports accidentally included import-journal control keys.
-  // These are recovery evidence, never game progress to restore.
-  return {...data,keys:Object.fromEntries(Object.entries(data.keys).filter(([k])=>!CONTROLS.includes(k)))};
+// Accidental-corruption checksum, not authentication of untrusted files.
+function checksum(value){
+ const text=JSON.stringify(value);let hash=2166136261;
+ for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
+ return (hash>>>0).toString(16).padStart(8,'0');
+}
+const backupChecksum=c=>checksum([c.keys,c.extensions]);
+const journalChecksum=t=>checksum([t.version,t.id,t.phase,t.createdAt,t.entries]);
+function normalize(candidate){
+ if(typeof candidate!=='string'&&JSON.stringify(candidate).length>MAX_BYTES)throw Error('Backup is over the 2 MB limit.');
+ const c=typeof candidate==='string'?(candidate.length>MAX_BYTES?(()=>{throw Error('Backup is over the 2 MB limit.');})():parse(candidate)):JSON.parse(JSON.stringify(candidate));
+ if(!own(c)||c.format!=='BibleUnfoldedSave'||![1,2].includes(c.version))throw Error('This is not a supported Bible Unfolded backup.');
+ if(c.version===1){
+  if(!own(c.keys))throw Error('Missing native save section.');
+  const trail=Object.prototype.hasOwnProperty.call(c.keys,TEST)?c.keys[TEST]:null;
+  delete c.keys[TEST];
+  // Old rollback records are never imported, even if an old exporter included them.
+  for(const k of CONTROL)delete c.keys[k];
+  c.version=2;c.extensions={wordTrailsNext:{format:'WordTrailsNextLIVE',version:1,state:trail,feel:null}};
  }
- // Historical version-1 exports had only a keys object. Convert that into
- // the existing version-2 format WITHOUT invoking the unsafe native importer.
- const pairs=Object.entries(data.keys);
- if(!pairs.length||pairs.length>MAX_KEYS)throw Error('Old backup has an invalid number of keys.');
- const keys={};let trail=null;
- for(const [k,v] of pairs){
-  if(!allowed(k)&&k!==TEST)throw Error('Old backup contains an invalid key.');
-  if(typeof v!=='string'||v.length>MAX_NATIVE_VALUE)throw Error('Old backup contains invalid saved data.');
-  if(CONTROLS.includes(k))continue; // old import-journal control records are never replayed
-  if(k===TEST)trail=v;
-  else keys[k]=v;
- }
- if(!Object.keys(keys).length&&trail===null)throw Error('Old backup has no usable game data.');
- return {format:'BibleUnfoldedSave',version:BACKUP_VERSION,exportedAt:data.exportedAt||null,
-  scope:'Converted older Bible Unfolded backup',keys,
-  extensions:{wordTrailsNext:{format:'WordTrailsNextLIVE',version:1,
-   state:trail,feel:null,coinsNeverConvertToInsightTokens:true}}};
+ nativeData(c);return c;
+}
+function validateNative(key,raw){
+ if(typeof raw!=='string'||raw.length>MAX_NATIVE_VALUE)throw Error('Invalid native save value.');
+ if(raw.trim().startsWith('{')||raw.trim().startsWith('[')){
+  let value;try{value=parse(raw)}catch(_){throw Error('Damaged saved data: '+key);}
+  if(/-adventure-v/.test(key)){
+   if(!own(value))throw Error('Invalid Story Adventure progress.');
+   for(const entry of Object.values(value)){
+    if(!own(entry)||(entry.step!==undefined&&(!Number.isSafeInteger(entry.step)||entry.step<0||entry.step>200))||
+       (entry.complete!==undefined&&typeof entry.complete!=='boolean'))throw Error('Invalid Story Adventure chapter.');
+    for(const field of ['solved','hints','revealed','work'])if(entry[field]!==undefined&&!own(entry[field]))throw Error('Invalid Story Adventure '+field+'.');
+   }
+  }
+ }else if(/-adventure-v|rewards-v|wheel-ownership/.test(key))throw Error('Damaged saved data: '+key);
 }
 function nativeData(data){
  if(!own(data)||data.format!=='BibleUnfoldedSave'||data.version!==BACKUP_VERSION||
     !own(data.keys))throw Error('This is not a compatible complete LIVE backup.');
+ if(data.integrity!==undefined&&(!own(data.integrity)||data.integrity.algorithm!=='fnv1a32-utf16-v1'||data.integrity.value!==backupChecksum(data)))throw Error('Backup checksum does not match. The file may be damaged.');
  const pairs=Object.entries(data.keys);
- if((!pairs.length&&data.extensions?.wordTrailsNext?.state===null)||pairs.length>MAX_KEYS||
-   pairs.some(([k,v])=>!allowed(k)||CONTROLS.includes(k)||typeof v!=='string'||v.length>MAX_NATIVE_VALUE))
+ if(!pairs.length||pairs.length>MAX_KEYS||pairs.some(([k,v])=>!allowed(k)||typeof v!=='string'||v.length>MAX_NATIVE_VALUE))
   throw Error('The native game backup contains invalid keys.');
+ for(const [key,value] of pairs)validateNative(key,value);
  const ext=data.extensions;
  if(!own(ext)||!own(ext.wordTrailsNext)||ext.wordTrailsNext.format!=='WordTrailsNextLIVE'||
      ext.wordTrailsNext.version!==1)throw Error('Missing versioned Word Trails save section.');
@@ -112,7 +149,7 @@ function nativeData(data){
  for(const k of WALLETS){
   if(!Object.prototype.hasOwnProperty.call(data.keys,k))continue;
   const w=getJson(data.keys[k]);
-  if(!w||!Number.isFinite(w.points)||!Number.isFinite(w.coins)||w.coins<0)throw Error('Shared wallet in backup is invalid.');
+  if(!w||!Number.isSafeInteger(w.points)||!safeNum(w.coins))throw Error('Shared wallet in backup is invalid.');
  }
  return {nativeKeys:pairs.length,test};
 }
@@ -130,24 +167,30 @@ function makeBackup(){
  if(Object.keys(state.keys).length>MAX_KEYS||Object.entries(state.keys).some(([k,v])=>!allowed(k)||v.length>MAX_NATIVE_VALUE))
    throw Error('Saved native data exceeds safe backup limits.');
  validateTrails(state.trail);validateFeel(state.feel);
- return {format:'BibleUnfoldedSave',version:BACKUP_VERSION,
+ const backup={format:'BibleUnfoldedSave',version:BACKUP_VERSION,
   exportedAt:new Date().toISOString(),scope:'Bible Unfolded LIVE',
   keys:state.keys,extensions:{wordTrailsNext:{format:'WordTrailsNextLIVE',
     version:1,state:state.trail,feel:state.feel,coinsNeverConvertToInsightTokens:true}}};
+ backup.integrity={algorithm:'fnv1a32-utf16-v1',value:backupChecksum(backup)};
+ nativeData(backup);
+ if(JSON.stringify(backup).length>MAX_BYTES)throw Error('Backup is over the 2 MB limit.');
+ return backup;
 }
 function dryRun(candidate){
- const c=normalizeBackup(candidate);
+ const c=normalize(candidate);
  const v=nativeData(c);
  const existing=currentSnapshot();
  const incoming=walletSummary(c.keys),current=walletSummary(existing.keys);
+ let currentTrails;try{currentTrails=validateTrails(existing.trail)}catch(_){currentTrails={damaged:true};}
  const protectedWheels=wheelSet({...existing.keys,...c.keys},existing.keys);
  const sameKeys=Object.entries(c.keys).every(([k,val])=>existing.keys[k]===val);
  return Object.freeze({
-  valid:true,version:BACKUP_VERSION,sourceVersion:typeof candidate==='string'?parse(candidate).version:candidate.version,nativeKeys:v.nativeKeys,
+  valid:true,version:BACKUP_VERSION,nativeKeys:v.nativeKeys,
   incomingWallet:incoming,currentWallet:current,
-  incomingWordTrails:v.test,currentWordTrails:validateTrails(existing.trail),
+  incomingWordTrails:v.test,currentWordTrails:currentTrails,
   preservedOwnedWheels:[...protectedWheels],
-  testCoinsQuarantined:true,canApply:true,restoreDisabled:false,
+  testCoinsQuarantined:true,canApply:!read(TRANSACTION),restoreDisabled:!!read(TRANSACTION),
+  restoreReason:read(TRANSACTION)?'An interrupted restore needs recovery before another import.':null,
   noChangesRequired:sameKeys&&(c.extensions.wordTrailsNext.state===existing.trail||
     c.extensions.wordTrailsNext.state===null)&&
     (c.extensions.wordTrailsNext.feel===existing.feel||c.extensions.wordTrailsNext.feel===null)
@@ -166,6 +209,9 @@ function protectedNative(incoming,previous){
  // Existing keys absent from a backup are never deleted. Source backup keys replace
  // matching keys, except that paid wheel ownership is losslessly unioned.
  const next={...previous,...incoming};
+ // Restore primary and recovery wallet as one logical balance.
+ const importedWallet=incoming[WALLETS[0]]||incoming[WALLETS[1]];
+ if(importedWallet)for(const k of WALLETS)next[k]=importedWallet;
  const owned=wheelSet(next,previous);
  for(const k of OWNERSHIP){
   const original=getJson(next[k])||{version:1};
@@ -181,132 +227,141 @@ function protectedNative(incoming,previous){
  }
  return next;
 }
-function setExact(k,value){
- if(value===null)localStorage.removeItem(k);else localStorage.setItem(k,value);
- if(read(k)!==value)throw Error('Saved data verification failed for '+k);
-}
-// Version-1 journals have only PREVIOUS, without intended AFTER values.
-// Their meaning cannot be proved. Retain them, never apply their old data.
-function legacyEvidence(){
- const raw=read(JOURNAL),marker=read(COMMITTED);
- if(raw===null&&marker===null)return null;
- const j=raw===null?null:getJson(raw);
- return {kind:raw===null?'orphan-marker':!j?'malformed':
-   j.version===1&&own(j.previous)?'legacy-previous-only':'unsupported-format',
-  committedMarkerPresent:marker!==null};
-}
-function validatedTransaction(raw){
- const tx=getJson(raw);
- if(!tx||tx.version!==3||!/^[a-f0-9-]{16,64}$/.test(tx.id)||!own(tx.changes)||
-    !['prepared','conflict'].includes(tx.phase))return null;
- const entries=Object.entries(tx.changes);
- if(!entries.length||entries.length>MAX_KEYS+2)return null;
- for(const [k,v] of entries){
-  if((!allowed(k)&&!keysToKeep.includes(k))||CONTROLS.includes(k)||!own(v)||
-    !Object.prototype.hasOwnProperty.call(v,'before')||
-    !Object.prototype.hasOwnProperty.call(v,'after')||
-    !dataStr(v.before,MAX_NATIVE_VALUE)||!dataStr(v.after,MAX_NATIVE_VALUE))return null;
- }
- return tx;
-}
+// Never infer ownership of current values from a previous-only journal.
+// Even a COMMITTED marker has no transaction identity linking it to a journal.
+// Quarantine is logical: retain both raw records byte-for-byte for review.
 function recoverPending(){
- const legacy=legacyEvidence(),raw=read(TX),done=read(TX_DONE);
- if(raw===null){
-  return Object.freeze({recovered:false,quarantined:!!legacy||done!==null,
-   legacy:legacy?.kind||null,kind:done!==null?'orphan-commit':legacy?.kind||'none',
-   restoreDisabled:false,pending:false});
- }
- const tx=validatedTransaction(raw);
- if(!tx)return Object.freeze({recovered:false,quarantined:true,kind:'invalid-new-journal',
-  legacy:legacy?.kind||null,pending:true,restoreDisabled:false});
- if(tx.phase==='conflict'||(done!==null&&done!==tx.id))
-  return Object.freeze({recovered:false,quarantined:true,kind:'conflict',
-   legacy:legacy?.kind||null,pending:true,restoreDisabled:false});
- const entries=Object.entries(tx.changes);
- const changed=entries.filter(([k,v])=>read(k)!==v.before&&read(k)!==v.after);
- if(changed.length){
-  // Never "fix" a different current value, even if an old transaction failed.
-  // Also do NOT repeatedly retry this rollback after another tab progressed.
-  try{
-   if(read(TX)===raw)setExact(TX,JSON.stringify({...tx,phase:'conflict'}));
-  }catch(_){}
-  return Object.freeze({recovered:false,quarantined:true,kind:'newer-progress-conflict',
-   keys:changed.map(x=>x[0]),legacy:legacy?.kind||null,pending:true,restoreDisabled:false});
- }
- if(done===tx.id){
-  if(entries.every(([k,v])=>read(k)===v.after)){
-   // The completed transaction is verified. Delete transaction first; an
-   // orphan COMMIT marker cannot ever trigger a rollback after a crash.
-   localStorage.removeItem(TX);localStorage.removeItem(TX_DONE);
-   return Object.freeze({recovered:false,committed:true,quarantined:!!legacy,
-    legacy:legacy?.kind||null,kind:legacy?.kind||'committed',pending:false,restoreDisabled:false});
-  }
-  return Object.freeze({recovered:false,quarantined:true,kind:'committed-conflict',
-   pending:true,legacy:legacy?.kind||null,restoreDisabled:false});
- }
- // No matching commit marker: roll back only exact AFTER values that this
- // transaction wrote. Never replay old PREVIOUS values over newer values.
  try{
-  for(const [k,v] of entries.reverse()){
-   if(read(k)===v.after&&v.before!==v.after)setExact(k,v.before);
-   else if(read(k)!==v.before)throw Error('Current data changed during recovery');
-  }
-  localStorage.removeItem(TX);
-  return Object.freeze({recovered:true,quarantined:!!legacy,legacy:legacy?.kind||null,
-   kind:legacy?.kind||'rolled-back',pending:false,restoreDisabled:false});
- }catch(e){
-  return Object.freeze({recovered:false,quarantined:true,kind:'recovery-conflict',
-   pending:true,reason:e.message,legacy:legacy?.kind||null,restoreDisabled:false});
+  const raw=read(JOURNAL)??read(PREVIOUS_TX),committed=read(COMMITTED)??read(PREVIOUS_DONE);
+  if(raw===null&&committed===null)return Object.freeze({recovered:false,quarantined:false,restoreDisabled:true,kind:'none'});
+  const journal=raw===null?null:getJson(raw);
+  const kind=raw===null?'orphan-marker':!journal?'malformed':
+   journal.version===1&&own(journal.previous)?'legacy-previous-only':'unsupported-format';
+  return Object.freeze({recovered:false,quarantined:true,restoreDisabled:true,
+   kind,committedMarkerPresent:committed!==null,
+   reason:'The retained record cannot prove which current values belong to the old restore. Nothing was rolled back or cleared.'});
+ }catch(_){return Object.freeze({recovered:false,quarantined:true,restoreDisabled:true,kind:'storage-unavailable',reason:'Saved recovery records could not be read. Nothing was changed.'});}
+}
+function exact(key,value){
+ if(value===null)storageRemove(key);else storageSet(key,value);
+ if(read(key)!==value)throw Error('Saved data could not be verified. Free device storage and try again.');
+}
+const transactionKey=k=>k===TEST||k===FEEL||allowed(k);
+function transaction(raw){
+ const t=getJson(raw);
+ if(!t||t.version!==3||typeof t.id!=='string'||!['applying','committed'].includes(t.phase)||!Array.isArray(t.entries)||t.entries.length>MAX_KEYS*2+6)throw Error('Unrecognized recovery record.');
+ if(t.checksum!==journalChecksum(t))throw Error('Recovery record checksum does not match.');
+ const seen=new Set();
+ for(const e of t.entries){
+  if(!own(e)||!transactionKey(e.key)||seen.has(e.key)||!dataStr(e.before,MAX_NATIVE_VALUE)||!dataStr(e.after,MAX_NATIVE_VALUE))throw Error('Damaged recovery record.');
+  seen.add(e.key);
  }
+ return t;
 }
-function uniqueId(){
- const a=new Uint8Array(16);crypto.getRandomValues(a);
- return Array.from(a,x=>x.toString(16).padStart(2,'0')).join('');
+function recoverTransaction(){
+ let raw;
+ try{
+  raw=read(TRANSACTION);if(raw===null)return {kind:'none',recovered:false};
+  const t=transaction(raw);
+  if(t.phase==='committed'){exact(TRANSACTION,null);return {kind:'committed',recovered:false};}
+  const conflicts=[];
+  // Compare each value before rollback. Never overwrite an independent newer write.
+  for(const e of [...t.entries].reverse()){
+   const current=read(e.key);
+   if(current===e.after)exact(e.key,e.before);
+   else if(current!==e.before)conflicts.push(e.key);
+  }
+  if(conflicts.length)exact(EVIDENCE,JSON.stringify({format:'BibleUnfoldedRestoreConflict',transaction:t,conflicts}));
+  exact(TRANSACTION,null);
+  return {kind:conflicts.length?'conflict':'rolled-back',recovered:true,conflicts};
+ }catch(e){return {kind:'blocked',recovered:false,reason:e.message};}
 }
-async function applyBackup(candidate,{reload=true}={}){
- const c=normalizeBackup(candidate),plan=dryRun(c);
- if(!navigator.locks?.request)throw Error('Safe restore needs a newer browser with Web Locks support. Please update Chrome or Safari.');
- return navigator.locks.request(LOCK,{mode:'exclusive',ifAvailable:true},async lock=>{
-  if(!lock)throw Error('Another game tab is restoring a backup. Close it and try again.');
-  const pending=recoverPending();
-  if(pending.pending)throw Error('An interrupted restore needs review; current progress has not been replaced.');
-  const existing=currentSnapshot();
-  const desired=protectedNative(c.keys,existing.keys);
+// After a successful import, old in-memory pagehide/audio/iframe checkpoints
+// must not write over the restored data on the way out. Only this old document
+// and its same-origin frames are frozen; the freshly loaded game saves normally.
+function freezeOldPage(){
+ window.__bu388SkipCheckpoint=true;
+ const show=()=>{
+  if(document.getElementById('bu-restore-reload'))return;
+  const panel=document.createElement('div');panel.id='bu-restore-reload';panel.setAttribute('role','alert');
+  panel.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#092c35;color:#fff;padding:28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow:auto';
+  const message=document.createElement('p');message.textContent='Updating saved progress. Please wait. If recovery cannot finish, free some device storage, then reload. Your game stays paused on this page to protect saved progress.';
+  const reload=document.createElement('button');reload.type='button';reload.textContent='Reload game';reload.style.cssText='min-height:48px;padding:12px';reload.onclick=()=>location.reload();panel.append(message,reload);document.body.append(panel);
+ };
+ if(document.body)show();else document.addEventListener('DOMContentLoaded',show,{once:true});
+ const freeze=w=>{
+  try{
+   const proto=w.Storage.prototype,storage=w.localStorage;
+   for(const name of ['setItem','removeItem','clear']){
+    const original=proto[name];proto[name]=function(...args){if(this===storage)throw Error('Progress was restored; reload this page before playing.');return original.apply(this,args);};
+   }
+   for(let i=0;i<w.frames.length;i++)freeze(w.frames[i]);
+  }catch(_){}
+ };
+ freeze(window);
+}
+window.addEventListener('storage',event=>{
+ if(needsReload||event.key!==TRANSACTION||event.newValue&&getJson(event.newValue)?.phase!=='committed')return;
+ // Another updated tab completed or canceled a restore. Refresh its stale
+ // in-memory game without allowing an unload checkpoint to undo the import.
+ needsReload=true;freezeOldPage();location.reload();
+});
+let restoring=false,needsReload=false;
+async function applyBackup(candidate,options={}){
+ if(restoring||needsReload)throw Error('Reload the game before starting another restore.');
+ const c=normalize(candidate); // Copy validated input before awaiting any cross-tab lock.
+ const run=()=>{
+  if(restoring||needsReload)throw Error('Reload the game before starting another restore.');
+  if(read(TRANSACTION)!==null)throw Error('An interrupted restore needs recovery. Reload the game first.');
+  const previous=currentSnapshot(),next=protectedNative(c.keys,previous.keys);
+  const desired={...next};
+  // Native-only v1 backups and absent optional sections do not erase Word Trails.
   if(c.extensions.wordTrailsNext.state!==null)desired[TEST]=c.extensions.wordTrailsNext.state;
   if(c.extensions.wordTrailsNext.feel!==null)desired[FEEL]=c.extensions.wordTrailsNext.feel;
-  const changes={};
-  for(const [k,after] of Object.entries(desired)){
-   const before=read(k);
-   if(before!==after)changes[k]={before,after};
-  }
-  if(!Object.keys(changes).length)return {ok:true,unchanged:true,plan};
-  const transaction={version:3,id:uniqueId(),phase:'prepared',
-   createdAt:new Date().toISOString(),changes};
-  const original=JSON.stringify(transaction);
-  // The complete BEFORE/AFTER journal must be durable before the first write.
-  // A QuotaExceeded error here leaves every saved game value untouched.
-  setExact(TX,original);
-  window.__bu388SkipCheckpoint=true;
+  const entries=Object.entries(desired).map(([key,after])=>({key,before:read(key),after})).filter(e=>e.before!==e.after);
+  if(!entries.length)return {restored:true,changed:0};
+  const t={version:3,id:crypto.randomUUID(),phase:'applying',createdAt:new Date().toISOString(),entries};
+  t.checksum=journalChecksum(t);
+  transaction(JSON.stringify(t)); // Validate recovery limits before the first write.
+  restoring=true;
   try{
-   for(const [k,v] of Object.entries(changes)){
-    if(read(k)!==v.before)throw Error('Another game tab changed '+k+' during restore.');
-    setExact(k,v.after);
+   exact(TRANSACTION,JSON.stringify(t));
+   for(const e of entries){
+    if(read(e.key)!==e.before)throw Error('Another game tab changed progress during restore.');
+    exact(e.key,e.after);
    }
-   setExact(TX_DONE,transaction.id);
-   // Verify all writes again before declaring the restore complete.
-   for(const [k,v] of Object.entries(changes))
-    if(read(k)!==v.after)throw Error('Restore verification failed for '+k);
-   localStorage.removeItem(TX);
-   localStorage.removeItem(TX_DONE);
+   if(entries.some(e=>read(e.key)!==e.after))throw Error('Another game tab changed progress during restore.');
+   const committed={...t,phase:'committed'};committed.checksum=journalChecksum(committed);
+   exact(TRANSACTION,JSON.stringify(committed));
+   // Once committed, cleanup failure must never trigger a rollback.
+   try{exact(TRANSACTION,null)}catch(_){}
+   freezeOldPage();needsReload=true;
+   notice('Backup restored. Reloading the game…');
+   if(options.reload!==false)location.reload();
+   return {restored:true,changed:entries.length};
   }catch(e){
-   const status=recoverPending();
-   window.__bu388SkipCheckpoint=false;
-   throw Error(status.pending?'Restore interrupted: '+e.message+
-    '. Newer progress has been left untouched.':'Restore cancelled safely: '+e.message);
-  }
-  if(reload)location.reload();
-  return {ok:true,changed:Object.keys(changes).length,plan};
- });
+   const recovery=recoverTransaction();
+   throw Error(e.message+' '+(recovery.kind==='blocked'?'Recovery is retained; free device storage and reload.':recovery.kind==='conflict'?'Newer changes were preserved; the interrupted restore was canceled.':'The restore was canceled; previous progress was retained.'));
+  }finally{restoring=false;}
+ };
+ // Web Locks serialize cooperating restore tabs. Per-value checks still protect
+ // against ordinary game saves and older tabs that do not participate in locks.
+ if(navigator.locks)return navigator.locks.request('bible-unfolded-live-backup-restore-v3',{mode:'exclusive'},run);
+ throw Error('Safe restore needs a secure browser with Web Locks. Open the HTTPS game in an updated browser.');
+}
+async function importFile(picker){
+ const file=picker.files&&picker.files[0];if(!file)return;
+ try{
+  if(file.size>MAX_BYTES)throw Error('Backup is over the 2 MB limit.');
+  const c=normalize(await file.text()),summary=dryRun(c);
+  if(!summary.canApply)throw Error(summary.restoreReason);
+  const wallet=summary.incomingWallet;
+  const message='Restore this backup? Saved chapters and scores in the file will replace matching progress on this device. Other saves stay in place. Close other game tabs first.'+
+   (wallet?'\nBackup: '+wallet.points+' Points, '+wallet.insightTokens+' Insight Tokens.':'')+
+   (c.extensions.wordTrailsNext.state===null?'\nThis older backup does not include Word Trails; current Word Trails progress will stay.':'\nWord Trails progress is included. Trail Coins stay separate.');
+  if(window.confirm(message))await applyBackup(c);
+ }catch(e){notice('Restore failed: '+e.message+' No automatic legacy rollback was performed.');}
+ finally{picker.value='';}
 }
 function getStatus(){
  let el=document.getElementById('bu-wt-save-status');
@@ -335,8 +390,7 @@ function recoveryEvidence(){
  // A review copy is deliberately NOT a BibleUnfoldedSave import payload.
  return {format:'BibleUnfoldedRecoveryEvidence',version:1,capturedAt:new Date().toISOString(),
   warning:'Evidence only. Current progress may be partly restored; this does not reconstruct an earlier known-good save.',
-  journal:read(JOURNAL),committedMarker:read(COMMITTED),
-  transactionJournal:read(TX),transactionMarker:read(TX_DONE)};
+  journal:read(JOURNAL),committedMarker:read(COMMITTED),previousTransaction:read(PREVIOUS_TX),previousCommit:read(PREVIOUS_DONE),transaction:read(TRANSACTION),conflict:read(EVIDENCE)};
 }
 function downloadEvidence(){
  try{
@@ -351,50 +405,28 @@ function installReview(){
  if(!panel){
   panel=document.createElement('details');panel.id='bu-live-restore-review';
   panel.style.cssText='margin-top:10px;padding:9px;border:1px solid currentColor;border-radius:8px;max-width:100%;box-sizing:border-box';
-  const summary=document.createElement('summary');summary.textContent='Backup recovery details';panel.append(summary);
-  const text=document.createElement('p');text.id='bu-live-recovery-description';
-  text.style.cssText='white-space:normal;overflow-wrap:anywhere;line-height:1.45';panel.append(text);
-  const copy=document.createElement('button');copy.type='button';
-  copy.id='bu-live-copy-current';copy.textContent='Download current progress';
-  copy.style.cssText='min-height:44px;max-width:100%;white-space:normal;margin:5px';
-  copy.onclick=download;panel.append(copy);
-  const evidence=document.createElement('button');evidence.type='button';
-  evidence.id='bu-live-copy-recovery';evidence.textContent='Download recovery details';
-  evidence.style.cssText=copy.style.cssText;evidence.onclick=downloadEvidence;panel.append(evidence);
+  const summary=document.createElement('summary');summary.textContent='Review backup safety';panel.append(summary);
+  const text=document.createElement('p');text.id='bu-live-recovery-description';text.style.cssText='white-space:normal;overflow-wrap:anywhere;line-height:1.45';panel.append(text);
+  const copy=document.createElement('button');copy.type='button';copy.id='bu-live-copy-current';copy.textContent='Download current progress';copy.style.cssText='min-height:44px;max-width:100%;white-space:normal;margin:5px';copy.onclick=download;panel.append(copy);
+  const evidence=document.createElement('button');evidence.type='button';evidence.id='bu-live-copy-recovery';evidence.textContent='Download retained recovery record';evidence.style.cssText=copy.style.cssText;evidence.onclick=downloadEvidence;panel.append(evidence);
   status.parentNode.append(panel);
  }
  const state=recoverPending();
- panel.querySelector('#bu-live-recovery-description').textContent=state.pending?
-  'An interrupted backup needs review. The game has not overwritten newer progress. Download both files for safekeeping; another restore is unavailable until this conflict is resolved.':
-  state.legacy?'An older interrupted-backup record was preserved for review. New backups and safe restores are still available.':
-  'Backups and restores are available. Restore checks each saved value and will stop if another tab changes it.';
- panel.querySelector('#bu-live-copy-recovery').hidden=!state.quarantined;
+ panel.querySelector('#bu-live-recovery-description').textContent=state.quarantined?
+  'An older backup restore record needs review. Your current progress has not been replaced or rolled back. It may contain a partly restored game; a current copy cannot recreate an earlier known-good save. Keep a copy of both current progress and the retained record. Older open game tabs can still change progress. Close other tabs of the game, and keep the files for review.':
+  'Download a backup regularly. To restore, choose a Bible Unfolded backup file and review the confirmation. Close other game tabs first. Damaged or unsupported files are rejected before progress changes.';
+ let hasEvidence=state.quarantined;try{hasEvidence=hasEvidence||read(EVIDENCE)!==null;}catch(_){}
+ panel.querySelector('#bu-live-copy-recovery').hidden=!hasEvidence||state.kind==='storage-unavailable';
  if(state.quarantined)panel.open=true;
  return panel;
 }
-async function acceptFile(picker,event){
+function reviewRestore(picker,event){
  event?.preventDefault?.();event?.stopImmediatePropagation?.();
- const file=picker.files?.[0];if(!file)return;
- try{
-  if(file.size>MAX_BYTES)throw Error('The backup file exceeds 2 MB.');
-  const input=parse(await file.text());
-  const candidate=normalizeBackup(input),plan=dryRun(candidate);
-  const n=plan.incomingWallet,c=plan.currentWallet;
-  const wallet=n?'Backup wallet: '+n.insightTokens+' Insight Tokens and '+n.points+' Points. ':'';
-  const current=c?'Current wallet: '+c.insightTokens+' Insight Tokens and '+c.points+' Points. ':'';
-  const t=plan.incomingWordTrails;
-  const trail=t.present?' Word Trails: '+t.completedCount+' completed levels, '+t.coins+' Trail Coins.':'';
-  if(!confirm('Restore this Bible Unfolded '+(input.version===1?'older':'complete')+' backup?\n\n'+
-    current+'\n'+wallet+trail+
-    '\n\nMatching game progress will be replaced. Purchased wheels remain owned and Trail Coins stay separate from Insight Tokens.\n\nDownload a current backup first if you need it.'))return;
-  const result=await applyBackup(candidate);
-  if(result.unchanged)notice('This backup is already current. Nothing was changed.');
- }catch(e){
-  window.__bu388SkipCheckpoint=false;
-  notice('Backup restore was not completed: '+e.message);
-  installReview();
- }finally{picker.value='';}
+ if(picker)return importFile(picker);
+ document.getElementById('save-file')?.click();
+ return {restoreDisabled:false};
 }
+
 let installed=false,attempts=0;
 function install(){
  if(installed)return;
@@ -403,45 +435,38 @@ function install(){
   if(attempts++<45)setTimeout(install,250);return;
  }
  installed=true;
- // Only this reviewed coordinator accepts files; never call the original
- // legacy native v1 handler, which had a blind delete/rewrite/rollback path.
+
+ // The root's original Settings UI remains the only player-facing save interface.
  btn.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();download()},true);
- picker.onchange=e=>acceptFile(picker,e);
- // PR #15's earliest index guard deliberately captures file/click events
- // before the native v1 importer. Window CAPTURE runs first, so the reviewed
- // coordinator can handle verified restores while the old guard still protects
- // pages where this script did not load.
+ // Block direct property calls too; the early document capture gate blocks
+ // normal clicks/changes even before this coordinator finishes loading.
+ picker.onchange=e=>reviewRestore(picker,e);
  const importButton=document.getElementById('save-import');
- if(importButton){
-  importButton.onclick=()=>picker.click();
-  importButton.setAttribute('aria-label','Import a Bible Unfolded backup safely');
-  importButton.title='Restore an older or complete Bible Unfolded backup';
- }
- // A window capture handler precedes the old document-level safety guard
- // and calls only our verified v1/v2 importer. No old native restore executes.
- window.addEventListener('click',event=>{
-  const target=event.target;
-  if(target?.closest?.('#save-import')){
-   event.preventDefault();event.stopImmediatePropagation();picker.click();return;
-  }
-  if(target?.closest?.('#save-export')){
-   event.preventDefault();event.stopImmediatePropagation();download();
-  }
- },true);
- window.addEventListener('change',event=>{
-  if(event.target!==picker)return;
-  event.preventDefault();event.stopImmediatePropagation();
-  void acceptFile(picker,event);
- },true);
+ if(importButton){importButton.onclick=e=>reviewRestore(null,e);importButton.setAttribute('aria-label','Restore a Bible Unfolded backup');importButton.title='Review and restore a backup';}
  getStatus();installReview();
+ if(startupRecovery.kind==='blocked')notice('An interrupted restore could not be recovered: '+startupRecovery.reason+' Free device storage and reload before importing.');
+ else if(startupRecovery.kind==='conflict')notice('An interrupted restore was canceled. Newer saves were preserved; a conflict record is retained. Download current progress before continuing.');
+ else if(startupRecovery.kind==='rolled-back')notice('An interrupted restore was canceled safely. Previous progress was recovered.');
 }
-const recovered=recoverPending();
-if(recovered.quarantined)console.warn('Bible Unfolded backup recovery record retained:',recovered.kind);
+// Recover only the new self-contained transaction, before gameplay initializes.
+let startupRecovery={kind:'none',recovered:false};
+let hasTransaction=false;try{hasTransaction=read(TRANSACTION)!==null;}catch(e){startupRecovery={kind:'blocked',reason:'Device storage is unavailable.'};}
+if(hasTransaction){
+ freezeOldPage();
+ const recover=()=>{startupRecovery=recoverTransaction();return startupRecovery;};
+ const pending=navigator.locks?navigator.locks.request('bible-unfolded-live-backup-restore-v3',{mode:'exclusive'},recover):Promise.resolve({kind:'blocked',reason:'A secure browser with Web Locks is required.'});
+ pending.then(result=>{
+  startupRecovery=result;
+  if(result.kind!=='blocked')location.reload();
+  else notice('Recovery needs attention: '+result.reason+' Free device storage and reload. Progress has not been overwritten.');
+ });
+}
+
+
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
 window.BUPlatformSaves=Object.freeze({
- version:'2.1.0-live',safetyRevision:'issue13-transaction-v3',restoreDisabled:false,
- pendingSafetyLoad:false,restoreReady:true,keys:Object.freeze({TEST,FEEL,JOURNAL,COMMITTED,TX,TX_DONE}),
- makeBackup,dryRun,applyBackup,validateTrails,recoverPending,recoveryEvidence,bound:()=>installed
+ version:'2.1.0-live',safetyRevision:'reliable-restore-v3',restoreDisabled:false,keys:Object.freeze({TEST,FEEL,JOURNAL,COMMITTED,TRANSACTION,EVIDENCE}),
+ get startupRecovery(){return startupRecovery;},makeBackup,dryRun,applyBackup,validateTrails,recoverPending,reviewRestore,recoveryEvidence,bound:()=>installed
 });
 })();
