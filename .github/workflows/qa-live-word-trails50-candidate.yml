@@ -28,7 +28,7 @@ jobs:
       - name: Source safety and JavaScript syntax
         run: |
           set -euo pipefail
-          for f in word-trails-native-shell-v1.js word-trails-next-launcher.js word-trails-live-bootstrap-v1.js experiments/word-trails-next-v1.js experiments/word-trails-feel-v2.js experiments/word-trails-daily-v1.js experiments/word-trails-live-migration-v1.js experiments/word-trails-levels-12-30-v1.js experiments/word-trails-levels-31-35-v1.js experiments/word-trails-levels-36-40-v1.js experiments/word-trails-levels-41-45-v1.js experiments/word-trails-levels-46-50-v1.js scripts/qa_live_word_trails50_source_v1.cjs scripts/qa_live_word_trails_native_daily_music_v1.cjs scripts/qa_live_word_trails_daily_v1.cjs; do node --check "$f"; done
+          for f in word-trails-native-shell-v1.js word-trails-next-launcher.js word-trails-live-bootstrap-v1.js experiments/word-trails-next-v1.js experiments/word-trails-feel-v2.js experiments/word-trails-daily-v1.js experiments/word-trails-live-migration-v1.js experiments/word-trails-levels-12-30-v1.js experiments/word-trails-levels-31-35-v1.js experiments/word-trails-levels-36-40-v1.js experiments/word-trails-levels-41-45-v1.js experiments/word-trails-levels-46-50-v1.js scripts/qa_live_word_trails50_source_v1.cjs scripts/qa_live_word_trails_native_daily_music_v1.cjs scripts/qa_live_word_trails_daily_v1.cjs scripts/qa_live_word_trails50_save_compat_v1.cjs; do node --check "$f"; done
           node scripts/qa_live_word_trails50_source_v1.cjs
       - name: Disposable browser and local website
         run: |
@@ -45,5 +45,7 @@ jobs:
         run: node scripts/qa_live_word_trails_native_daily_music_v1.cjs
       - name: Real mobile Daily puzzles, saved stamps, refresh and wheel
         run: node scripts/qa_live_word_trails_daily_v1.cjs
+      - name: Existing 30-level saves and fresh users keep their progress and currencies
+        run: node scripts/qa_live_word_trails50_save_compat_v1.cjs
       - name: Existing native Genesis Episode 12 must still work
         run: node scripts/qa_genesis12_native.cjs
