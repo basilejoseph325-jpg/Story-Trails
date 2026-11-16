@@ -209,11 +209,9 @@ assert(dailyCSS.includes('touch-action:none;user-select:none'),'Daily wheel must
    assert.equal(geometry.centerClickable,true,'Floating Daily bubble must receive taps');
    assert.equal(geometry.overlapHint||geometry.overlapShuffle||geometry.overlapBoard,false,'Daily bubble must not block primary gameplay: '+JSON.stringify({w,h,geometry}));
    assert.deepEqual(geometry.blockedLetters,[],'Daily bubble must not hide wheel-letter centers: '+JSON.stringify({w,h,geometry}));
-   const levelGeometry=await page.evaluate(()=>{
-    const app=document.getElementById('app').getBoundingClientRect(),level=document.getElementById('level-map').getBoundingClientRect();
-    return {levelCenter:level.left+level.width/2,appCenter:app.left+app.width/2,appWidth:app.width,viewport:innerWidth};
-   });
-   assert(Math.abs(levelGeometry.levelCenter-levelGeometry.appCenter)<4,'Level counter shifted off center of app after Daily button moved: '+JSON.stringify({w,h,levelGeometry}));
+   // Unlike TEST, LIVE retains its original three-part 30-level footer unchanged.
+   assert.equal(await page.$eval('.bottom .lab-tag',e=>e.textContent.trim()),'BIBLE · 30 LEVELS',
+     'Native LIVE 30-level footer must be preserved');
   }
   await page.$eval('#daily-trail-entry',a=>a.click());
   await page.waitForFunction(()=>location.pathname.endsWith('/word-trails-daily-v1.html'),{timeout:30000});
