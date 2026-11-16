@@ -89,8 +89,11 @@
   }
   save();
  }
- if(document.readyState==='complete')setTimeout(install,800);
- else window.addEventListener('load',()=>setTimeout(install,800),{once:true});
+ // Install when the native Settings DOM is ready, not after every image/audio
+ // has loaded. The old window.load+800ms gate could leave an early Settings tap
+ // without its single authoritative shared-audio record.
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(install,0),{once:true});
+ else setTimeout(install,0);
 })();
 
 /* LIVE — mount Word Trails under the real main-game UI. */
