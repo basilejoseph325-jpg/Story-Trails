@@ -73,7 +73,11 @@ function normalizeBackup(raw){
  const data=typeof raw==='string'?parse(raw):raw;
  if(!own(data)||data.format!=='BibleUnfoldedSave'||!own(data.keys)||![1,2].includes(data.version))
   throw Error('This is not a compatible Bible Unfolded backup.');
- if(data.version===2)return data;
+ if(data.version===2){
+  // Previous v2 exports accidentally included import-journal control keys.
+  // These are recovery evidence, never game progress to restore.
+  return {...data,keys:Object.fromEntries(Object.entries(data.keys).filter(([k])=>!CONTROLS.includes(k)))};
+ }
  // Historical version-1 exports had only a keys object. Convert that into
  // the existing version-2 format WITHOUT invoking the unsafe native importer.
  const pairs=Object.entries(data.keys);
