@@ -1,6 +1,6 @@
 # Genesis Episodes 13 and 14 — LIVE release preparation
 
-**Candidate only. Do not merge or deploy.** Destination: `basilejoseph325-jpg/Story-Trails`, branch `release/genesis13-14-candidate-20261115`. Source: approved Visual Lab TEST main **`59217dc5d6180fcdb7cb246c7de76f8659b31913`**. Existing LIVE main and Pages remain at **`169294536e6bdf3047cd556e8ee0d84a50d9f1ff`**.
+**Candidate only. Do not merge or deploy.** Review PR: [Story-Trails #12](https://github.com/basilejoseph325-jpg/Story-Trails/pull/12). Destination: `basilejoseph325-jpg/Story-Trails`, branch `release/genesis13-14-candidate-20261115`. Source: approved Visual Lab TEST main **`59217dc5d6180fcdb7cb246c7de76f8659b31913`**. Existing LIVE main and Pages remain at **`169294536e6bdf3047cd556e8ee0d84a50d9f1ff`**.
 
 ## Recovery checkpoint established before editing
 
@@ -10,10 +10,10 @@ Remote [recovery branch](https://github.com/basilejoseph325-jpg/Story-Trails/tre
 
 - Approved narration, puzzles, 72 contextual hint stages, explanations, Scripture references, two chapter manifests and **24 individually approved 640×360 WebPs** are exact TEST copies. [Source manifest](GENESIS13_14_RELEASE_MANIFEST.json) lists every copied path, source SHA-256 and runtime adaptation. No artwork or biblical content was rewritten.
 - Normal `index.html` uses the existing native Story engine. Episode 12 completion unlocks 13; 13 completion unlocks 14. Both Genesis cards, Journey counts, back/Chapters, Next controls, refresh-to-Home, resume/replay/restart, and reward-once IDs are retained. Ending 13 uses **g13-d09 (Bethel altar)** for hero/background, caption **An altar at Bethel**; ending 14 uses **g14-d12 (Jacob's grief)** for both slots, caption **Jacob grieves for Joseph**.
-- LIVE lacks TEST's `bu3857ReadSave` and uses a saver that drops entries not yet registered. The new Story-only compatibility module supplies a namespaced reader, additive verified Genesis checkpoints, and recovery of missing in-memory entries from a valid Story checkpoint. It retains original save keys and all unknown chapter entries. Only new chapter opens normalize/recover purchased hint receipts. This is not a replacement backup/import system.
+- LIVE lacks TEST's `bu3857ReadSave` and uses a saver that drops entries not yet registered. The new Story-only compatibility module supplies a namespaced reader, additive verified Genesis checkpoints, and recovery of missing in-memory entries from a valid Story checkpoint. It retains original save keys and all unknown chapter entries. Only new chapter opens normalize/recover purchased hint receipts. New-chapter reveals also use TEST’s approved durable payment/reserved-reward receipts before calling the older LIVE solver; a failed wallet write does not solve/reveal or debit Points. This is not a replacement economy or backup/import system.
 - LIVE menu Continue otherwise starts a legacy chapter. For Episodes 13/14 only, it now returns to the native modern screen and offers the approved confirmed Restart action. New-chapter modal cleanup/focus uses the existing native X handlers. No new modal renderer, sizing engine, audio owner or economy is introduced.
-- Existing LIVE loader bytes are preserved with one ordered Story append. HTML changes only the loader cache token. The shared finale gets only the new Episode 13 artwork provider and support for its provided caption; older chapter fallbacks are unchanged. Episode 12 QA changes only its expected card count and waiting for new registration.
-- Core transports, Word Trails (including its original 30 levels), native settings/backup coordinator, rewards/wallet/entitlements, premium SFX, announcers, Daily/Trivia/Family Worship/Books, existing artwork and other pre-existing files remain byte-identical. Integrity QA verifies **417 untouched baseline files**, the three narrowly changed runtime files and the one count-only QA fixture. No TEST banner, TEST backup pipeline, Word Trails 31–50, isolated preview page or unrelated experiment is transferred.
+- Existing LIVE loader bytes are preserved with one ordered Story append. HTML changes only the loader cache token. The shared finale gets only the new Episode 13 artwork provider and support for its provided caption; older chapter fallbacks are unchanged. Episode 12 QA changes only its expected card count and waiting for new registration. The pre-existing Trivia workflow’s exact-loader allowlist is extended only by the new authorized Story append; all its approved Trivia asset hashes remain locked.
+- Core transports, Word Trails (including its original 30 levels), native settings/backup coordinator, rewards/wallet/entitlements, premium SFX, announcers, Daily/Trivia/Family Worship/Books, existing artwork and other pre-existing files remain byte-identical. Integrity QA verifies **416 untouched baseline files**, the three narrowly changed runtime files and two narrow QA fixtures (Episode 12 count/wait and exact Trivia loader allowlist). No TEST banner, TEST backup pipeline, Word Trails 31–50, isolated preview page or unrelated experiment is transferred.
 
 ## Actual automated results
 
@@ -23,9 +23,10 @@ Remote [recovery branch](https://github.com/basilejoseph325-jpg/Story-Trails/tre
 - [x] Existing Episode 12: all 13 discoveries/images, hints, reload/resume/replay at 320×568 and 390×844; existing boundary/art checks remain separate. Native Episode 12 ending→13 is checked through its actual button in preservation QA; 13 ending→14 is checked after real puzzle completion in Episode 13 QA.
 - [x] All Story: **117 modern + 84 legacy = 201 discoveries and 20 completion paths**, at 320×568 and 430×932; no active-control overflow or missing scene art. Original older finale art is compared to the untouched LIVE baseline, not TEST's different renderer.
 - [x] Baseline/candidate mode, native settings and save parity: Trivia wrong/correct retry, Family Worship answer, Word Trails entry, Word Builder, Watch, rewards/help navigation; negative Points, native Tokens, purchased/equipped Ocean Glow and unrelated data retained. New Story checkpoints survive an earlier-chapter save. Read-only `makeBackup` includes the Story checkpoint without writing storage.
+- [x] New-chapter reveal wallet-write failures abort without solving or debiting Points. If the chapter checkpoint alone fails after payment, wallet reward reservations survive reload and prevent reward farming (both Episodes 13/14).
 - [x] Delayed Episode 14 registration preserves an existing Episode 14 checkpoint. Synthetic corrupt-primary Story reads use the valid checkpoint and retain earlier Episode 12 progress. These are fresh-profile checkpoint reads, **not import/restore transactions**; no rollback journals are seeded.
 - [x] Word Trails normal LIVE Main Settings, native SFX/volume propagation, original announcer delegation, curved Ocean Glow/halo/mist/glitter, unchanged progress/rewards, and no overflow passed on baseline and candidate at 390×705 and 320×568. The newer TEST advanced-feel shortcut/ownership assertions were first tried and failed on untouched LIVE; release QA instead tests the actual LIVE entry and its original behavior. No Word Trails code was changed.
-- [ ] Hosted candidate CI: see the release PR's current head checks. Workflow has read-only repository permissions and no merge/deploy step.
+- [x] Read-only candidate CI and artifact collection are configured. [PR #12 checks](https://github.com/basilejoseph325-jpg/Story-Trails/pull/12/checks) are authoritative for final-head pass/fail; a configured workflow alone is not a passing run.
 - [ ] Independent ChatGPT/owner review and physical iPhone/Safari acceptance. **No physical phone is claimed tested.** Chromium viewports and API/audio-control checks do not prove audible device behavior or Safari compatibility.
 
 ## TEST backup/Settings investigation and remaining risks
@@ -45,9 +46,11 @@ Investigation found **a stale prerequisite, not missing deployed code**: current
 
 TEST and LIVE also share the GitHub Pages browser-storage origin. Older already-open pages/API writers can still write canonical keys without a global lock. The additive candidate saver protects unknown Genesis entries in the updated page; it cannot stop unmodified old tabs or restore writers. Closing/reloading old tabs before eventual promotion deserves explicit review, not a promise of universal concurrency safety.
 
+An initial [Trivia guard run](https://github.com/basilejoseph325-jpg/Story-Trails/actions/runs/43789160735) failed its “Unauthorized LIVE bootstrap change detected” assertion because it allowed only the Episode 12 suffix. It did not fail a Trivia gameplay assertion. Its allowlist now matches the exact authorized Episodes 13/14 append, while preserving every prior loader byte and all 14 approved asset hashes. This narrow QA integration change is independently guarded by release integrity checks.
+
 **Inherited visual limitation:** the original LIVE finale provider recognizes Genesis 7–9 only. Original Episodes 10–12 consequently lack its cinematic hero/background on the baseline and candidate. A first TEST-oriented expectation failed on Episode 10; comparison against untouched LIVE reproduced it, and full regression now explicitly checks preservation. New Episodes 13/14 have their required approved ending art. No unrelated old finale redesign is included.
 
-**Review status:** the scoped candidate is prepared for independent review; it is not deployment-approved. Physical iPhone/Safari (and physical Android visual/audio acceptance), independent review of compatibility and backup risks, and owner approval remain open. Nothing is merged or published. Recovery is by the verified original commit/branch/bundle, not a player-data restore operation.
+**Review status:** the scoped candidate is prepared for independent review after its final-head CI checks; it is not deployment-approved. Physical iPhone/Safari (and physical Android visual/audio acceptance), independent review of compatibility and backup risks, and owner approval remain open. Nothing is merged or published. Recovery is by the verified original commit/branch/bundle, not a player-data restore operation.
 
 ## Exact changed-file inventory
 
@@ -55,6 +58,7 @@ The complete inventory below includes QA and documentation. `M` is an existing f
 
 ```text
 A .github/workflows/qa-genesis13-14-release-candidate.yml
+M .github/workflows/qa-live-trivia-3-screens.yml
 A docs/GENESIS13_14_RELEASE_MANIFEST.json
 A docs/GENESIS13_14_RELEASE_REVIEW.md
 M index.html

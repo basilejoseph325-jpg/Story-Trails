@@ -4,7 +4,7 @@ const fs=require('node:fs'),cp=require('node:child_process'),crypto=require('nod
 const BASE='169294536e6bdf3047cd556e8ee0d84a50d9f1ff';
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 const read=f=>cp.execFileSync('git',['show',BASE+':'+f],{maxBuffer:40000000});
-const changed=new Set(['index.html','journey-progress-caption.js','story-chapter-complete-v2-test.js','scripts/qa_genesis12_native.cjs']);
+const changed=new Set(['index.html','journey-progress-caption.js','story-chapter-complete-v2-test.js','scripts/qa_genesis12_native.cjs','.github/workflows/qa-live-trivia-3-screens.yml']);
 const original=cp.execFileSync('git',['ls-tree','-r','--name-only',BASE],{encoding:'utf8'}).trim().split('\n');
 for(const f of original)if(!changed.has(f))assert(fs.existsSync(f)&&fs.readFileSync(f).equals(read(f)),'Protected LIVE file changed: '+f);
 assert.equal(fs.readFileSync('index.html','utf8').replace('journey-progress-caption.js?v=genesis13-14-release-candidate-v1','journey-progress-caption.js?v=live-daily60-cross33-20261114-v1'),read('index.html').toString(),'HTML changed beyond loader token');
@@ -14,6 +14,10 @@ for(const name of ['story-adventure-release-compat.js','story-adventure-episode1
 const hook="\n  if(modern&&typeof bu3857State!=='undefined'&&bu3857State?.book==='genesis_ep13')return window.BUStoryGenesis13Test?.currentArtwork?.()||null;";
 assert.equal(fs.readFileSync('story-chapter-complete-v2-test.js','utf8').replace(hook,'').replace('const caption=art.caption||chapter?.discoveries?.[0]?.title;','const caption=chapter?.discoveries?.[0]?.title;'),read('story-chapter-complete-v2-test.js').toString(),'Existing finale renderer changed beyond Episode 13 art hook/caption');
 assert.equal(fs.readFileSync('scripts/qa_genesis12_native.cjs','utf8'),read('scripts/qa_genesis12_native.cjs').toString().replace("()=>window.BUStoryGenesis12Test?.discoveryCount===13,","()=>window.BUStoryGenesis12Test?.discoveryCount===13&&window.BUStoryGenesis14Test?.status==='ready',").replace('{cards:12,locked:true,words:13}','{cards:14,locked:true,words:13}'),'Episode 12 test changed beyond registration/count expectations');
+const triviaGuard='.github/workflows/qa-live-trivia-3-screens.yml';
+const priorAssert='          assert loader==expected_loader+approved_story12_suffix, "Unauthorized LIVE bootstrap change detected"';
+const revisedAssert='          # Match only the owner-authorized Episodes 13/14 candidate append.\n          approved_story13_14_suffix='+JSON.stringify(added)+'\n          assert loader==expected_loader+approved_story12_suffix+approved_story13_14_suffix, "Unauthorized LIVE bootstrap change detected"';
+assert.equal(fs.readFileSync(triviaGuard,'utf8'),read(triviaGuard).toString().replace(priorAssert,revisedAssert),'Trivia guard changed beyond exact candidate suffix approval');
 const manifest=JSON.parse(fs.readFileSync('docs/GENESIS13_14_RELEASE_MANIFEST.json'));
 assert.equal(manifest.destinationBaseline,BASE);assert.equal(manifest.sourceCommit,'59217dc5d6180fcdb7cb246c7de76f8659b31913');
 let images=0;
@@ -32,4 +36,4 @@ const allowed=new Set([...changed,'story-adventure-release-compat.js','story-adv
 const delta=cp.execFileSync('git',['diff','--name-only',BASE],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
 const untracked=cp.execFileSync('git',['ls-files','--others','--exclude-standard','--','.',':!work'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
 for(const f of new Set([...delta,...untracked]))assert(allowed.has(f),'Unrelated release file '+f);
-console.log('PASS_RELEASE_INTEGRITY',JSON.stringify({baseline:BASE,protectedUnchanged:original.length-4,exactSourceFiles:manifest.records.filter(r=>r.exactCopy).length,approvedWebPs:images,inlineScripts:inline,syntax:true,onlyThreeRuntimeEditsAndOneCountFixture:true}));
+console.log('PASS_RELEASE_INTEGRITY',JSON.stringify({baseline:BASE,protectedUnchanged:original.length-5,exactSourceFiles:manifest.records.filter(r=>r.exactCopy).length,approvedWebPs:images,inlineScripts:inline,syntax:true,onlyThreeRuntimeEditsAndTwoNarrowQAFixtures:true}));

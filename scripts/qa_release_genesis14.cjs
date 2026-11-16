@@ -108,9 +108,13 @@ for(const [width,height] of [[320,568],[430,932]]){
  await game.waitForFunction(()=>!!bu3857State.solved['g14-d01']);assert.equal(await game.evaluate(()=>bu3857State.step),0,'Swipe skipped explanation');
  await game.waitForSelector('#bu3863-dialog-layer .bu3863-dialog-done');assert.deepEqual(await wallet(),swipeBefore);await close();await game.evaluate(()=>bu3857Open('genesis_ep14',true));
  // Reveal is a separate -25 Point action, once per discovery; it cannot earn fresh rewards.
+ const failedRevealBefore=await wallet();
+ await game.evaluate(()=>{window.releaseOriginalSetItem=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===REWARD_KEY)throw Error('Synthetic reveal wallet write failure');return window.releaseOriginalSetItem.call(this,k,v)}});
+ await game.$eval('#bu3857-reveal',b=>b.click());assert.deepEqual(await wallet(),failedRevealBefore);assert.equal(await game.evaluate(()=>!!bu3857State.solved[bu3857Current().id]),false);
+ await game.evaluate(()=>Storage.prototype.setItem=window.releaseOriginalSetItem);
  const revealBefore=await wallet();await game.$eval('#bu3857-reveal',b=>b.click());await game.waitForFunction(()=>!!bu3857State.revealed['g14-d01']);assert.equal((await wallet()).points,revealBefore.points-25);await close();await game.evaluate(()=>bu3857Open('genesis_ep14',true));await game.$eval('#bu3857-reveal',b=>b.click());assert.equal((await wallet()).points,revealBefore.points-25);await close();
  assert.deepEqual(await game.evaluate(()=>BU_GENESIS_IDS),ids);assert.deepEqual(errors,[]);
- evidence.viewports.push({width,height,discoveriesCompleted:12,replayed:12,allHintLadders:12,prices:[0,15,25],letterReveals:0,correctAndWrongAll12:true,chapterBonus:[250,60],actualTouchAll12:true,actualTouchRetry:true,actualTouchSwipe:true,noGameplayOverflow:true,rewardOnce:true,revealOnce:true,saveFailureRollback:true,purchaseRecovery:true,refreshHome:true,resume:true,menuContinueRestart:true,finaleAndAllActions:true,isolatedUnlockAndRegistrationPreserved:true,approvedImages:12,endingHeroAndBackground:"g14-d12"});
+ evidence.viewports.push({width,height,discoveriesCompleted:12,replayed:12,allHintLadders:12,prices:[0,15,25],letterReveals:0,correctAndWrongAll12:true,chapterBonus:[250,60],actualTouchAll12:true,actualTouchRetry:true,actualTouchSwipe:true,noGameplayOverflow:true,rewardOnce:true,revealOnce:true,saveFailureRollback:true,revealWalletFailureRollback:true,purchaseRecovery:true,refreshHome:true,resume:true,menuContinueRestart:true,finaleAndAllActions:true,isolatedUnlockAndRegistrationPreserved:true,approvedImages:12,endingHeroAndBackground:"g14-d12"});
  await context.close();
 }
 console.log('PASS_RELEASE_GENESIS14_NATIVE',JSON.stringify(evidence));if(process.env.STORY_EVIDENCE)fs.writeFileSync(process.env.STORY_EVIDENCE,JSON.stringify(evidence,null,2)+'\n');

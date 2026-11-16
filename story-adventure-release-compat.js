@@ -55,6 +55,28 @@
   if(bu3857State&&bu3857State.book!==id&&(NEW.has(id)||NEW.has(bu3857State.book)))bu3857Save();
   return oldOpen.call(this,id,...args);
  };
+ // TEST's approved reveal receipt is durable before the answer is marked
+ // solved. LIVE's older solver ignored a failed wallet write; adapt only the
+ // new chapters, retaining the original wallet service and receipt IDs.
+ const solve=bu3857Solve;
+ bu3857Solve=function(revealed=false){
+  const s=bu3857State;
+  if(NEW.has(s?.book)){
+   const d=bu3857Current();if(s.complete||s.solved[d.id])return;
+   if(revealed){
+    bu3824RefreshWallet();
+    const reward='story-'+s.book+'-'+d.id,penalty='story-reveal-'+s.book+'-'+d.id;
+    if(!economy.earned.includes(reward)||!economy.earned.includes(penalty)){
+     const before=JSON.parse(JSON.stringify(economy));
+     if(!economy.earned.includes(reward))economy.earned.push(reward);
+     if(!economy.earned.includes(penalty)){economy.earned.push(penalty);economy.points-=25;}
+     if(saveEconomy()!==true){economy=before;updateWallet();notify('The answer could not be saved. No Points were deducted. Please try again.');return false;}
+     updateWallet();
+    }
+   }
+  }
+  return solve.call(this,revealed);
+ };
  const active=()=>NEW.has(bu3857State?.book)&&!document.getElementById('bu3857-screen').hidden;
  // Use the original modal's X/keyboard cleanup and focus, not a second renderer.
  function ownModal(layer,closeSelector,previous){

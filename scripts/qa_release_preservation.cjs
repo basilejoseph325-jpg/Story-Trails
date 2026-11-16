@@ -69,5 +69,20 @@ const pause=ms=>new Promise(r=>setTimeout(r,ms));
   await context.close();console.log('PASS_RELEASE_CHECKPOINT_READ_FIXTURE',scenario);
  }
 
+ // A revealed answer must remain reward-reserved if only the chapter
+ // checkpoint fails. All data is synthetic; this is not backup restoration.
+ for(const ep of [13,14]){
+  const context=await browser.createBrowserContext(),page=await context.newPage();page.on('dialog',d=>d.accept());
+  await page.goto(root,{waitUntil:'load',timeout:120000});await page.waitForFunction(()=>window.BUStoryGenesis14Test?.status==='ready',{timeout:60000});
+  await page.evaluate(ep=>{document.getElementById('daily-close')?.click();completedChapters.genesis_ep12=true;completedChapters.genesis_ep13=true;persistUnified();bu3857Open('genesis_ep'+ep);economy.points=100;economy.coins=200;saveEconomy();window.originalReleaseStorage=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===BU_GENESIS_KEY)throw Error('Synthetic lost reveal checkpoint');return window.originalReleaseStorage.call(this,k,v)};document.getElementById('bu3857-reveal').click()},ep);
+  assert.deepEqual(await page.evaluate(()=>({points:economy.points,coins:economy.coins})),{points:75,coins:200});
+  // Keep the old window's write failure through unload; the new document gets
+  // its normal Storage prototype and reads the durable native wallet receipt.
+  await page.reload({waitUntil:'load',timeout:120000});await page.waitForFunction(()=>window.BUStoryGenesis14Test?.status==='ready',{timeout:60000});await page.evaluate(ep=>bu3857Open('genesis_ep'+ep),ep);
+  assert.equal(await page.evaluate(()=>!!bu3857State.solved[bu3857Current().id]),false);
+  await page.evaluate(()=>{const used=new Set(),tiles=[...document.querySelectorAll('#buhq-wheel [data-buhq]')];for(const c of BU_HQ_WORDS[bu3857Current().id].answer){const b=tiles.find(b=>b.textContent===c&&!used.has(b));used.add(b);b.click();}});
+  assert(await page.evaluate(()=>!!bu3857State.solved[bu3857Current().id]));assert.deepEqual(await page.evaluate(()=>({points:economy.points,coins:economy.coins})),{points:75,coins:200});
+  await context.close();console.log('PASS_RELEASE_REVEAL_CHECKPOINT_NO_REWARD',ep);
+ }
  console.log('PASS_RELEASE_MODE_AUDIO_SETTINGS_AND_SAVE_PRESERVATION',JSON.stringify(evidence));if(process.env.STORY_EVIDENCE)fs.writeFileSync(process.env.STORY_EVIDENCE,JSON.stringify(evidence,null,2));
 }finally{await browser.close()}})().catch(e=>{console.error(e.stack||e);process.exitCode=1});
