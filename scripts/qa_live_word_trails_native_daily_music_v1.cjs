@@ -33,6 +33,10 @@ const chrome=execSync('command -v google-chrome || command -v chromium',{encodin
   });
   await page.goto(process.env.BU_WT_NATIVE_PARITY_URL||'http://127.0.0.1:8899/index.html',{waitUntil:'domcontentloaded',timeout:120000});
   await page.waitForFunction(()=>window.BUWTNativeShell?.nativeReady?.(),{timeout:90000});
+  // LIVE's canonical audio record must be established before the player starts.
+  await page.waitForFunction(()=>{
+   try{return JSON.parse(localStorage.getItem('bu-platform-audio-preferences-v1')||'null')?.source==='main'}catch(_){return false}
+  },{timeout:10000});
   await page.evaluate(()=>document.getElementById('home-cross').click());
   await page.waitForFunction(()=>{
    const c=document.getElementById('bu-wt-native-game')?.contentWindow;
@@ -136,7 +140,6 @@ const chrome=execSync('command -v google-chrome || command -v chromium',{encodin
   assert.equal(shared.restored,true);
   assert.equal(shared.duringVolume,shared.target);
   assert.equal(shared.feelUnchanged,true,'No duplicate local audio snapshot');
-  console.log('DEBUG_LIVE_NATIVE_AUDIO_OWNERSHIP',JSON.stringify(shared),JSON.stringify(await page.evaluate(()=>({shared:localStorage.getItem('bu-platform-audio-preferences-v1'),feel:localStorage.getItem('bu-wt-next-feel-v2')}))));
   assert.equal(shared.shadowParentOwned,true,'Native Settings alone must own the shared audio record');
 
   // The real native announcer must remain the only playback owner.
