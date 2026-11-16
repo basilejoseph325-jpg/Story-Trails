@@ -1,0 +1,49 @@
+name: Word Trails 50 + Daily LIVE candidate review (no deployment)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'experiments/word-trails-*'
+      - 'word-trails-*.js'
+      - 'journey-progress-caption.js'
+      - 'scripts/qa_live_word_trails*.cjs'
+      - 'docs/WORD_TRAILS50_DAILY_LIVE_CANDIDATE.md'
+      - '.github/workflows/qa-live-word-trails50-candidate.yml'
+permissions:
+  contents: read
+jobs:
+  selective-word-trails:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      STORY_URL: 'http://127.0.0.1:8899/index.html'
+      BU_WT_NATIVE_PARITY_URL: 'http://127.0.0.1:8899/index.html'
+      CHROME_BIN: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Source safety and JavaScript syntax
+        run: |
+          set -euo pipefail
+          for f in word-trails-native-shell-v1.js word-trails-next-launcher.js word-trails-live-bootstrap-v1.js experiments/word-trails-next-v1.js experiments/word-trails-feel-v2.js experiments/word-trails-daily-v1.js experiments/word-trails-live-migration-v1.js experiments/word-trails-levels-12-30-v1.js experiments/word-trails-levels-31-35-v1.js experiments/word-trails-levels-36-40-v1.js experiments/word-trails-levels-41-45-v1.js experiments/word-trails-levels-46-50-v1.js scripts/qa_live_word_trails50_source_v1.cjs scripts/qa_live_word_trails_native_daily_music_v1.cjs scripts/qa_live_word_trails_daily_v1.cjs; do node --check "$f"; done
+          node scripts/qa_live_word_trails50_source_v1.cjs
+      - name: Disposable browser and local website
+        run: |
+          set -euo pipefail
+          npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8899 --bind 127.0.0.1 > work/http-word-trails50.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:8899/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Real mobile native Settings, announcer, wheel, music and Daily Back
+        run: node scripts/qa_live_word_trails_native_daily_music_v1.cjs
+      - name: Real mobile Daily puzzles, saved stamps, refresh and wheel
+        run: node scripts/qa_live_word_trails_daily_v1.cjs
+      - name: Existing native Genesis Episode 12 must still work
+        run: node scripts/qa_genesis12_native.cjs

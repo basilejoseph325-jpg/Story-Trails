@@ -94,7 +94,7 @@
 })();
 
 /* LIVE — mount Word Trails under the real main-game UI. */
-(()=>{if(window.BUWTNativeShell||document.getElementById('bu-wt-native-host-loader'))return;const s=document.createElement('script');s.id='bu-wt-native-host-loader';s.src='word-trails-native-shell-v1.js?v=live-original-voices-20261109-r1';s.defer=true;document.head.appendChild(s)})();
+(()=>{if(window.BUWTNativeShell||document.getElementById('bu-wt-native-host-loader'))return;const s=document.createElement('script');s.id='bu-wt-native-host-loader';s.src='word-trails-native-shell-v1.js?v=live-word-trails50-daily-20261115-v1';s.defer=true;document.head.appendChild(s)})();
 
 
 /* LIVE — extend the actual native Settings backup controls so one

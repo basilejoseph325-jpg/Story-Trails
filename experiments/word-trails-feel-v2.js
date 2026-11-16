@@ -1,4 +1,4 @@
-/* BIBLE UNFOLDED — WORD TRAILS NEXT · FEEL LAB v2 (Visual Lab only)
+/* BIBLE UNFOLDED — WORD TRAILS NEXT · FEEL v2 (LIVE Word Trails)
    Original audio synthesis, not recordings or assets from Wordscapes.
    Deliberately quiet touch feedback, clear success/bonus/finish separation,
    subtle reward travel, one-time bonus-vault milestone, independent controls.
@@ -8,7 +8,7 @@ const KEY='bu-wt-next-feel-v2';
 const DEF={music:true,sfx:true,motion:true,haptics:true,musicVolume:75,sfxVolume:75};
 let pref={...DEF};try{const s=JSON.parse(localStorage.getItem(KEY));
  if(s&&typeof s==='object')pref={...DEF,...s};
- else{const previous=JSON.parse(localStorage.getItem('bible-unfolded-word-trails-next-v1'));
+ else{const previous=JSON.parse(localStorage.getItem('bu-visual-lab-wordtrails-next-v1'));
   if(previous?.sound===false){pref.music=false;pref.sfx=false}}
 }catch(_){}
 let ctx=null,master=null,limiter=null,peakGuard=null,signalMeter=null,noise=null;
@@ -26,6 +26,9 @@ function cueBoost(kind){
 let pendingRewardSounds=new Set();
 const last=new Map();let activeCount=0,gestureTick=0;
 const $=id=>document.getElementById(id);
+// In the native game, the original Bible Unfolded Settings owns shared audio.
+// Do not offer a second persistent sound-settings owner inside the crossword.
+const nativeHost=()=>{try{return parent!==window&&parent.BUWTNativeShell?.active?.()?parent.BUWTNativeShell:null}catch(_){return null}};
 const safeReduced=()=>!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const motion=()=>!!pref.motion&&!safeReduced();
 const active=()=>!document.hidden;
@@ -327,15 +330,31 @@ function celebrateWin(){
  winTimers.push(cleanup);
 }
 function state(){return {...pref}}
-function change(name,value,{silent=false}={}){
+// Native homepage owns shared music/SFX preferences; its one-way frame sync
+// must not write a second persistent copy. Standalone TEST controls still save.
+function change(name,value,{silent=false,persist=true}={}){
  if(!Object.prototype.hasOwnProperty.call(DEF,name))return;
+ const native=nativeHost();
+ // Only native Settings may persist shared audio or motion. Parent sync calls
+ // setPreference(...,{silent:true,persist:false}) and are unaffected.
+ if(native&&persist&&['music','sfx','musicVolume','sfxVolume','motion'].includes(name)){
+  const shared=native.audioPrefs?.()||{};
+  for(const key of ['music','sfx','musicVolume','sfxVolume','motion']){
+   if(!Object.prototype.hasOwnProperty.call(shared,key))continue;
+   pref[key]=key.endsWith('Volume')?bound(shared[key]):!!shared[key];
+  }
+  sync();return;
+ }
  if(name.endsWith('Volume'))pref[name]=bound(value);else pref[name]=!!value;
- save();sync();
+ if(persist)save();sync();
  if(name==='music'||name==='musicVolume')onMusicChange();
  if(!silent&&name==='sfx'&&pref.sfx)cue('correct');
  if(!silent&&name==='sfxVolume')cue('touch');
 }
 function settings(){
+ // Native home always opens its REAL Settings. The local Sound & Feel dialog
+ // remains available only for the isolated standalone QA experience.
+ const native=nativeHost();if(native)return native.openSettings();
  const dlg=$('wt-feel-settings');if(!dlg)return;
  sync();if(!dlg.open)dlg.showModal();
 }
@@ -355,7 +374,7 @@ function makeSettings(){
  '<span class="feel-kicker">WORD TRAILS · VISUAL LAB</span>'+
  '<button id="feel-close" type="button" aria-label="Close settings">×</button></div>'+
  '<h2 id="feel-settings-title">Sound & Feel</h2>'+
- '<p>Fine-tune how the game responds. Your choices are saved for Word Trails.</p>'+
+ '<p>Fine-tune how the game responds. Your choices are saved for this test only.</p>'+
  '<label class="feel-toggle"><span><strong>Background music</strong><small>Gentle Word Trails soundtrack</small></span><input data-pref="music" type="checkbox"></label>'+
  '<label class="feel-slider">Music level <span id="feel-musicVolume">75%</span><input type="range" min="0" max="100" step="5" data-pref="musicVolume"></label>'+
  '<label class="feel-toggle"><span><strong>Sound effects</strong><small>Soft swipes, rewards and discoveries</small></span><input data-pref="sfx" type="checkbox"></label>'+

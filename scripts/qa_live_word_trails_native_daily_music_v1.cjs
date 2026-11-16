@@ -1,0 +1,334 @@
+#!/usr/bin/env node
+'use strict';
+// Runs only against the Visual Lab TEST checkout on a local HTTP server.
+// Fresh isolated CI browser profile; never accesses real end-user storage.
+const puppeteer=require('puppeteer-core');
+const assert=require('node:assert/strict');
+const {execSync}=require('node:child_process');
+const chrome=execSync('command -v google-chrome || command -v chromium',{encoding:'utf8'}).trim();
+(async()=>{
+ const browser=await puppeteer.launch({headless:true,executablePath:chrome,
+  args:['--no-sandbox','--disable-setuid-sandbox','--disable-dev-shm-usage','--disable-gpu','--autoplay-policy=no-user-gesture-required'],
+  timeout:90000,protocolTimeout:120000});
+ try{
+ for(const vp of [{width:390,height:705},{width:320,height:568}]){
+  const page=await browser.newPage(),errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.setViewport({...vp,isMobile:true,hasTouch:true,deviceScaleFactor:2});
+  // Inspect the real detached Word Trails Audio element without production instrumentation.
+  await page.evaluateOnNewDocument(()=>{
+   const Original=window.Audio;
+   window.Audio=function(...args){
+    const player=new Original(...args);
+    if(String(args[0]||'').includes('bible-wordtrails-theme.mp3')){
+     window.__qaWordTrailsMusic=player;
+     window.__qaWordTrailsPlays=0;window.__qaWordTrailsPauses=0;
+     const play=player.play.bind(player),pause=player.pause.bind(player);
+     player.play=function(){window.__qaWordTrailsPlays++;return play()};
+     player.pause=function(){window.__qaWordTrailsPauses++;return pause()};
+    }
+    return player;
+   };
+   window.Audio.prototype=Original.prototype;
+  });
+  await page.goto(process.env.BU_WT_NATIVE_PARITY_URL||'http://127.0.0.1:8899/index.html',{waitUntil:'domcontentloaded',timeout:120000});
+  await page.waitForFunction(()=>window.BUWTNativeShell?.nativeReady?.(),{timeout:90000});
+  await page.evaluate(()=>document.getElementById('home-cross').click());
+  await page.waitForFunction(()=>{
+   const c=document.getElementById('bu-wt-native-game')?.contentWindow;
+   return !!(window.BUWTNativeShell?.active?.()&&c?.BUWTPolish&&c?.BUWTMainSettings&&c?.BUWTAnnouncer&&c?.BUWTWheelNative&&
+    c.document.querySelectorAll('.wheel-letter').length>=4);
+  },{timeout:90000});
+  const initial=await page.evaluate(()=>{
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   return {nativeAudio:window.BUWTNativeShell.audioPrefs(),
+    childAudio:child.BUWTPolish.state(),
+    hasRootVoice:typeof window.bu381Play,
+    frame:child.document.getElementById('bu-wt-native-game')?.id||'child-ready',
+    childDialogOpen:child.document.getElementById('wt-feel-settings')?.open,
+    nativeActive:window.BUWTNativeShell.active()};
+  });
+  assert(initial.nativeAudio&&initial.nativeActive);
+  assert.equal(initial.childAudio.sfx,initial.nativeAudio.sfx);
+  assert.equal(initial.childAudio.music,initial.nativeAudio.music);
+  assert.equal(initial.childAudio.musicVolume,initial.nativeAudio.musicVolume);
+  assert.equal(initial.childAudio.sfxVolume,initial.nativeAudio.sfxVolume);
+  assert.equal(initial.hasRootVoice,'function','Native announcer is available');
+  // Samsung regression: the 2× COMBO counter was concealed behind DAILY.
+  // Show a sample earned streak in the isolated test DOM; do not alter game saves.
+  const comboLayout=await page.evaluate(()=>{
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   const label=child.document.getElementById('combo');
+   const daily=child.document.getElementById('daily-trail-entry');
+   const previous=label.textContent;label.textContent='2× COMBO';
+   const comboRect=label.getBoundingClientRect(),dailyRect=daily.getBoundingClientRect();
+   const pointerEvents=child.getComputedStyle(label).pointerEvents;
+   label.textContent=previous;
+   return {comboRight:comboRect.right,dailyLeft:dailyRect.left,
+    comboLeft:comboRect.left,comboTop:comboRect.top,
+    windowWidth:child.innerWidth,windowHeight:child.innerHeight,
+    dailyIsButton:daily.tagName==='BUTTON'&&daily.hasAttribute('data-wt-open-daily'),pointerEvents};
+  });
+  assert(comboLayout.comboRight+6<=comboLayout.dailyLeft,
+   'COMBO number may not hide under the floating DAILY button');
+  assert(comboLayout.comboLeft>=0&&comboLayout.comboTop>=0&&
+   comboLayout.comboRight<=comboLayout.windowWidth,
+   'COMBO indicator should remain fully readable at phone widths');
+  assert.equal(comboLayout.pointerEvents,'none','Combo must not block wheel or DAILY taps');
+  assert.equal(comboLayout.dailyIsButton,true,
+   'DAILY must be a game button, never a target=_top navigation link');
+
+  // A direct call that would once open the second Sound & Feel dialog must
+  // delegate to the real parent Settings and never expose duplicate controls.
+  const shortcut=await page.evaluate(()=>{
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   child.BUWTPolish.openSettings();
+   return {nativeSettingsHidden:document.getElementById('settings-dialog').hidden,
+    childFeelDialogOpen:child.document.getElementById('wt-feel-settings')?.open,
+    childMainDialogOpen:child.document.getElementById('wt-main-settings')?.open};
+  });
+  assert.equal(shortcut.nativeSettingsHidden,false,'The original parent Settings dialog must open');
+  assert.equal(shortcut.childFeelDialogOpen,false,'No duplicate Sound & Feel dialog may open in native mode');
+  assert.equal(shortcut.childMainDialogOpen,false,'No duplicate Word Trails Settings dialog may open');
+
+  const shared=await page.evaluate(async()=>{
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   const ownSound=localStorage.getItem('bu-wt-next-feel-v2');
+   const shadow=localStorage.getItem('bu-platform-audio-preferences-v1');
+   const before=window.BUWTNativeShell.audioPrefs();
+   // Direct, default-persist child call must not create a competing
+   // authoritative preference or modify the native sound setting.
+   child.BUWTPolish.setPreference('sfx',!before.sfx);
+   const ignored=child.BUWTPolish.state().sfx===before.sfx&&
+      window.BUWTNativeShell.audioPrefs().sfx===before.sfx;
+   const input=document.getElementById('setting-sfx');
+   input.checked=!before.sfx;input.dispatchEvent(new Event('change',{bubbles:true}));
+   await new Promise(r=>setTimeout(r,55));
+   const during=child.BUWTPolish.state().sfx;
+   input.checked=before.sfx;input.dispatchEvent(new Event('change',{bubbles:true}));
+   await new Promise(r=>setTimeout(r,55));
+   const restored=child.BUWTPolish.state().sfx===before.sfx;
+   // Verify native volume can still propagate, preserving sound levels.
+   const range=document.getElementById('setting-sfx-volume'),orig=range.value;
+   const target=Number(orig)>=65?35:80;
+   range.value=String(target);range.dispatchEvent(new Event('input',{bubbles:true}));
+   await new Promise(r=>setTimeout(r,55));
+   const duringVolume=child.BUWTPolish.state().sfxVolume;
+   range.value=orig;range.dispatchEvent(new Event('input',{bubbles:true}));
+   await new Promise(r=>setTimeout(r,55));
+   return {ignored,during,restored,duringVolume,target,
+    feelUnchanged:ownSound===localStorage.getItem('bu-wt-next-feel-v2'),
+    // The parent legitimately updates the shared record's timestamp when
+    // its real Settings controls change. Compare its values and ownership,
+    // not the raw serialized record, which should advance on native input.
+    shadowParentOwned:(()=>{
+      const after=JSON.parse(localStorage.getItem('bu-platform-audio-preferences-v1')||'null');
+      const parent=window.BUWTNativeShell.audioPrefs();
+      return !!after&&after.source==='main'&&
+        (!shadow||JSON.parse(shadow)?.source==='main')&&
+        ['music','sfx','musicVolume','sfxVolume','motion'].every(k=>after[k]===parent[k]);
+    })(),
+    childPref:child.BUWTPolish.state(),
+    parentPref:window.BUWTNativeShell.audioPrefs()};
+  });
+  assert(shared.ignored,'Direct frame calls may not become a second native audio owner');
+  assert.equal(shared.during,!initial.nativeAudio.sfx);
+  assert.equal(shared.restored,true);
+  assert.equal(shared.duringVolume,shared.target);
+  assert.equal(shared.feelUnchanged,true,'No duplicate local audio snapshot');
+  assert.equal(shared.shadowParentOwned,true,'Native Settings alone must own the shared audio record');
+
+  // The real native announcer must remain the only playback owner.
+  const voice=await page.evaluate(()=>{
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   const original=window.bu381Play,calls=[];
+   window.bu381Play=(phrase,options)=>{calls.push({phrase,options});return true};
+   try{child.BUWTAnnouncer.play('excellent_thinking',{milestone:true})}
+   finally{window.bu381Play=original}
+   return {calls,rootMode:window.BUWTNativeShell.voicePrefs()?.mode,
+    childMode:child.BUWTAnnouncer.getMode()};
+  });
+  assert.equal(voice.calls.length,1,'Native original announcer should receive one call');
+  assert.equal(voice.calls[0].phrase,'excellent_thinking');
+  assert.equal(voice.childMode,voice.rootMode);
+
+  // Visual-only Ocean Glow effects are checked without purchasing or
+  // equipping a wheel in any wallet. No entitlement is granted.
+  const wheel=await page.evaluate(()=>{
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   const doc=child.document,css=doc.documentElement;
+   const previous=[...css.classList].filter(x=>/^(sea-wheel|moon-wheel|gold-wheel)$/.test(x));
+   css.classList.remove('moon-wheel','gold-wheel');
+   css.classList.add('sea-wheel');
+   child.BUWTPolish.setPreference('motion',true,{silent:true,persist:false});
+   const w=doc.getElementById('wheel'),rect=w.getBoundingClientRect();
+   const labels=[...w.querySelectorAll('.wheel-letter')].slice(0,3);
+   const coords=labels.map(el=>({x:Number.parseFloat(el.style.left),y:Number.parseFloat(el.style.top)}));
+   const svg=doc.getElementById('selection-lines');
+   child.BUWTWheelNative.render(svg,[0,1,2],coords);
+   const curved=child.BUWTWheelNative.debug();
+   const event={pointerId:941,pointerType:'touch',clientX:rect.left+coords[0].x,clientY:rect.top+coords[0].y};
+   child.BUWTWheelNative.begin(event);
+   child.BUWTWheelNative.move({...event,clientX:event.clientX+28,clientY:event.clientY+30});
+   const during=child.BUWTWheelNative.debug();
+   child.BUWTWheelNative.end({...event,clientX:event.clientX+28,clientY:event.clientY+30});
+   const finished=child.BUWTWheelNative.debug();
+   child.BUWTWheelNative.cancel();
+   css.classList.remove('sea-wheel');
+   for(const cls of previous)css.classList.add(cls);
+   child.BUWTPolish.setPreference('motion',window.BUWTNativeShell.audioPrefs().motion,{silent:true,persist:false});
+   return {curved,during,finished,coords,styleLoaded:[...doc.styleSheets].some(s=>String(s.href).includes('word-trails-native-wheel-v1.css'))};
+  });
+  assert(wheel.styleLoaded,'Original native wheel effects CSS must be loaded');
+  assert.equal(wheel.curved.theme,'sea','Ocean Glow appearance selected for visual-only testing');
+  assert(wheel.curved.curve.includes('C'),'Ocean Glow selection must use curved cubic ribbon, not straight path');
+  assert(wheel.curved.halo.includes('C'),'Original glowing halo remains');
+  assert(wheel.during.canvas,'Swipe must add temporary visual mist canvas');
+  assert(wheel.finished.glints>0,'Touch trace and release must include micro-glitter');
+
+  // Reuse the real parent main menu. Do not open Word Trails local clone.
+  const menus=await page.evaluate(()=>{
+   document.getElementById('settings-dialog').hidden=true;
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   child.BUWTUnifiedMenu.open();
+   return {parentMenuHidden:document.getElementById('game-menu').hidden,
+    childMenuOpen:child.document.getElementById('wt-unified-menu')?.open,
+    childOverflow:child.document.documentElement.scrollWidth>child.innerWidth+1};
+  });
+  assert.equal(menus.parentMenuHidden,false);
+  assert.equal(menus.childMenuOpen,false);
+  assert.equal(menus.childOverflow,false);
+  // Begin the normal Word Trails song with a real finger gesture before Daily.
+  await page.evaluate(()=>{window.closeMenu?.();window.closeDialog?.()});
+  const startPoint=await page.evaluate(()=>{
+   const iframe=document.getElementById('bu-wt-native-game'),f=iframe.getBoundingClientRect();
+   const letter=iframe.contentDocument.querySelector('.wheel-letter'),r=letter.getBoundingClientRect();
+   return {x:Math.round(f.left+r.left+r.width/2),y:Math.round(f.top+r.top+r.height/2)};
+  });
+  await page.touchscreen.tap(startPoint.x,startPoint.y);
+  await page.waitForFunction(()=>{
+   const child=document.getElementById('bu-wt-native-game')?.contentWindow;
+   return !!child?.__qaWordTrailsMusic&&!child.__qaWordTrailsMusic.paused;
+  },{timeout:15000});
+  const musicBefore=await page.evaluate(()=>{
+   const c=document.getElementById('bu-wt-native-game').contentWindow;
+   window.__qaOwnedSong=c.__qaWordTrailsMusic;
+   return {paused:window.__qaOwnedSong.paused,
+    src:window.__qaOwnedSong.currentSrc||window.__qaOwnedSong.src,
+    volume:window.__qaOwnedSong.volume,playCalls:c.__qaWordTrailsPlays,
+    pauseCalls:c.__qaWordTrailsPauses};
+  });
+  assert(!musicBefore.paused&&musicBefore.src.includes('bible-wordtrails-theme.mp3'),
+   'Normal Word Trails theme must be playing before opening Daily');
+  // Real DAILY tap and back button must not navigate through /index.html.
+  // The original Word Trails frame (and unsaved on-screen letters) survives.
+  const beforeDaily=await page.evaluate(()=>{
+   window.__wtQaFrame=document.getElementById('bu-wt-native-game');
+   window.__wtQaRoot=document.getElementById('bu-wt-native-shell');
+   const child=window.__wtQaFrame.contentWindow;
+   const state={active:window.BUWTNativeShell.active(),
+    frameSrc:window.__wtQaFrame.getAttribute('src'),puzzle:child.document.getElementById('board').textContent};
+   child.document.getElementById('daily-trail-entry').click();
+   return state;
+  });
+  assert(beforeDaily.active,'Word Trails must be open before DAILY');
+  await page.waitForFunction(()=>!!document.getElementById('bu-wt-daily-frame')?.contentDocument?.querySelector('.daily-back'),
+   {timeout:90000});
+  const dailyOpen=await page.evaluate(()=>{
+   const overlay=document.getElementById('bu-wt-daily-frame');
+   return {url:location.pathname,hash:location.hash,stillSameFrame:
+     document.getElementById('bu-wt-native-game')===window.__wtQaFrame,
+     dailyEmbedded:overlay.contentDocument.querySelector('#daily-app')!==null,
+     rootAlive:document.getElementById('bu-wt-native-shell')===window.__wtQaRoot};
+  });
+  assert(dailyOpen.stillSameFrame&&dailyOpen.dailyEmbedded&&dailyOpen.rootAlive,'DAILY must overlay the existing puzzle');
+  assert.equal(dailyOpen.hash,'#daily-word-trail');
+  const musicDuring=await page.evaluate(()=>{
+   const child=document.getElementById('bu-wt-native-game').contentWindow;
+   return {sameSong:child.__qaWordTrailsMusic===window.__qaOwnedSong,
+     paused:child.__qaWordTrailsMusic?.paused,
+     playCalls:child.__qaWordTrailsPlays,pauseCalls:child.__qaWordTrailsPauses,
+     volume:child.__qaWordTrailsMusic?.volume,
+     nativeMusicMuted:['music-navigation','music-story','music-trails','music',
+      'music-daily','music-builder','music-name'].every(id=>
+       !document.getElementById(id)||document.getElementById(id).muted)};
+  });
+  assert(musicDuring.sameSong&&!musicDuring.paused,
+   'Daily must keep the same Word Trails theme playing continuously');
+  assert.equal(musicDuring.pauseCalls,musicBefore.pauseCalls,
+   'Opening Daily must not pause Word Trails');
+  assert.equal(musicDuring.playCalls,musicBefore.playCalls,
+   'Opening Daily must not restart the track');
+  assert.equal(musicDuring.volume,musicBefore.volume,'Daily must preserve music volume');
+  assert(musicDuring.nativeMusicMuted,'Native parent music must remain muted');
+  await page.evaluate(()=>document.getElementById('bu-wt-daily-frame').contentDocument.querySelector('.daily-back').click());
+  await page.waitForFunction(()=>location.hash==='#word-trails'&&!document.getElementById('bu-wt-daily-frame'),
+   {timeout:15000});
+  const afterDaily=await page.evaluate(()=>({
+   stillSameFrame:document.getElementById('bu-wt-native-game')===window.__wtQaFrame,
+   stillSameRoot:document.getElementById('bu-wt-native-shell')===window.__wtQaRoot,
+   puzzle:document.getElementById('bu-wt-native-game').contentDocument.getElementById('board').textContent,
+   rootActive:window.BUWTNativeShell.active(),
+   page:location.pathname}));
+  assert(afterDaily.stillSameFrame&&afterDaily.stillSameRoot&&afterDaily.rootActive,
+   'Back from Daily must return to existing Word Trails without homepage reload');
+  assert.equal(afterDaily.puzzle,beforeDaily.puzzle,'Daily round-trip must preserve the board');
+  assert.equal(afterDaily.page,dailyOpen.url,'No intermediate homepage navigation is allowed');
+  const musicAfter=await page.evaluate(()=>{
+   const c=document.getElementById('bu-wt-native-game').contentWindow;
+   return {sameSong:c.__qaWordTrailsMusic===window.__qaOwnedSong,
+     paused:c.__qaWordTrailsMusic?.paused,
+     pauseCalls:c.__qaWordTrailsPauses,playCalls:c.__qaWordTrailsPlays};
+  });
+  assert(musicAfter.sameSong&&!musicAfter.paused,'Theme must continue after Daily Back');
+  assert.equal(musicAfter.pauseCalls,musicBefore.pauseCalls,
+   'Daily round trip must never pause the theme');
+  assert.equal(musicAfter.playCalls,musicBefore.playCalls,
+   'Daily round trip must never restart the theme');
+  // Previous synthetic .click() QA missed the real Samsung tap. Use the
+  // touchscreen and detect any full-document request by the top-level page.
+  const topDocumentRequests=[];
+  page.on('request',request=>{
+   try{if(request.isNavigationRequest()&&request.frame()===page.mainFrame())
+    topDocumentRequests.push(request.url())}catch(_){}
+  });
+  const dailyPoint=await page.evaluate(()=>{
+   const frame=document.getElementById('bu-wt-native-game'),f=frame.getBoundingClientRect();
+   const btn=frame.contentDocument.getElementById('daily-trail-entry'),r=btn.getBoundingClientRect();
+   return {x:Math.round(f.left+r.left+r.width/2),y:Math.round(f.top+r.top+r.height/2)};
+  });
+  await page.touchscreen.tap(dailyPoint.x,dailyPoint.y);
+  await page.waitForFunction(()=>!!document.getElementById('bu-wt-daily-frame')?.contentDocument?.querySelector('.daily-back'),{timeout:30000});
+  const backPoint=await page.evaluate(()=>{
+   const frame=document.getElementById('bu-wt-daily-frame'),f=frame.getBoundingClientRect();
+   const btn=frame.contentDocument.querySelector('.daily-back'),r=btn.getBoundingClientRect();
+   return {x:Math.round(f.left+r.left+r.width/2),y:Math.round(f.top+r.top+r.height/2)};
+  });
+  await page.touchscreen.tap(backPoint.x,backPoint.y);
+  await page.waitForFunction(()=>location.hash==='#word-trails'&&!document.getElementById('bu-wt-daily-frame'),{timeout:30000});
+  const touchResult=await page.evaluate(()=>({
+   sameFrame:document.getElementById('bu-wt-native-game')===window.__wtQaFrame,
+   sameRoot:document.getElementById('bu-wt-native-shell')===window.__wtQaRoot,
+   sameBoard:document.getElementById('bu-wt-native-game').contentDocument.getElementById('board').textContent===window.__wtQaFrame.contentDocument.getElementById('board').textContent
+  }));
+  assert(touchResult.sameFrame&&touchResult.sameRoot&&touchResult.sameBoard,
+   'Real touch DAILY/Back must preserve the exact same Word Trails frame');
+  assert.deepEqual(topDocumentRequests,[],
+   'Daily/Back caused a top-document reload: '+JSON.stringify(topDocumentRequests));
+  // Samsung's browser Back must close the Daily overlay without Home either.
+  await page.touchscreen.tap(dailyPoint.x,dailyPoint.y);
+  await page.waitForFunction(()=>!!document.getElementById('bu-wt-daily-frame')?.contentDocument?.querySelector('.daily-back'),{timeout:30000});
+  await page.evaluate(()=>history.back());
+  await page.waitForFunction(()=>location.hash==='#word-trails'&&!document.getElementById('bu-wt-daily-frame'),{timeout:30000});
+  assert.equal(await page.evaluate(()=>document.getElementById('bu-wt-native-game')===window.__wtQaFrame),true);
+  assert.deepEqual(topDocumentRequests,[],'Browser Back from Daily must not load Home');
+  assert.deepEqual(errors,[],'No JavaScript errors');
+  console.log('PASS_WORD_TRAILS_NATIVE_AUDIO_WHEEL_OWNER_V23',JSON.stringify({
+   viewport:vp.width+'x'+vp.height,
+   nativeSettingsOnly:true,nativeAudioPropagation:true,shadowStorageUnchanged:true,
+   originalAnnouncerDelegated:true,curvedOceanGlow:true,glowHalo:true,swipeMist:true,microGlitter:true,
+   noEntitlementsChanged:true,noHorizontalOverflow:true,comboReadable:true,dailyClickable:true,dailyOverlayRoundTrip:true,realTouchDailyBack:true,zeroHomeNavigations:true,sameSongThroughDaily:true,noAudioRestartOrPause:true,rootMusicStillMuted:true,puzzlePreserved:true,pageErrors:errors.length}));
+  await page.close();
+ }
+ }finally{await browser.close()}
+})().catch(e=>{console.error('FAIL_WORD_TRAILS_NATIVE_AUDIO_WHEEL_OWNER_V23',e.stack||e);process.exitCode=1});
