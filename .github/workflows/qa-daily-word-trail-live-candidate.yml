@@ -1,0 +1,43 @@
+name: Daily Word Trail LIVE release candidate (no deployment)
+on:
+  pull_request:
+    paths:
+      - 'experiments/word-trails-daily-v1.*'
+      - 'experiments/word-trails-daily-catalog-v1.js'
+      - 'experiments/word-trails-next-v1.html'
+      - 'experiments/word-trails-next-v1.css'
+      - 'scripts/qa_daily_word_trail_live_*.cjs'
+      - '.github/workflows/qa-daily-word-trail-live-candidate.yml'
+      - 'docs/DAILY_WORD_TRAIL_LIVE_CANDIDATE.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate:
+    if: github.repository == 'basilejoseph325-jpg/Story-Trails'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      STORY_URL: http://127.0.0.1:8917/index.html
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+      - name: Start private LIVE candidate server
+        run: |
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8917 --bind 127.0.0.1 > work/http-daily-release.log 2>&1 &
+          for attempt in $(seq 1 25); do
+            if curl --silent --fail http://127.0.0.1:8917/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Verify unchanged LIVE originals, daily catalog, art, and syntax
+        run: node scripts/qa_daily_word_trail_live_integrity.cjs
+      - name: Play Daily puzzles, journal, native Word Trails, touch and recovery
+        run: node scripts/qa_daily_word_trail_live_candidate.cjs
