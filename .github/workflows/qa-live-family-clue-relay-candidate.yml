@@ -6,7 +6,7 @@ on:
       - family-worship-gathering-v1.js
       - journey-progress-caption.js
       - scripts/qa_family_clue_relay_menu_v1.cjs
-      - .github/workflows/qa-family-clue-relay-menu-v1.yml
+      - .github/workflows/qa-live-family-clue-relay-candidate.yml
   workflow_dispatch:
 permissions:
   contents: read
