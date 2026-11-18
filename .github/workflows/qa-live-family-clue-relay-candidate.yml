@@ -6,6 +6,7 @@ on:
       - family-worship-gathering-v1.js
       - journey-progress-caption.js
       - scripts/qa_family_clue_relay_menu_v1.cjs
+      - scripts/qa_clue_relay_answer_v1.cjs
       - .github/workflows/qa-live-family-clue-relay-candidate.yml
   workflow_dispatch:
 permissions:
@@ -24,6 +25,7 @@ jobs:
         run: |
           node --check family-worship-gathering-v1.js
           node --check scripts/qa_family_clue_relay_menu_v1.cjs
+          node --check scripts/qa_clue_relay_answer_v1.cjs
           grep -F 'BUFamilyClueRelayMenuV1' family-worship-gathering-v1.js
           grep -F 'family-worship-gathering-v1.js?v=20261117-live-clue-relay-family-card-v1' journey-progress-caption.js
           test -f experiments/family-clue-relay-v1.html
@@ -42,6 +44,11 @@ jobs:
             sleep 1
           done
           exit 1
+      - name: Verify flexible free answers and two-tap family judging on phone sizes
+        env:
+          NODE_PATH: ./work/node_modules
+          BU_RELAY_URL: http://127.0.0.1:8896/experiments/family-clue-relay-v1.html
+        run: node scripts/qa_clue_relay_answer_v1.cjs
       - name: Test real Family Worship entry, relay clues, audio, Back and wallet on phone sizes
         env:
           NODE_PATH: ./work/node_modules
