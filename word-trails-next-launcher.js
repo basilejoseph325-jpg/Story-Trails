@@ -33,7 +33,7 @@ function install(){
  section.innerHTML='<a href="'+PATH+'" aria-label="Play the 55-level Bible Word Trails">'+
  '<span class="wt-next-kicker">BIBLE UNFOLDED · WORD TRAILS</span>'+
  '<strong class="wt-next-title">Word Trails NEXT</strong>'+
- '<span class="wt-next-copy">50 crossword levels · Bible discoveries · bonuses · original announcers</span>'+
+ '<span class="wt-next-copy">55 crossword levels · Bible discoveries · bonuses · original announcers</span>'+
  '<span class="wt-next-go">PLAY THE NEW VERSION →</span></a>'+
  '<button type="button" id="wt-next-compare" aria-expanded="false">Show Classic Word Trails</button>';
  scroll.prepend(section);
