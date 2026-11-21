@@ -26,11 +26,14 @@ function ownedFromStorage(){
  }
  return result;
 }
+function parentHost(){try{return window.parent!==window&&parent.BULiveInsightBridge&&parent.document.getElementById('bu-wt-native-game')?.contentWindow===window?parent.BUPlatformRewards:null}catch(_){return null;}}
 function wallet(){
+ const host=parentHost();if(host)return host.wallet();
  const w=nativeHost?.wallet?.()||persistedWallet();
  return walletValid(w)?{...w}:null;
 }
 function owned(){
+ const host=parentHost();if(host)return host.owned();
  const result=ownedFromStorage();
  for(const id of (nativeHost?.owned?.()||[]))if(ids.has(id))result.add(id);
  return [...result];
@@ -43,6 +46,8 @@ function emit(){
  try{window.dispatchEvent(new Event('bu-platform-rewards-change'))}catch(_){}
 }
 function equipWheel(id){
+ const host=parentHost();if(host)return host.equipWheel(id);
+ if(window.BULiveWalletSession&&!nativeHost)return {ok:false,reason:'native-wallet-starting'};
  if(!ids.has(id)||!owned().includes(id))return {ok:false,reason:'not-owned'};
  if(!wallet())return {ok:false,reason:'wallet-unavailable'};
  if(nativeHost){

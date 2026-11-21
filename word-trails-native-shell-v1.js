@@ -4,7 +4,7 @@
  * LIVE: the main game retains its native settings, wallet and music ownership. */
 (()=>{'use strict';
 if(window.BUWTNativeShell)return;
-const FRAME_URL='experiments/word-trails-next-v1.html?v=daily-music-same-song-20261116-v27';
+const FRAME_URL='experiments/word-trails-next-v1.html?v=live-shared-wallet-v1';
 let shell=null,frame=null,opening=false,dailyFrame=null,dailyBackPending=false;
 const $=id=>document.getElementById(id);
 function active(){return !!shell?.isConnected}
@@ -124,6 +124,8 @@ function close({restoreHistory=true}={}){
 function launch(){
  if(active())return true;
  if(!nativeReady()||opening)return false;
+ const wallet=window.BULiveInsightBridge?.prepare?.();
+ if(!wallet?.ok){alert('Your saved Word Trails game could not be prepared: '+(wallet?.reason||'wallet starting')+'. No progress was reset.');return false;}
  opening=true;
  const root=document.createElement('section');
  root.id='bu-wt-native-shell';root.setAttribute('aria-label','Word Trails game');

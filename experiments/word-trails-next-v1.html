@@ -13,7 +13,7 @@
  // Only local standalone test URLs can bypass that host via standalone=qa.
  if(window.top===window &&
     (location.hostname.endsWith('.github.io')||
-     (args.get('native')==='1'&&args.get('standalone')!=='qa'))){
+     args.get('standalone')!=='qa')){
   location.replace('../index.html?wt_launch=native');
  }
  }catch(_){}})();
@@ -41,9 +41,9 @@ document.addEventListener('click',event=>{
 <link rel="stylesheet" href="word-trails-unified-menu-v1.css?v=standard-menu-v1">
 <link rel="stylesheet" href="word-trails-native-wheel-v1.css?v=faithful-ocean-solid-20261109">
 <link rel="stylesheet" href="word-trails-main-settings-v1.css?v=shared-native-settings-20261109">
-<script src="../bu-platform-rewards-v1.js?v=shared-wheel-core-20261109" defer></script>
+<script src="../bu-platform-rewards-v1.js?v=live-shared-wallet-v1" defer></script>
 <script src="word-trails-feel-v2.js?v=native-settings-owner-20261113-v23" defer></script>
-<script src="word-trails-unified-menu-v1.js?v=native-settings-20261109" defer></script>
+<script src="word-trails-unified-menu-v1.js?v=live-shared-wallet-v1" defer></script>
 <script src="word-trails-announcer-v1.js?v=live-original-recordings-20261109-r1" defer></script>
 <script src="word-trails-main-settings-v1.js?v=single-audio-owner-20261113" defer></script>
 <script src="word-trails-native-wheel-v1.js?v=faithful-ocean-holdfix-20261109" defer></script>
@@ -52,7 +52,7 @@ document.addEventListener('click',event=>{
 <script src="word-trails-levels-36-40-v1.js?v=wordtrails-levels40-nov15-v1" defer></script>
 <script src="word-trails-levels-41-45-v1.js?v=wordtrails-levels45-nov15-v1" defer></script>
 <script src="word-trails-levels-46-50-v1.js?v=wordtrails-levels50-nov15-v1" defer></script>
-<script src="word-trails-next-v1.js?v=daily-keep-theme-20261116-v3" defer></script>
+<script src="word-trails-next-v1.js?v=live-shared-wallet-v1" defer></script>
 </head>
 <body>
 <div id="app">
@@ -67,7 +67,7 @@ document.addEventListener('click',event=>{
       <div class="progress-line"><div class="progress-track" aria-hidden="true"><i id="progress-fill"></i></div><strong id="solved-count" aria-label="Words solved">0 / 4</strong></div>
     </div>
     <div class="top-actions">
-      <div class="points" title="Trail Coins earned and spent only in Word Trails"><span>✦</span><strong id="points">60</strong></div>
+      <div class="points" aria-label="Insight Tokens" title="Insight Tokens shared with Rewards and the other games"><span>✦</span><strong id="points">60</strong></div>
       <button id="audio" type="button" aria-label="Open Bible Unfolded menu" aria-pressed="false" title="Bible Unfolded menu">☰</button>
     </div>
   </header>

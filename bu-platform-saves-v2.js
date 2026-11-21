@@ -10,7 +10,7 @@ const JOURNAL='bible-unfolded-word-trails-import-rollback-v2';
 const COMMITTED='bible-unfolded-word-trails-import-committed-v2';
 const TRANSACTION='bible-unfolded-restore-transaction-v3', EVIDENCE='bible-unfolded-restore-conflict-v3';
 const PREVIOUS_TX='bible-unfolded-import-transaction-v3',PREVIOUS_DONE='bible-unfolded-import-commit-v3';
-const CONTROL=new Set([JOURNAL,COMMITTED,TRANSACTION,EVIDENCE,PREVIOUS_TX,PREVIOUS_DONE]);
+const CONTROL=new Set([JOURNAL,COMMITTED,TRANSACTION,EVIDENCE,PREVIOUS_TX,PREVIOUS_DONE,'bible-unfolded-live-wallet-checkpoint-v1']);
 const BACKUP_VERSION=2,MAX_BYTES=2000000,MAX_KEYS=100,MAX_NATIVE_VALUE=300000;
 const WALLETS=['bible-unfolded-rewards-v17','bible-unfolded-rewards-v17-recovery-v3811'];
 const OWNERSHIP=['bible-unfolded-wheel-ownership-v3825','bible-unfolded-wheel-ownership-v3825-backup'];
@@ -41,7 +41,7 @@ function monitorStorage(w){
   proto.setItem=function(key,value){
    if(this!==storage||!(NATIVE.test(String(key))||key===FEEL||Object.values(EXTRA).includes(key)))return original.call(this,key,value);
    try{original.call(this,key,value);if(storage.getItem(String(key))!==String(value))throw Error('Save verification failed.');}
-   catch(e){saveFailure();throw e;}
+   catch(e){if(!window.BULiveWalletSession||window.BULiveWalletSession.writable())saveFailure();throw e;}
   };
  }catch(_){}
 }
@@ -110,6 +110,7 @@ function normalize(candidate){
  if(typeof candidate!=='string'&&JSON.stringify(candidate).length>MAX_BYTES)throw Error('Backup is over the 2 MB limit.');
  const c=typeof candidate==='string'?(candidate.length>MAX_BYTES?(()=>{throw Error('Backup is over the 2 MB limit.');})():parse(candidate)):JSON.parse(JSON.stringify(candidate));
  if(!own(c)||c.format!=='BibleUnfoldedSave'||![1,2].includes(c.version))throw Error('This is not a supported Bible Unfolded backup.');
+ if(c.scope!==undefined&&c.scope!=='Bible Unfolded LIVE')throw Error('Only LIVE backups can be restored here. TEST data stays separate.');
  if(c.version===1){
   if(!own(c.keys))throw Error('Missing native save section.');
   const trail=Object.prototype.hasOwnProperty.call(c.keys,TEST)?c.keys[TEST]:null;
@@ -164,6 +165,7 @@ function nativeData(data){
   if(!Object.prototype.hasOwnProperty.call(data.keys,k))continue;
   const w=getJson(data.keys[k]);
   if(!w||!Number.isSafeInteger(w.points)||!safeNum(w.coins))throw Error('Shared wallet in backup is invalid.');
+  if(w.liveSharedWallet){window.BULiveWordTrailsEconomy.validate(w.liveSharedWallet);if(!Object.prototype.hasOwnProperty.call(data.keys,WALLETS[0])||!Object.prototype.hasOwnProperty.call(data.keys,WALLETS[1])||data.keys[WALLETS[0]]!==data.keys[WALLETS[1]]||t.state===null)throw Error('Shared-wallet backups require matching wallet copies and Word Trails progress.');}
  }
  return {nativeKeys:pairs.length,test};
 }
@@ -177,6 +179,7 @@ function currentSnapshot(){
 }
 function makeBackup(){
  const state=currentSnapshot();
+ if(getJson(state.keys[WALLETS[0]]||'')?.liveSharedWallet)state.keys[WALLETS[1]]=state.keys[WALLETS[0]];
  if(!Object.keys(state.keys).length)throw Error('No native progress found to back up.');
  if(Object.keys(state.keys).length>MAX_KEYS||Object.entries(state.keys).some(([k,v])=>!allowed(k)||v.length>MAX_NATIVE_VALUE))
    throw Error('Saved native data exceeds safe backup limits.');
@@ -290,6 +293,21 @@ function recoverTransaction(){
   return {kind:conflicts.length?'conflict':'rolled-back',recovered:true,conflicts};
  }catch(e){return {kind:'blocked',recovered:false,reason:e.message};}
 }
+// Canonical wallet + receipt and recovery copy commit together. No full-game
+// replacement, TEST import, save-key rename or currency conversion.
+function commitNativeWallet(after,expected){
+ if(!window.BULiveWalletSession?.writable())throw Error('LIVE wallet is read-only.');
+ if(restoring||needsReload||read(TRANSACTION)!==null)throw Error('Finish recovery and reload before saving.');
+ const wallet=getJson(after);if(!wallet||!safeNum(wallet.coins)||!Number.isSafeInteger(wallet.points))throw Error('Invalid native wallet.');
+ if(wallet.liveSharedWallet)window.BULiveWordTrailsEconomy.validate(wallet.liveSharedWallet);
+ if(read(WALLETS[0])!==expected)throw Error('Native wallet changed before saving.');
+ const entries=WALLETS.map(key=>({key,before:read(key),after})).filter(e=>e.before!==after);
+ if(!entries.length)return true;
+ const t={version:3,id:crypto.randomUUID(),phase:'applying',createdAt:new Date().toISOString(),entries};t.checksum=journalChecksum(t);transaction(JSON.stringify(t));
+ try{exact(TRANSACTION,JSON.stringify(t));for(const e of entries){if(read(e.key)!==e.before)throw Error('Wallet changed during save.');exact(e.key,e.after);}
+  const done={...t,phase:'committed'};done.checksum=journalChecksum(done);exact(TRANSACTION,JSON.stringify(done));try{exact(TRANSACTION,null)}catch(_){}return true;
+ }catch(error){recoverTransaction();saveFailure();throw error;}
+}
 // After a successful import, old in-memory pagehide/audio/iframe checkpoints
 // must not write over the restored data on the way out. Only this old document
 // and its same-origin frames are frozen; the freshly loaded game saves normally.
@@ -323,6 +341,7 @@ window.addEventListener('storage',event=>{
 let restoring=false,needsReload=false;
 async function applyBackup(candidate,options={}){
  if(restoring||needsReload)throw Error('Reload the game before starting another restore.');
+ if(window.BULiveWalletSession&&!window.BULiveWalletSession.writable())throw Error('Close the other game tab before restoring.');
  const c=normalize(candidate); // Copy validated input before awaiting any cross-tab lock.
  const run=()=>{
   if(restoring||needsReload)throw Error('Reload the game before starting another restore.');
@@ -373,7 +392,7 @@ async function importFile(picker){
   const wallet=summary.incomingWallet;
   const message='Restore this backup? Saved chapters and scores in the file will replace matching progress on this device. Other saves stay in place. Close other game tabs first.'+
    (wallet?'\nBackup: '+wallet.points+' Points, '+wallet.insightTokens+' Insight Tokens.':'')+
-   (c.extensions.wordTrailsNext.state===null?'\nThis older backup does not include Word Trails; current Word Trails progress will stay.':'\nWord Trails progress is included. Trail Coins stay separate.');
+   (c.extensions.wordTrailsNext.state===null?'\nThis older backup does not include Word Trails; current Word Trails progress will stay.':'\nWord Trails progress and shared-wallet receipts are included. Historical Trail Coins are never added to Insight Tokens.');
   if(window.confirm(message))await applyBackup(c);
  }catch(e){notice('Restore failed: '+e.message+' No automatic legacy rollback was performed.');}
  finally{picker.value='';}
@@ -385,7 +404,7 @@ function getStatus(){
  if(!native)return null;
  el=document.createElement('small');el.id='bu-wt-save-status';el.setAttribute('role','status');
  el.setAttribute('aria-live','polite');el.style.display='block';el.style.marginTop='8px';
- el.textContent='Complete LIVE backups also include Word Trails progress. Its Trail Coins stay separate from Insight Tokens.';
+ el.textContent='Complete LIVE backups also include Word Trails progress. It uses the same Insight Tokens as Rewards. Historical Trail Coins are retained, never converted.';
  native.append(el);return el;
 }
 function notice(s){const el=getStatus();if(el)el.textContent=s}
@@ -405,7 +424,7 @@ function recoveryEvidence(){
  // A review copy is deliberately NOT a BibleUnfoldedSave import payload.
  return {format:'BibleUnfoldedRecoveryEvidence',version:1,capturedAt:new Date().toISOString(),
   warning:'Evidence only. Current progress may be partly restored; this does not reconstruct an earlier known-good save.',
-  journal:read(JOURNAL),committedMarker:read(COMMITTED),previousTransaction:read(PREVIOUS_TX),previousCommit:read(PREVIOUS_DONE),transaction:read(TRANSACTION),conflict:read(EVIDENCE)};
+  sharedWalletCheckpoint:read('bible-unfolded-live-wallet-checkpoint-v1'),journal:read(JOURNAL),committedMarker:read(COMMITTED),previousTransaction:read(PREVIOUS_TX),previousCommit:read(PREVIOUS_DONE),transaction:read(TRANSACTION),conflict:read(EVIDENCE)};
 }
 function downloadEvidence(){
  try{
@@ -430,7 +449,7 @@ function installReview(){
  panel.querySelector('#bu-live-recovery-description').textContent=state.quarantined?
   'An older backup restore record needs review. Your current progress has not been replaced or rolled back. It may contain a partly restored game; a current copy cannot recreate an earlier known-good save. Keep a copy of both current progress and the retained record. Older open game tabs can still change progress. Close other tabs of the game, and keep the files for review.':
   'Download a backup regularly. To restore, choose a Bible Unfolded backup file and review the confirmation. Close other game tabs first. Damaged or unsupported files are rejected before progress changes.';
- let hasEvidence=state.quarantined;try{hasEvidence=hasEvidence||read(EVIDENCE)!==null;}catch(_){}
+ let hasEvidence=state.quarantined;try{hasEvidence=hasEvidence||read(EVIDENCE)!==null||read('bible-unfolded-live-wallet-checkpoint-v1')!==null;}catch(_){}
  panel.querySelector('#bu-live-copy-recovery').hidden=!hasEvidence||state.kind==='storage-unavailable';
  if(state.quarantined)panel.open=true;
  return panel;
@@ -468,7 +487,7 @@ let startupRecovery={kind:'none',recovered:false};
 let hasTransaction=false;try{hasTransaction=read(TRANSACTION)!==null;}catch(e){startupRecovery={kind:'blocked',reason:'Device storage is unavailable.'};}
 if(hasTransaction){
  freezeOldPage();
- const recover=()=>{startupRecovery=recoverTransaction();return startupRecovery;};
+ const recover=async()=>{if(window.BULiveWalletSession&&!await window.BULiveWalletSession.ready)return {kind:'blocked',reason:'Another game tab owns the saved game.'};startupRecovery=recoverTransaction();return startupRecovery;};
  const pending=navigator.locks?navigator.locks.request('bible-unfolded-live-backup-restore-v3',{mode:'exclusive'},recover):Promise.resolve({kind:'blocked',reason:'A secure browser with Web Locks is required.'});
  pending.then(result=>{
   startupRecovery=result;
@@ -482,6 +501,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else install();
 window.BUPlatformSaves=Object.freeze({
  version:'2.1.0-live',safetyRevision:'reliable-restore-v3',restoreDisabled:false,keys:Object.freeze({TEST,FEEL,SHARED_AUDIO,DAILY,JOURNAL,COMMITTED,TRANSACTION,EVIDENCE}),
- get startupRecovery(){return startupRecovery;},makeBackup,dryRun,applyBackup,validateTrails,recoverPending,reviewRestore,recoveryEvidence,bound:()=>installed
+ get startupRecovery(){return startupRecovery;},commitNativeWallet,makeBackup,dryRun,applyBackup,validateTrails,recoverPending,reviewRestore,recoveryEvidence,bound:()=>installed
 });
 })();

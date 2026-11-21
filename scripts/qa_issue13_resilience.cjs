@@ -9,18 +9,20 @@ for(const engine of (process.env.RESTORE_ENGINES||'chromium,webkit').split(','))
  const context=await browser.newContext({viewport:{width:430,height:932},isMobile:true,hasTouch:true}),page=await context.newPage();await load(page);
  // A second updated game tab must reload stale memory after a completed import.
  const other=await context.newPage();await load(other);
- const candidate=await page.evaluate(()=>{const c=BUPlatformSaves.makeBackup();delete c.integrity;const key='bible-unfolded-rewards-v17';c.keys[key]=JSON.stringify({...JSON.parse(c.keys[key]),coins:321,points:-42});return c;});
+ const candidate=await page.evaluate(()=>{const c=BUPlatformSaves.makeBackup();delete c.integrity;const key='bible-unfolded-rewards-v17';c.keys[key]=JSON.stringify({...JSON.parse(c.keys[key]),coins:321,points:-42});c.keys[key+'-recovery-v3811']=c.keys[key];return c;});
  const nav1=page.waitForNavigation({waitUntil:'load',timeout:120000}),nav2=other.waitForNavigation({waitUntil:'load',timeout:120000});
  await page.evaluate(c=>BUPlatformSaves.applyBackup(c),candidate).catch(e=>{if(!/context was destroyed|navigation/i.test(e.message))throw e;});await Promise.all([nav1,nav2]);
  await Promise.all([page.waitForFunction(()=>window.BUPlatformSaves?.bound?.()),other.waitForFunction(()=>window.BUPlatformSaves?.bound?.())]);
  assert.equal(await page.evaluate(()=>economy.coins),321);assert.equal(await other.evaluate(()=>economy.coins),321);
+ // The reloaded follower stays read-only; reacquire a single writer for gameplay.
+ await other.close();await page.reload({waitUntil:'load'});await page.waitForFunction(()=>window.BULiveWalletSession?.writable()&&window.BULiveInsightBridge?.prepare().ok);
  // Freeze the old source document AND its same-origin child when reload is
  // suppressed for this test. Their stale unload writers cannot undo a restore.
  await page.evaluate(()=>{document.getElementById('daily-close')?.click();focusHome();document.getElementById('home-cross').click();});
  await page.waitForFunction(()=>window.BUWTNativeShell?.active?.());
  const frozen=await page.evaluate(async()=>{
   const frame=[...document.querySelectorAll('iframe')].find(f=>{try{return f.contentWindow.localStorage===f.contentWindow.localStorage;}catch(_){return false;}});
-  const c=BUPlatformSaves.makeBackup();delete c.integrity;const key='bible-unfolded-rewards-v17';c.keys[key]=JSON.stringify({...JSON.parse(c.keys[key]),coins:222});await BUPlatformSaves.applyBackup(c,{reload:false});
+  const c=BUPlatformSaves.makeBackup();delete c.integrity;const key='bible-unfolded-rewards-v17';c.keys[key]=JSON.stringify({...JSON.parse(c.keys[key]),coins:222});c.keys[key+'-recovery-v3811']=c.keys[key];await BUPlatformSaves.applyBackup(c,{reload:false});
   let parentBlocked=false,childBlocked=!frame;try{localStorage.setItem(key,'stale-parent')}catch(_){parentBlocked=true;}
   if(frame)try{frame.contentWindow.localStorage.setItem(key,'stale-child')}catch(_){childBlocked=true;}
   return {parentBlocked,childBlocked,coins:JSON.parse(localStorage.getItem(key)).coins,hadFrame:!!frame};
