@@ -44,7 +44,11 @@ are byte-identical to the checkpoint (automated scope gate). Only host loading,
 wallet/backup adapters and Word Trails economy calls change. Loader query versions
 are advanced so cached pre-wallet scripts cannot silently bypass the new bridge. Existing restore
 resilience fixtures now mirror both wallet copies and reacquire a single writer
-after the intentional two-tab restore test; their failure checks remain.
+after the intentional two-tab restore test; their failure checks remain. The old
+Word Trails source/save fixtures now check the cache chain and zero secondary
+starting coins, plus equal native/Trail/Rewards displays. The Trivia preservation
+gate permits only the two updated wallet loader URLs; its artwork hashes and
+complete loader equality check remain.
 
 Before an eventual owner-approved deployment, export a current LIVE v2 backup.
 For rollback, use the checkpoint code and a matching LIVE backup/recovery record;
