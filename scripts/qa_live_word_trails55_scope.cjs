@@ -23,4 +23,5 @@ engine=engine.replace(",\n 55:{symbol:'✧',name:'Ready to Serve',detail:'Fifty-
 {const prior=old('experiments/word-trails-next-v1.js');if(engine!==prior){let i=0;while(engine[i]===prior[i])i++;throw Error('Engine drift at '+i+' actual '+JSON.stringify(engine.slice(i-60,i+100))+' prior '+JSON.stringify(prior.slice(i-60,i+100)));}}
 console.log('PASS_LIVE_55_SCOPE',count,'existing files unchanged; native wallet bridge/core/audio/art/50 levels protected; approved TEST hashes match');
 
-assert.equal(read('word-trails-next-launcher.js').replace('Play the 55-level Bible Word Trails','Play the 50-level Bible Word Trails'),old('word-trails-next-launcher.js'));
+assert(read('word-trails-next-launcher.js').includes('55 crossword levels · Bible discoveries'),'Level 55 must be shown on the Word Trails launch card');
+assert.equal(read('word-trails-next-launcher.js').replace('Play the 55-level Bible Word Trails','Play the 50-level Bible Word Trails').replace('55 crossword levels · Bible discoveries','50 crossword levels · Bible discoveries'),old('word-trails-next-launcher.js'));
