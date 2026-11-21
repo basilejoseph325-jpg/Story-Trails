@@ -4,7 +4,7 @@
  * LIVE: the main game retains its native settings, wallet and music ownership. */
 (()=>{'use strict';
 if(window.BUWTNativeShell)return;
-const FRAME_URL='experiments/word-trails-next-v1.html?v=live-shared-wallet-v1';
+const FRAME_URL='experiments/word-trails-next-v1.html?v=live-word-trails55-v1';
 let shell=null,frame=null,opening=false,dailyFrame=null,dailyBackPending=false;
 const $=id=>document.getElementById(id);
 function active(){return !!shell?.isConnected}

@@ -2,7 +2,7 @@
    The original game owns menu, Settings, voice selection and purchases.
    No TEST visual banner or parallel wallet is installed. */
 /* Load new Word Trails selector only within the isolated Bible Unfolded. */
-(()=>{const s=document.createElement('script');s.src='word-trails-next-launcher.js?v=live-33-crosswords-20261114-v1';s.defer=true;document.head.appendChild(s)})();
+(()=>{const s=document.createElement('script');s.src='word-trails-next-launcher.js?v=live-word-trails55-v1';s.defer=true;document.head.appendChild(s)})();
 
 
 
@@ -97,7 +97,7 @@
 })();
 
 /* LIVE — mount Word Trails under the real main-game UI. */
-(()=>{if(window.BUWTNativeShell||document.getElementById('bu-wt-native-host-loader'))return;const s=document.createElement('script');s.id='bu-wt-native-host-loader';s.src='word-trails-native-shell-v1.js?v=live-shared-wallet-v1';s.defer=true;document.head.appendChild(s)})();
+(()=>{if(window.BUWTNativeShell||document.getElementById('bu-wt-native-host-loader'))return;const s=document.createElement('script');s.id='bu-wt-native-host-loader';s.src='word-trails-native-shell-v1.js?v=live-word-trails55-v1';s.defer=true;document.head.appendChild(s)})();
 
 
 /* LIVE — extend the actual native Settings backup controls so one
