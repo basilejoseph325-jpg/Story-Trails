@@ -803,7 +803,10 @@ wheel.addEventListener('pointerdown',e=>{
  window.BUWTWheelNative?.begin?.(e);
  dragging=true;dragActive=false;pointer=e.pointerId;
  start={x:e.clientX,y:e.clientY,index:Number(b.dataset.letterIndex)};
- try{wheel.setPointerCapture(e.pointerId)}catch(_){}
+ // Capture the pressed letter, not its non-clickable wheel parent. Chromium
+ // can otherwise retarget a stationary touch's pointerup away from the button
+ // and omit its compatibility click. Moves/up still bubble to the wheel.
+ try{b.setPointerCapture(e.pointerId)}catch(_){}
 });
 wheel.addEventListener('pointermove',e=>{
  if(!dragging||e.pointerId!==pointer||!start)return;

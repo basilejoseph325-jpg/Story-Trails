@@ -25,7 +25,7 @@ assert(dailyJs.includes("const STORAGE_KEY='bu-visual-lab-daily-word-trail-v1'")
 assert(shell.includes('function openDaily()')&&shell.includes('function closeDaily('),'Native Daily overlay remains');
 assert(shell.includes('rootMusicMuteLease'),'Main-game soundtrack must remain muted inside Word Trails');
 assert(game.includes('bu-wt-daily-enter')&&!game.includes("dailyOverlayActive=true;music?.pause()"),'Daily must not pause regular Word Trails music');
-assert(loader.includes('word-trails-native-shell-v1.js?v=live-word-trails55-v1')&&root.includes('word-trails-live-bootstrap-v1.js?v=live-word-trails55-v1')&&root.includes('bu-platform-rewards-v1.js?v=live-word-trails55-v1')&&shell.includes('word-trails-next-v1.html?v=live-word-trails55-v1')&&html.includes('word-trails-next-v1.js?v=live-word-trails55-v1'),'Wallet release cache chain must match');
+assert(loader.includes('word-trails-native-shell-v1.js?v=live-word-trails55-touch-v1')&&root.includes('word-trails-live-bootstrap-v1.js?v=live-word-trails55-touch-v1')&&root.includes('bu-platform-rewards-v1.js?v=live-word-trails55-v1')&&shell.includes('word-trails-next-v1.html?v=live-word-trails55-touch-v1')&&html.includes('word-trails-next-v1.js?v=live-word-trails55-touch-v1'),'Wallet release cache chain must match');
 assert(!migration.includes('localStorage.')&&!migration.includes('sessionStorage.')&&!migration.includes('.setItem('),'Legacy importer must be inert');
 assert(fs.existsSync('scripts/qa_live_word_trails_native_daily_music_v1.cjs'),'Native test missing');
 assert(fs.existsSync('scripts/qa_live_word_trails_daily_v1.cjs'),'Daily test missing');

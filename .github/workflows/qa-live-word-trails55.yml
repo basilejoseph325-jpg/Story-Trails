@@ -47,6 +47,9 @@ jobs:
             sleep 1
           done
           exit 1
+      - name: Native Chromium swipe-to-tap capture regression
+        if: matrix.engine == 'chromium'
+        run: node scripts/qa_live_word_trails55_touch.cjs
       - run: node scripts/qa_live_word_trails55_browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()

@@ -62,3 +62,31 @@ restore checkpoint code with a matching pre-55 LIVE backup (do not feed a comple
 backup journal, paired wallet copies and migration checkpoint protections remain.
 After independent approval/release, the next separate lane is Genesis13/14 PR12;
 Family Fresh Mix and polish follow. No 45k tester grant is included.
+
+## Follow-up: real swipe-to-tap capture defect (PR review 6007431615)
+
+ChatGPT's 55-level launcher caption and strict guard corrections are retained.
+A Chromium CDP swipe followed by a real touch missed its first letter locally
+at 320px after a 250ms gap (turn 8). The trace showed an unlocked, non-drag tap
+on B with suppression already expired: pointerdown targeted B, but explicit
+capture on the wheel retargeted pointerup to the non-clickable wheel. No click
+reached B, so selection stayed empty. Old routing was confirmed at 430px too;
+other old taps still emitted a compatibility click, explaining intermittent CI.
+
+The fix captures the original letter button instead. Moves/up still bubble to
+the existing wheel handlers, hit-testing/SFX/visuals stay unchanged, and swipe
+compatibility clicks remain suppressed. The next independent tap resets the
+guard as before. No wallet/save/reward code changes in this follow-up.
+
+`qa_live_word_trails55_touch.cjs` observes native event targets and internal
+selection/drag/guard state without synthesizing clicks. Chromium uses real CDP
+swipes and Playwright/CDP instant/held touch. It asserts the very first letter,
+exactly-one selection/toggle, pointerup on that letter, canceled gesture cleanup,
+keyboard Space activation, and unchanged balance at 320/430, with 0/20/250ms gaps.
+Run with `TOUCH_BASELINE=1` to record old routing from reviewed commit 2fca84b;
+old compatibility-click delivery is timing-dependent, not claimed to miss on
+every attempt. JSON traces are CI artifacts. The unmodified full-game suite
+now has **no post-swipe delay workaround** and retains strict prefix assertions.
+Only the exact capture change is allowed by the whole-engine scope guard.
+Release-loader cache versions advance specifically for the fixed engine.
+Final exact-head regression results are recorded on PR #24. No merge/deploy.
