@@ -1,0 +1,115 @@
+name: Genesis 13–14 LIVE release candidate (no deployment)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'journey-progress-caption.js'
+      - 'story-chapter-complete-v2-test.js'
+      - 'story-adventure-episode13-release.js'
+      - 'story-adventure-episode14-release.js'
+      - 'story-adventure-release-compat.js'
+      - 'story-adventure-content/genesis-episode13-*'
+      - 'story-adventure-content/genesis-episode14-*'
+      - 'story-adventure-art/genesis13/**'
+      - 'story-adventure-art/genesis14/**'
+      - 'scripts/qa_release_*'
+      - 'docs/GENESIS13_14_*'
+      - '.github/workflows/qa-genesis13-14-release-candidate.yml'
+permissions:
+  contents: read
+jobs:
+  new-chapters:
+    if: github.repository == 'basilejoseph325-jpg/Story-Trails'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      STORY_URL: http://127.0.0.1:8913/index.html
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+      - name: Start private candidate server
+        run: |
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8913 --bind 127.0.0.1 > work/candidate-http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8913/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Source identity, 24 approved images, narrow diff and syntax
+        run: node scripts/qa_release_integrity.cjs
+      - name: Episode 13 all 12 wheels with touch, hints, recovery and Next to 14
+        env:
+          STORY_SHOTS: '1'
+          STORY_EVIDENCE: work/release-genesis13-evidence.json
+        run: node scripts/qa_release_genesis13.cjs
+      - name: Episode 14 all 12 wheels with touch, hints, recovery and finale
+        env:
+          STORY_SHOTS: '1'
+          STORY_EVIDENCE: work/release-genesis14-evidence.json
+        run: node scripts/qa_release_genesis14.cjs
+      - name: Existing Episode 12 gameplay and navigation regression
+        run: node scripts/qa_genesis12_native.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis13-14-release-gameplay
+          path: |
+            work/release-genesis*-evidence.json
+            work/release-genesis*.png
+          if-no-files-found: ignore
+  preservation:
+    if: github.repository == 'basilejoseph325-jpg/Story-Trails'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      STORY_URL: http://127.0.0.1:8913/index.html
+      LIVE_BASELINE_URL: http://127.0.0.1:8890/index.html
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+      - name: Serve original LIVE checkpoint and candidate privately
+        run: |
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          mkdir -p work/live-baseline
+          git archive 169294536e6bdf3047cd556e8ee0d84a50d9f1ff | tar -x -C work/live-baseline
+          python3 -m http.server 8890 --bind 127.0.0.1 --directory work/live-baseline > work/baseline-http.log 2>&1 &
+          python3 -m http.server 8913 --bind 127.0.0.1 > work/candidate-http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8913/index.html -o /dev/null && curl -fsS http://127.0.0.1:8890/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Existing modes, native Settings, wallet ownership and checkpoint reads
+        env:
+          STORY_EVIDENCE: work/release-preservation-evidence.json
+        run: node scripts/qa_release_preservation.cjs
+      - name: All 201 Story discoveries, 20 endings, two phone widths
+        env:
+          STORY_EVIDENCE: work/release-all-story-evidence.json
+        run: node scripts/qa_release_story_regression.cjs
+      - name: Word Trails native audio, announcer and Ocean Glow against baseline
+        run: |
+          BU_WT_NATIVE_PARITY_URL=http://127.0.0.1:8890/index.html node scripts/qa_release_word_trails_audio.cjs
+          BU_WT_NATIVE_PARITY_URL=http://127.0.0.1:8913/index.html node scripts/qa_release_word_trails_audio.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis13-14-release-preservation
+          path: |
+            work/release-preservation-evidence.json
+            work/release-all-story-evidence.json
+          if-no-files-found: ignore
