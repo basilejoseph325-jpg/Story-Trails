@@ -59,7 +59,7 @@ jobs:
           if-no-files-found: ignore
   chapter-candidate-compatibility:
     # Unmerged Genesis 13/14 is a separate release lane, not this wallet candidate.
-    if: github.head_ref != 'feature/live-word-trails-51-55-20261121' && github.ref_name != 'feature/live-word-trails-51-55-20261121' && github.head_ref != 'feature/live-shared-wallet-single-tester-20261121' && github.ref_name != 'feature/live-shared-wallet-single-tester-20261121'
+    if: github.head_ref != 'feature/live-genesis13-14-current-20261121' && github.ref_name != 'feature/live-genesis13-14-current-20261121' && github.head_ref != 'feature/live-word-trails-51-55-20261121' && github.ref_name != 'feature/live-word-trails-51-55-20261121' && github.head_ref != 'feature/live-shared-wallet-single-tester-20261121' && github.ref_name != 'feature/live-shared-wallet-single-tester-20261121'
     runs-on: ubuntu-26.04
     timeout-minutes: 40
     env:
