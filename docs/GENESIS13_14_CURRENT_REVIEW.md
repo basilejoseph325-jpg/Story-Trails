@@ -20,7 +20,7 @@ Candidate only. No merge or deployment. Branch
   accounts and Joseph publication. Record source evidence and six HTTP200 source
   captures in `GENESIS13_14_SOURCE_CHECK.json`; no approved text rewritten.
 - [x] Check all 28 approved content/art files against their source hashes;
-  check adapters byte-identical to PR12; decode all24 WebPs at 640×360 in CI.
+  check adapters identical to PR12 except the scoped request cancellation; decode all24 WebPs at 640×360 in CI.
 - [x] Add current-base Chromium/WebKit320/430 native touch, predecessor gates,
   every scene/hint ladder, endings, restart/resume/reload, reward-once and restore
   checks. Exact pass/fail and workflow links are maintained on the new draft PR.
@@ -84,3 +84,16 @@ Historical PR12 test results are not counted as current passes. The current draf
 PR records exact-head CI results and limitations. Genesis source/art is reused,
 not reported as newly authored chapters. Family Fresh Mix, polish and the 45k
 TEST grant are excluded; those remain separate release lanes.
+
+## Current-base navigation fix
+
+WebKit wallet/navigation regression exposed an in-flight Episode13 manifest read
+being canceled by navigation to Books and reported as an access-control page
+error. New chapter content/manifest reads now use a chapter-local AbortController
+and are canceled on beforeunload/pagehide; aborts on a departing document are
+not reported as chapter failure, and late artwork reads cannot register into
+the departing page. Genuine load errors while staying in the game remain visible.
+Only this lifecycle change differs in the two approved episode adapters; all
+content/art/source and puzzle/hint/reward logic stays unchanged. A delayed-manifest
+real navigation test covers both chapters and browsers. No error assertions are
+removed from the original wallet suite.

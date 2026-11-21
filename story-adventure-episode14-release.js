@@ -8,6 +8,11 @@
       !location.pathname.includes('/Story-Trails/')) return;
 
   const preview = { status: 'loading', chapterId: CHAPTER_ID, discoveries: 0 };
+  // Cancel only this chapter's pending reads when its document is leaving.
+  const loadingController=new AbortController();let leaving=false;
+  const cancelLoading=()=>{leaving=true;preview.status='canceled';loadingController.abort();};
+  window.addEventListener('beforeunload',cancelLoading,{once:true});
+  window.addEventListener('pagehide',cancelLoading,{once:true});
   if(window.BUStoryGenesis14Test)return;
   window.BUStoryGenesis14Test = preview;
   const scenePaths=Object.freeze(Object.fromEntries(Array.from({length:12},(_,i)=>{
@@ -19,7 +24,7 @@
   preview.currentArtwork=()=>bu3857State?.book===CHAPTER_ID&&artwork['g14-d12']?
     {...artwork['g14-d12'],caption:'Jacob grieves for Joseph'}:null;
   async function prepareArtwork(chapter){
-    const response=await fetch('story-adventure-art/genesis14/manifest.json',{cache:'no-store'});
+    const response=await fetch('story-adventure-art/genesis14/manifest.json',{cache:'no-store',signal:loadingController.signal});
     if(!response.ok)throw Error('Episode 14 art manifest HTTP '+response.status);
     const manifest=await response.json();
     if(manifest.chapterId!==CHAPTER_ID||manifest.ending?.heroDiscovery!=='g14-d12'||manifest.ending?.backgroundDiscovery!=='g14-d12')throw Error('Episode 14 art manifest mismatch');
@@ -323,7 +328,7 @@
       throw Error('The existing Story Adventure engine did not initialize.');
     }
     const response = await fetch('story-adventure-content/genesis-episode14-joseph-v1.json',
-      { cache: 'no-store' });
+      { cache: 'no-store', signal: loadingController.signal });
     if (!response.ok) throw Error('Episode 14 content HTTP ' + response.status);
     const chapter = await response.json();
     validate(chapter);
@@ -331,6 +336,7 @@
     chapter.rules='Existing native Story wheel, rewards and contextual hint prices; Episode 13 completion unlocks Episode 14.';
     chapter.releaseGates=['Independent ChatGPT and owner review','Physical iPhone/Safari acceptance','No merge or deployment authorized'];
     await prepareArtwork(chapter);
+    if(leaving)return;
     if(!chapter.completionMessage)throw Error('Episode 14 ending text missing');
     BU3857_DATA[CHAPTER_ID] = chapter;
     for (const discovery of chapter.discoveries) {
@@ -369,6 +375,7 @@
 
   function start() {
     load().catch(error => {
+      if(leaving&&error.name==='AbortError'){preview.status='canceled';return;}
       preview.status = 'failed';
       preview.error = error.message;
       console.error('Genesis Episode 14 integration failed:', error);

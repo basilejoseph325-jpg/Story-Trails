@@ -57,6 +57,7 @@ jobs:
             sleep 1
           done
           exit 1
+      - run: node scripts/qa_genesis13_14_navigation.cjs
       - run: node scripts/qa_genesis13_14_current_browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
@@ -70,6 +71,7 @@ jobs:
       NODE_PATH: '${{ github.workspace }}/work/node_modules'
       STORY_URL: http://127.0.0.1:8923/index.html
       LIVE_BASELINE_URL: http://127.0.0.1:8930/index.html
+      BU_WT_NATIVE_PARITY_URL: http://127.0.0.1:8923/index.html
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
