@@ -1,0 +1,58 @@
+name: LIVE Word Trails 51–55 candidate (no deployment)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'experiments/word-trails-*'
+      - 'live-word-trails-economy-v1.js'
+      - 'bu-platform-saves-v2.js'
+      - 'scripts/qa_live_word_trails55*'
+      - 'scripts/qa_word_trails_levels_51_55.cjs'
+      - '.github/workflows/qa-live-word-trails55.yml'
+permissions: {contents: read}
+jobs:
+  source-and-save-contract:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: |
+          node scripts/qa_live_word_trails55_scope.cjs
+          node scripts/qa_word_trails_levels_51_55.cjs --integration
+          node scripts/qa_live_word_trails55_model.cjs
+  native-55:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix: {engine: [chromium, webkit]}
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      WALLET_ENGINES: '${{ matrix.engine }}'
+      LIVE_WALLET_URL: http://127.0.0.1:8922/index.html
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: npm install --prefix work --no-audit --no-fund playwright@1.65.1
+      - run: ./work/node_modules/.bin/playwright install --with-deps ${{ matrix.engine }}
+      - name: Private candidate server
+        run: |
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8922 --bind 127.0.0.1 > work/http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8922/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Native Chromium swipe-to-tap capture regression
+        if: matrix.engine == 'chromium'
+        run: node scripts/qa_live_word_trails55_touch.cjs
+      - run: node scripts/qa_live_word_trails55_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-55-${{ matrix.engine }}
+          path: work/live-55/

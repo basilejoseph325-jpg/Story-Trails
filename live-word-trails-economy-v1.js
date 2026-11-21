@@ -1,6 +1,6 @@
-/* Selective port of the validated TEST native economy. LIVE remains 50 levels. */
+/* Selective port of the validated TEST native economy. LIVE supports 55 levels. */
 (()=>{'use strict';
-const MAX_LEVEL=50,MAX_RECEIPTS=4000;
+const MAX_LEVEL=55,MAX_RECEIPTS=4000;
 const own=o=>!!o&&typeof o==='object'&&!Array.isArray(o);
 function transaction({type,level,word,cell}={}){
  if(!Number.isInteger(level)||level<1||level>MAX_LEVEL)return null;

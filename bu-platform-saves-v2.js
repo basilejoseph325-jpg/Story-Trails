@@ -64,7 +64,7 @@ function validateTrails(raw){
  if(!dataStr(raw,220000))throw Error('Word Trails save exceeds the safe size limit.');
  const s=getJson(raw);if(!s)throw Error('Word Trails save is not a valid object.');
  for(const k of ['level','unlocked']){
-  if(!Number.isInteger(s[k])||s[k]<0||s[k]>49)throw Error('Word Trails '+k+' is out of range.');
+  if(!Number.isInteger(s[k])||s[k]<0||s[k]>54)throw Error('Word Trails '+k+' is out of range.');
  }
  for(const k of ['coins','points'])if(!safeNum(s[k]))throw Error('Word Trails '+k+' is invalid.');
  if(!Array.isArray(s.completed))throw Error('Word Trails completed levels are missing.');
@@ -75,13 +75,13 @@ function validateTrails(raw){
   if(s[k]===undefined)continue;
   if(!Array.isArray(s[k])||s[k].length>6000)throw Error('Word Trails '+k+' is invalid.');
   for(const item of s[k]){
-   if(typeof item==='number'){if(!Number.isSafeInteger(item)||item<0||item>49)throw Error('Bad Word Trails '+k+' level.')}
+   if(typeof item==='number'){if(!Number.isSafeInteger(item)||item<0||item>54)throw Error('Bad Word Trails '+k+' level.')}
    else if(typeof item==='string'){if(item.length>90||!/^[a-z0-9_:|.-]+$/i.test(item))throw Error('Bad Word Trails '+k+' value.')}
    else throw Error('Bad Word Trails '+k+' entry.');
   }
  }
  if(s.progress!==null&&s.progress!==undefined){
-  if(!own(s.progress)||!Number.isInteger(s.progress.level)||s.progress.level<0||s.progress.level>49)throw Error('Word Trails in-progress level is invalid.');
+  if(!own(s.progress)||!Number.isInteger(s.progress.level)||s.progress.level<0||s.progress.level>54)throw Error('Word Trails in-progress level is invalid.');
   for(const k of ['found','bonuses','hinted']){
    if(s.progress[k]===undefined)continue;
    if(!Array.isArray(s.progress[k])||s.progress[k].length>120||
