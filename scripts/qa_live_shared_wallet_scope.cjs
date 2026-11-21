@@ -1,5 +1,6 @@
 'use strict';
 const fs=require('node:fs'),cp=require('node:child_process'),assert=require('node:assert/strict');
+if(fs.existsSync('scripts/qa_live_word_trails55_scope.cjs')){require('./qa_live_word_trails55_scope.cjs');return;}
 const BASE='fe9e77374707e39501f629cad72bdd41e177438e',git=(...a)=>cp.execFileSync('git',a,{encoding:'utf8',maxBuffer:40000000});
 const allowed=new Set(['index.html','journey-progress-caption.js','word-trails-live-bootstrap-v1.js','bu-platform-saves-v2.js','bu-platform-rewards-v1.js','word-trails-native-shell-v1.js','experiments/word-trails-next-v1.js','experiments/word-trails-next-v1.html','experiments/word-trails-unified-menu-v1.js','live-shared-wallet-v1.js','live-word-trails-economy-v1.js','scripts/qa_live_word_trails50_source_v1.cjs','scripts/qa_live_word_trails50_save_compat_v1.cjs','scripts/qa_issue13_safety.cjs','scripts/qa_issue13_resilience.cjs','scripts/qa_live_shared_wallet_scope.cjs','scripts/qa_live_shared_wallet_model.cjs','scripts/qa_live_shared_wallet_browser.cjs','.github/workflows/qa-issue13-save-safety.yml','.github/workflows/qa-live-shared-wallet.yml','.github/workflows/qa-live-trivia-3-screens.yml','docs/LIVE_SHARED_WALLET.md']);
 for(const f of git('diff','--name-only',BASE).trim().split('\n').filter(Boolean))assert(allowed.has(f),'Unrelated file changed: '+f);

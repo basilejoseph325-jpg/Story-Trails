@@ -29,13 +29,13 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
    await page.goto(URL,{waitUntil:'domcontentloaded',timeout:120000});
    await page.waitForFunction(()=>window.BUWTNativeShell?.nativeReady?.(),{timeout:90000});
    await page.evaluate(()=>document.getElementById('home-cross').click());
-   // The HTML already contains a static LEVEL 1 / 50 label. Wait for the
+   // The HTML already contains a static LEVEL 1 / 55 label. Wait for the
    // actual engine to draw its wheel and persist its restored LIVE save.
    await page.waitForFunction(()=>{
     const child=document.getElementById('bu-wt-native-game')?.contentWindow;
     return !!(child?.BUWTPolish&&
      child.document.querySelectorAll('.wheel-letter').length>=4&&
-     child.document.querySelector('#level-label')?.textContent.includes('/ 50')&&
+     child.document.querySelector('#level-label')?.textContent.includes('/ 55')&&
      localStorage.getItem('bible-unfolded-word-trails-next-v1')!==null);
    },{timeout:90000});
    const state=await page.evaluate(()=>{
@@ -52,9 +52,9 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
    assert.equal(state.platformCoins,state.nativeCoins,'Rewards must use the same balance');
    assert.equal(state.unrelated,'keep','Unrelated data may not be changed');
    assert.deepEqual(state.test,testSaved,'TEST save must never be imported or rewritten');
-   assert(state.live&&state.level.includes('/ 50'),'50-level LIVE engine must use original LIVE save');
+   assert(state.live&&state.level.includes('/ 55'),'50-level LIVE engine must use original LIVE save');
    if(seed){
-    assert(state.level.startsWith('LEVEL 30 / 50'),'A legacy 30-level player must resume original level');
+    assert(state.level.startsWith('LEVEL 30 / 55'),'A legacy 30-level player must resume original level');
     assert(state.live.unlocked>=30,'Completing legacy Level 30 must unlock Level 31');
     assert.equal(state.live.coins,175,'Existing Trail Coins cannot change on update');
     assert.equal(state.live.points,80,'Existing Word Trails points cannot change on update');
@@ -62,7 +62,7 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
     assert.deepEqual(state.live.sparks,seed.sparks,'Paid/claimed Bible discoveries preserved');
     assert.deepEqual(state.live.claimedFreeHints,seed.claimedFreeHints,'Hint receipts preserved');
    }else{
-    assert(state.level.startsWith('LEVEL 1 / 50'),'Fresh LIVE install must begin at Level 1');
+    assert(state.level.startsWith('LEVEL 1 / 55'),'Fresh LIVE install must begin at Level 1');
     assert.equal(state.live.coins,0,'Fresh Word Trails must not start a separate currency');
     assert.equal(state.nativeCoins,60,'Original native starting daily balance retained; TEST 999 must not transfer');
    }
