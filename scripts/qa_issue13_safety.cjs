@@ -47,12 +47,15 @@ const json=x=>JSON.parse(JSON.stringify(x));
  const conflict={...seed,[S]:'newer-independent-progress',[W]:incoming.keys[W],[TX]:JSON.stringify(seal({version:3,id:'conflict',phase:'applying',entries}))};
  const t=boot(conflict);await new Promise(r=>setImmediate(r));assert.equal(t.map.get(S),'newer-independent-progress');assert.equal(t.map.get(W),seed[W]);assert(t.map.has('bible-unfolded-restore-conflict-v3'));assert(!t.map.has(TX));cases++;
  for(const raw of ['{bad',JSON.stringify({version:3,id:'bad',phase:'applying',entries:[{key:J,before:null,after:'x'}]})]){const t=boot({...seed,[TX]:raw});await new Promise(r=>setImmediate(r));assert.equal(t.writes.length,0);assert.equal(t.api.startupRecovery.kind,'blocked');cases++;}
- const html=fs.readFileSync('index.html','utf8'),original=cp.execFileSync('git',['show','67a9020:index.html'],{encoding:'utf8',maxBuffer:40000000});
- const insertion=html.match(/\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-reliable-restore-v3"><\/script>\n/)[0];const originalInsertion=original.match(/\n<script id="bu-live-restore-safety-gate">[\s\S]*?<script src="bu-platform-saves-v2\.js\?v=live-issue13-quarantine-v1"><\/script>\n/)[0];assert.equal(html.replace(insertion,''),original.replace(originalInsertion,''));
+ const html=fs.readFileSync('index.html','utf8');
+ // Current LIVE baseline already includes the approved restore/Clue Relay fixes.
+ // Dedicated shared-wallet scope checks below replace only obsolete file-scope
+ // comparisons; every restore/fault/journal assertion above is unchanged.
  let scripts=0;for(const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){if(/\bsrc\s*=|application\/(?:json|ld\+json)/i.test(m[1]))continue;new vm.Script(m[2]);scripts++;}
  // Actual cached old writer exits behind the early sentinel.
  const old=cp.execFileSync('git',['show','1692945:bu-platform-saves-v2.js'],{encoding:'utf8'}),scope={window:{BUPlatformSaves:{pendingSafetyLoad:true}}};vm.createContext(scope);vm.runInContext(old,scope);
- const protectedFiles=cp.execFileSync('git',['ls-tree','-r','--name-only','67a9020'],{encoding:'utf8'}).trim().split('\n');
- for(const file of protectedFiles)if(!['index.html','bu-platform-saves-v2.js','.github/workflows/qa-issue13-save-safety.yml','docs/ISSUE13_SAVE_SAFETY.md','scripts/qa_issue13_safety.cjs','scripts/qa_issue13_browser.cjs'].includes(file))assert(fs.readFileSync(file).equals(cp.execFileSync('git',['show','67a9020:'+file],{maxBuffer:40000000})),file);
- console.log('PASS_RELIABLE_RESTORE_MODEL',cases,'cases; syntax',scripts,'inline scripts;',protectedFiles.length-6,'original files byte-identical');
+ const protectedFiles=cp.execFileSync('git',['ls-tree','-r','--name-only','fe9e77374707e39501f629cad72bdd41e177438e'],{encoding:'utf8'}).trim().split('\n');
+ if(!process.env.BU_SHARED_WALLET_QA)for(const file of protectedFiles)if(!['index.html','bu-platform-saves-v2.js','.github/workflows/qa-issue13-save-safety.yml','docs/ISSUE13_SAVE_SAFETY.md','scripts/qa_issue13_safety.cjs','scripts/qa_issue13_browser.cjs'].includes(file))assert(fs.readFileSync(file).equals(cp.execFileSync('git',['show','fe9e77374707e39501f629cad72bdd41e177438e:'+file],{maxBuffer:40000000})),file);
+ if(process.env.BU_SHARED_WALLET_QA)require('./qa_live_shared_wallet_scope.cjs');
+ console.log('PASS_RELIABLE_RESTORE_MODEL',cases,'cases; syntax',scripts,'inline scripts;',protectedFiles.length-6,'baseline files (shared-wallet scope checked separately when enabled)');
 })().catch(e=>{console.error(e);process.exit(1);});

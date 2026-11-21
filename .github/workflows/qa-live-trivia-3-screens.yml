@@ -51,7 +51,7 @@ jobs:
             assert actual==sha,f"Approved file differs: {path}: {actual}"
           loader=Path('journey-progress-caption.js').read_text()
           # Compare against immutable pre-release LIVE backup. The only
-          # approved edits to the shared bootstrap are these five cache URLs.
+          # approved edits to the shared bootstrap are the explicit cache URLs below.
           # Protect every existing Trivia, Family, Story and native loader.
           subprocess.run(['git','fetch','origin',
             'backup-before-daily60-crosswords33-live-20261114','--depth=1'],
@@ -67,7 +67,9 @@ jobs:
             ('daily-discovery-illustrated-v1.js?v=20261113-live-daily-illustrated-v1',
              'daily-discovery-illustrated-v1.js?v=20261114-live-daily60-no-picker-v1'),
             ('word-trails-live-bootstrap-v1.js?v=live-word-trails-20261109-r1',
-             'word-trails-live-bootstrap-v1.js?v=live-word-trails50-daily-20261115-v1'),
+             'word-trails-live-bootstrap-v1.js?v=live-shared-wallet-v1'),
+            ('bu-platform-rewards-v1.js?v=shared-wheel-core-20261109',
+             'bu-platform-rewards-v1.js?v=live-shared-wallet-v1'),
             ('family-worship-gathering-v1.js?v=20261106-live-approved-fw-v7',
              'family-worship-gathering-v1.js?v=20261117-live-clue-relay-family-card-v1')
           ]

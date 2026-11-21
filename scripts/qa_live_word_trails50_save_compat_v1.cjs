@@ -44,9 +44,12 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
      live:JSON.parse(localStorage.getItem('bible-unfolded-word-trails-next-v1')||'null'),
      test:JSON.parse(localStorage.getItem('bu-visual-lab-wordtrails-next-v1')||'null'),
      unrelated:localStorage.getItem('qa-unrelated-preserve'),
+     displayBalance:Number(frame.querySelector('#points')?.textContent),nativeCoins:economy.coins,platformCoins:BUPlatformRewards.wallet().coins,
      hasDaily:!!frame.querySelector('[data-wt-open-daily]')};
    });
    assert(state.hasDaily,'Daily must remain available');
+   assert.equal(state.displayBalance,state.nativeCoins,'Word Trails must display native Insight Tokens');
+   assert.equal(state.platformCoins,state.nativeCoins,'Rewards must use the same balance');
    assert.equal(state.unrelated,'keep','Unrelated data may not be changed');
    assert.deepEqual(state.test,testSaved,'TEST save must never be imported or rewritten');
    assert(state.live&&state.level.includes('/ 50'),'50-level LIVE engine must use original LIVE save');
@@ -60,7 +63,8 @@ const LIVE='bible-unfolded-word-trails-next-v1',TEST='bu-visual-lab-wordtrails-n
     assert.deepEqual(state.live.claimedFreeHints,seed.claimedFreeHints,'Hint receipts preserved');
    }else{
     assert(state.level.startsWith('LEVEL 1 / 50'),'Fresh LIVE install must begin at Level 1');
-    assert.equal(state.live.coins,60,'TEST 999 coins must not transfer into LIVE');
+    assert.equal(state.live.coins,0,'Fresh Word Trails must not start a separate currency');
+    assert.equal(state.nativeCoins,60,'Original native starting daily balance retained; TEST 999 must not transfer');
    }
    assert.deepEqual(errors,[],'Browser exceptions');
    console.log('PASS_WORD_TRAILS_LIVE_30_TO_50_SAVE',JSON.stringify({width,height,legacy:!!seed,level:state.level,coins:state.live.coins,unlocked:state.live.unlocked,testUntouched:true,unrelatedUntouched:true}));

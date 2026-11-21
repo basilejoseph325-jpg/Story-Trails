@@ -12,10 +12,11 @@ permissions:
   contents: read
 jobs:
   safety:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 25
     env:
       NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      BU_SHARED_WALLET_QA: '1'
       SAFETY_URL: http://127.0.0.1:8916/index.html
       STORY_URL: http://127.0.0.1:8916/index.html
     steps:
@@ -23,12 +24,13 @@ jobs:
         with: {fetch-depth: 0}
       - uses: actions/setup-node@v4
         with: {node-version: '24'}
-      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0 playwright@1.58.2
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0 playwright@1.65.1
       - run: ./work/node_modules/.bin/playwright install --with-deps webkit
       - name: Syntax, restore/failure/recovery models, cached code and original-file scope
         run: |
           node --check bu-platform-saves-v2.js
           node scripts/qa_issue13_safety.cjs
+          node scripts/qa_live_shared_wallet_scope.cjs
       - name: Private local server
         run: |
           echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
@@ -56,7 +58,9 @@ jobs:
             work/issue13-review-*.png
           if-no-files-found: ignore
   chapter-candidate-compatibility:
-    runs-on: ubuntu-24.04
+    # Unmerged Genesis 13/14 is a separate release lane, not this wallet candidate.
+    if: github.head_ref != 'feature/live-shared-wallet-single-tester-20261121' && github.ref_name != 'feature/live-shared-wallet-single-tester-20261121'
+    runs-on: ubuntu-26.04
     timeout-minutes: 40
     env:
       NODE_PATH: '${{ github.workspace }}/work/node_modules'

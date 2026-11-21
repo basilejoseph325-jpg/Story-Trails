@@ -45,7 +45,7 @@ function refresh(){
  if(balance)balance.textContent=w?'◉ '+Math.floor(w.coins).toLocaleString()+' Insight Tokens   ·   ✦ '+Math.floor(w.points).toLocaleString()+' Points':
   'Your shared rewards are on the Bible Unfolded home screen';
  const test=$('wt-test-wallet'),save=read('bible-unfolded-word-trails-next-v1');
- if(test)test.textContent='Word Trails Trail Coins: '+(save?.coins??'—')+' (separate)';
+ if(test)test.textContent='Word Trails uses the same Insight Tokens as Rewards.';
  const view=$('wt-wheel-rewards');if(!view)return;
  view.replaceChildren();
  const available=owned(),equipped=currentTheme();
@@ -111,8 +111,8 @@ function build(){
  "<button data-wt-menu='about'><span>ⓘ</span><strong>About Me</strong><small>Our purpose and feedback</small></button>",
  "<button data-wt-menu='home'><span>⌂</span><strong>Cover Screen</strong><small>Return to the beginning</small></button>",
  "</nav><p class='wt-menu-foot'>This menu uses the same wheel rewards as the other Bible Unfolded modes.</p></section>",
- "<section data-menu-view='rewards' class='wt-menu-rewards' hidden><p class='wt-menu-intro'>Choose an unlocked style to change your Word Trails wheel right now. These are your existing Bible Unfolded rewards.</p><div id='wt-wheel-rewards'></div><button type='button' class='wt-menu-gold' data-wt-menu='shop'>★ Open Full Rewards Shop</button><p class='wt-menu-foot'>Wheel purchases use shared Insight Tokens, not Word Trails Trail Coins. You will not be charged again for a wheel you own.</p></section>",
- "<section data-menu-view='help' class='wt-menu-help' hidden><h3>Word Trails</h3><p>Swipe letters on the wheel to fill the intersecting crossword. You can also tap letters and press Enter.</p><p><strong>★ Bible Word Hunt:</strong> Find hidden Bible names, places, and other Scripture words. Open the star for clues and discoveries.</p><p><strong>✦ Bonus words:</strong> Find extra words to earn Trail Coins. Three bonus words fill the satchel.</p><p><strong>Hints:</strong> Your first hint is free; later hints cost Trail Coins.</p><button type='button' data-wt-menu='continue' class='wt-menu-gold'>Back to Puzzle</button></section>",
+ "<section data-menu-view='rewards' class='wt-menu-rewards' hidden><p class='wt-menu-intro'>Choose an unlocked style to change your Word Trails wheel right now. These are your existing Bible Unfolded rewards.</p><div id='wt-wheel-rewards'></div><button type='button' class='wt-menu-gold' data-wt-menu='shop'>★ Open Full Rewards Shop</button><p class='wt-menu-foot'>Wheel purchases and hints use the same Insight Tokens as Rewards. You will not be charged again for a wheel you own.</p></section>",
+ "<section data-menu-view='help' class='wt-menu-help' hidden><h3>Word Trails</h3><p>Swipe letters on the wheel to fill the intersecting crossword. You can also tap letters and press Enter.</p><p><strong>★ Bible Word Hunt:</strong> Find hidden Bible names, places, and other Scripture words. Open the star for clues and discoveries.</p><p><strong>✦ Bonus words:</strong> Find extra words to fill the satchel and earn an Insight Token.</p><p><strong>Hints:</strong> Your first hint is free; later hints cost 15 Insight Tokens.</p><button type='button' data-wt-menu='continue' class='wt-menu-gold'>Back to Puzzle</button></section>",
  "<p id='wt-menu-status' class='wt-menu-status' role='status' aria-live='polite'></p></div>"
  ].join('');
  document.body.appendChild(dlg);

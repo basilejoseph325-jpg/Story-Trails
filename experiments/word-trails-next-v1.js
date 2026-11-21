@@ -186,6 +186,24 @@ const MILESTONE_SEALS=Object.freeze({
 });
 const MAP_CHAPTERS=['The First Steps','Courage & Discovery','Stories of Faith','People & Places','Across the Scriptures','The Journey Continues','Faith and Discovery','Growing in Knowledge','Paths of Purpose','Hope and Understanding'];
 const STORAGE='bible-unfolded-word-trails-next-v1';
+const SHARED_WALLET=(()=>{try{return parent!==window&&!!parent.BULiveInsightBridge}catch(_){return false}})();
+let sharedBalance=null;
+function syncShared(){
+ if(!SHARED_WALLET)return null;
+ let result;
+ try{result=window.parent.BULiveInsightBridge?.snapshot?.(window);}
+ catch(_){result=null;}
+ sharedBalance=result?.ok?result.balance:null;
+ return result?.ok?result:{ok:false,reason:'shared-wallet-unavailable'};
+}
+function sharedPay(request){
+ if(!SHARED_WALLET)return {ok:false,reason:'preview-disabled'};
+ let result;
+ try{result=window.parent.BULiveInsightBridge?.transact?.(window,request);}
+ catch(_){result=null;}
+ if(result?.ok)sharedBalance=result.balance;
+ return result||{ok:false,reason:'shared-wallet-unavailable'};
+}
 const $=id=>document.getElementById(id);
 const F=(name,value)=>document.documentElement.style.setProperty(name,value);
 const valid=word=>/^[A-Z]{3,7}$/.test(word);
@@ -237,7 +255,7 @@ BIBLE_SPARKS.forEach((list,i)=>{
   seen.add(item.word);
  }
 });
-const DEFAULT=()=>({level:0,unlocked:0,coins:60,points:0,completed:[],sparks:[],claimedSparks:[],boardBible:[],paidWords:[],paidBonuses:[],claimedFreeHints:[],sound:true,progress:null});
+const DEFAULT=()=>({level:0,unlocked:0,coins:SHARED_WALLET?0:60,points:0,completed:[],sparks:[],claimedSparks:[],boardBible:[],paidWords:[],paidBonuses:[],claimedFreeHints:[],sound:true,progress:null});
 function load(){
  try{const o=JSON.parse(localStorage.getItem(STORAGE));if(!o||typeof o!=='object')return DEFAULT();
   const x={...DEFAULT(),...o};
@@ -265,6 +283,8 @@ function load(){
  }catch(_){return DEFAULT()}
 }
 let save=load(),index=save.level,level=LEVELS[index],cells=BOARDS[index];
+// Persist the normal legacy-spark normalization before the first native ledger seed.
+if(SHARED_WALLET)store();
 /* Motivating next-step preview based ONLY on existing completed-level IDs.
    Does not create rewards, change coin totals, or write a new save key. */
 function nextSealProgress(){
@@ -284,7 +304,7 @@ function renderNextSealProgress(){
  if(mapLabel)mapLabel.textContent=seal.all?'✦ All ten Journey Seals collected':
   'NEXT JOURNEY SEAL · '+seal.title;
  if(mapDetail)mapDetail.textContent=seal.all?'Your 50-level journey is complete!':
-  seal.done+' of '+seal.goal+' levels completed · +60 bonus Trail Coins at Level '+seal.target;
+  seal.done+' of '+seal.goal+' levels completed · +3 Insight Tokens at Level '+seal.target;
  if(mapBar){
   mapBar.setAttribute('aria-valuenow',String(seal.done));
   mapBar.setAttribute('aria-label',seal.all?'All ten Journey Seals collected':
@@ -301,7 +321,10 @@ let music=null,ctx=null,unlockedSound=false,dailyOverlayActive=false;
 const wheel=$('wheel'),board=$('board'),preview=$('preview');
 const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function store(){
- try{localStorage.setItem(STORAGE,JSON.stringify(save))}catch(_){}
+ if(SHARED_WALLET&&!parent.BULiveWalletSession?.writable())return false;
+ try{const body=JSON.stringify(save);if(SHARED_WALLET)return parent.BULiveWalletSession.storeTrail(body);localStorage.setItem(STORAGE,body);
+  return !SHARED_WALLET||localStorage.getItem(STORAGE)===body;
+ }catch(_){return false;}
 }
 function sparkKey(i,word){return i+':'+word}
 function sparkClaimed(i,word){return save.claimedSparks.includes(sparkKey(i,word))}
@@ -319,7 +342,7 @@ function sparksFound(i=index){return bibleItems(i).filter(item=>bibleClaimed(i,i
 function sparkTotal(i=index){return bibleItems(i).length}
 function storeProgress(){
  save.progress={level:index,found:[...found],bonuses:[...bonuses],hinted:[...hinted],combo};
- store();
+ return store();
 }
 function soundReady(){
  if(window.BUWTPolish?!window.BUWTPolish.musicEnabled():!save.sound)return null;
@@ -379,7 +402,8 @@ function shuffleArray(a){
 function ui(){
  $('level-label').textContent='LEVEL '+(index+1)+' / '+LEVELS.length;
  $('scene-title').textContent=level.title;
- $('points').textContent=String(save.coins);
+ if(SHARED_WALLET)syncShared();
+ $('points').textContent=SHARED_WALLET?(sharedBalance===null?'—':String(sharedBalance)):String(save.coins);
  $('solved-count').textContent=found.size+' / '+level.words.length;
  $('bonus-count').textContent=bonuses.size;
  window.BUWTPolish?.bonusPips(bonuses.size);
@@ -387,7 +411,8 @@ function ui(){
  $('combo').textContent=combo>1?combo+'× COMBO':'';
  $('progress-fill').style.width=(found.size/level.words.length*100)+'%';
  $('hint-cost').textContent=save.claimedFreeHints.includes(index)?'15':'FREE';
- $('hint').disabled=found.size===level.words.length||(save.claimedFreeHints.includes(index)&&save.coins<15);
+ const ownedHint=SHARED_WALLET&&[...cells.values()].some(c=>!c.words.some(w=>found.has(w))&&!hinted.has(c.key)&&parent.BULiveInsightBridge.hasHint(window,index+1,c.key));
+ $('hint').disabled=found.size===level.words.length||(save.claimedFreeHints.includes(index)&&(SHARED_WALLET?((sharedBalance===null||sharedBalance<15)&&!ownedHint):save.coins<15));
  const sparkCount=sparksFound(),sparkMax=sparkTotal();
  $('spark').classList.toggle('claimed',sparkCount===sparkMax);
  $('spark').setAttribute('aria-label','Bible words found '+sparkCount+' of '+sparkMax+'. Open clues and discoveries');
@@ -491,7 +516,7 @@ function finishWord(word){
  const reward=wordPaid(word)?10:0;
  if(reward)save.points+=reward;
  let comboReward=0;const comboTag='combo:'+index;
- if(combo===3&&!save.paidWords.includes(comboTag)){save.paidWords.push(comboTag);save.coins+=5;comboReward=5;}
+ if(combo===3&&!save.paidWords.includes(comboTag)){save.paidWords.push(comboTag);if(!SHARED_WALLET){save.coins+=5;comboReward=5;}}
  drawBoard(word);storeProgress();
  window.BUWTPolish?.event('correct',{word,combo,coins:comboReward});
  const tile=[...board.querySelectorAll('.tile.new')][Math.floor([...board.querySelectorAll('.tile.new')].length/2)];
@@ -519,8 +544,17 @@ function submit(){
   if(sparkClaimed(index,word)){flash('Bible word already discovered ★');cue('touch');return}
   save.claimedSparks.push(sparkKey(index,word));
   // The first discovery remains compatible with the former one-star save.
-  if(word===level.spark&&!save.sparks.includes(index))save.sparks.push(index);
-  save.coins+=25;ui();storeProgress();
+  const firstSpark=word===level.spark&&!save.sparks.includes(index);
+  if(firstSpark)save.sparks.push(index);
+  if(SHARED_WALLET){
+   // Proof must be saved before the native parent authorizes a once-only credit.
+   if(!storeProgress()){save.claimedSparks.pop();if(firstSpark)save.sparks.pop();
+    flash('Could not save discovery. Try again.');return;}
+   const tx=sharedPay({type:'discovery',level:index+1,word});
+   if(!tx.ok){save.claimedSparks.pop();if(firstSpark)save.sparks.pop();storeProgress();
+    flash('Shared rewards unavailable. No tokens credited.');return;}
+  }else{save.coins+=25;}
+  ui();storeProgress();
   window.BUWTPolish?.event('spark',{word});
   cue('spark');haptic([16,28,16]);
   window.BUWTAnnouncer?.play?.('another_discovery');
@@ -537,17 +571,22 @@ function submit(){
   if(bonuses.has(word)){flash('Bonus already collected');cue('touch');return}
   bonuses.add(word);combo++;
   const key=index+'|'+word,paid=!save.paidBonuses.includes(key);
-  if(paid){save.paidBonuses.push(key);save.coins+=2}
+  if(paid){save.paidBonuses.push(key);if(!SHARED_WALLET)save.coins+=2}
   // Every level has a reachable satchel: min(3, playable bonus count).
   // Early level 12 intentionally has two good English bonus words, not filler.
   const vaultKey='satchel:'+index;
   const vault=bonusGoal()>0&&bonuses.size>=bonusGoal()&&!save.paidBonuses.includes(vaultKey);
-  if(vault){save.paidBonuses.push(vaultKey);save.coins+=8}
-  ui();storeProgress();
-  window.BUWTPolish?.event('bonus',{word,count:bonuses.size,coins:paid?2:0});
-  if(vault){window.BUWTPolish?.event('vault',{coins:8});cue('vault')}
+  if(vault){save.paidBonuses.push(vaultKey);if(!SHARED_WALLET)save.coins+=8}
+  const proofSaved=storeProgress();
+  let satchelAward=null;
+  if(vault&&SHARED_WALLET&&proofSaved){
+   satchelAward=sharedPay({type:'satchel',level:index+1});
+  }
+  ui();
+  window.BUWTPolish?.event('bonus',{word,count:bonuses.size,coins:SHARED_WALLET?0:(paid?2:0)});
+  if(vault){window.BUWTPolish?.event('vault',{coins:SHARED_WALLET?(satchelAward?.ok&&!satchelAward.duplicate?1:0):8});cue('vault')}
   else cue('bonus');
-  flash(vault?'✦ SATCHEL FULL!  +8 EXTRA COINS':('✦ BONUS WORD! '+word+(paid?'  +2 COINS':'  · FOUND')));
+  flash(SHARED_WALLET?(vault?(satchelAward?.ok&&!satchelAward.duplicate?'✦ SATCHEL FULL! +1 INSIGHT TOKEN':'✦ SATCHEL FULL!'):('✦ BONUS WORD! '+word)):(vault?'✦ SATCHEL FULL!  +8 EXTRA COINS':('✦ BONUS WORD! '+word+(paid?'  +2 COINS':'  · FOUND'))));
   haptic(8);
   const x=$('bonus-count').getBoundingClientRect(),a=$('app').getBoundingClientRect();
   burst(x.left-a.left+x.width/2,x.top-a.top+x.height/2);
@@ -561,13 +600,24 @@ function completeLevel(){
  const already=save.completed.includes(index);
  const milestone=(index+1)%5===0;
  const milestoneBonus=!already&&milestone?60:0;
- // A special five-level milestone pays once; replays never mint duplicate coins.
- const reward=already?0:20+5*index+milestoneBonus;
+ // The native parent wallet owns shared tokens; legacy Trail Coins stay quarantined.
+ let reward=SHARED_WALLET?0:(already?0:20+5*index+milestoneBonus);
  if(!already){
-  save.completed.push(index);save.coins+=reward;
+  save.completed.push(index);
+  if(!SHARED_WALLET)save.coins+=reward;
   save.unlocked=Math.min(LEVELS.length-1,Math.max(save.unlocked,index+1));
  }
- save.progress=null;store();ui();cue('complete');
+ save.progress=null;
+ const completionSaved=store();
+ if(SHARED_WALLET&&completionSaved){
+  const levelTx=sharedPay({type:'level',level:index+1});
+  if(levelTx.ok&&!levelTx.duplicate)reward+=4;
+  if(milestone){
+   const sealTx=sharedPay({type:'seal',level:index+1});
+   if(sealTx.ok&&!sealTx.duplicate)reward+=3;
+  }
+ }
+ ui();cue('complete');
  window.BUWTAnnouncer?.play?.('chapter_complete',{milestone:true,queueIfBlocked:true});
  // Keep the everyday feedback gentle. The level-win celebration gets a distinct cadence.
  haptic([38,58,36,75,70]);
@@ -585,9 +635,9 @@ function completeLevel(){
  if(seal){
   $('finish-seal-symbol').textContent=seal.symbol;
   $('finish-seal-title').textContent=seal.name;
-  $('finish-seal-note').textContent=already?'Journey Seal previously collected':seal.detail+' · +60 extra Trail Coins';
+  $('finish-seal-note').textContent=already?'Journey Seal previously collected':seal.detail+(SHARED_WALLET?' · +3 Insight Tokens':' · +60 extra Trail Coins');
  }
- $('finish-reward').textContent=already?'Replay complete':('+'+reward+' Trail Coins');
+ $('finish-reward').textContent=SHARED_WALLET?(reward?'+'+reward+' INSIGHT TOKENS':(already?'Replay complete':'Progress saved · no new tokens')):(already?'Replay complete':('+'+reward+' Trail Coins'));
  $('finish-words').textContent=level.words.length+' crossword words · '+bonuses.size+' bonus '+(bonuses.size===1?'word':'words');
  $('finish-spark').textContent='★ '+sparksFound()+' / '+sparkTotal()+' Bible discoveries collected';
  renderNextSealProgress();
@@ -638,14 +688,25 @@ function shuffle(){
 function hint(){
  if(found.size===level.words.length)return;
  const isFree=!save.claimedFreeHints.includes(index);
- if(!isFree&&save.coins<15){flash('You need 15 coins for another hint');cue('wrong');return}
+ if(!isFree&&!SHARED_WALLET&&save.coins<15){
+  flash('You need 15 Insight Tokens for another hint');cue('wrong');return}
  const unseen=[...cells.values()].filter(cell=>!cell.words.some(w=>found.has(w))&&!hinted.has(cell.key));
  if(!unseen.length)return;
  unseen.sort((a,b)=>b.words.length-a.words.length||a.row-b.row);
- const cell=unseen[0];hinted.add(cell.key);
- if(isFree)save.claimedFreeHints.push(index);else save.coins-=15;
- drawBoard();storeProgress();cue('hint');window.BUWTPolish?.event('hint',{free:isFree});
- flash((isFree?'Free hint':'15 coins')+' · '+cell.letter+' revealed');
+ const cell=(SHARED_WALLET&&unseen.find(c=>parent.BULiveInsightBridge.hasHint(window,index+1,c.key)))||unseen[0];
+ if(SHARED_WALLET&&!isFree){
+  // Critical: the answer letter appears ONLY after parent verifies payment.
+  const payment=sharedPay({type:'hint',level:index+1,cell:cell.key});
+  if(!payment.ok){flash('Hint purchase unavailable. No letter revealed.');cue('wrong');return;}
+ }
+ hinted.add(cell.key);
+ if(isFree)save.claimedFreeHints.push(index);
+ else if(!SHARED_WALLET)save.coins-=15;
+ drawBoard();
+ const stored=storeProgress();
+ if(SHARED_WALLET&&!stored)flash('Hint shown, but game progress could not be saved. Retry after reload.');
+ else flash((isFree?'Free hint':(SHARED_WALLET?'15 Insight Tokens':'15 coins'))+' · '+cell.letter+' revealed');
+ cue('hint');window.BUWTPolish?.event('hint',{free:isFree});
  const b=board.querySelector('[data-pos="'+cell.key+'"]').getBoundingClientRect(),app=$('app').getBoundingClientRect();
  burst(b.left-app.left+b.width/2,b.top-app.top+b.height/2);
 }
@@ -776,8 +837,8 @@ $('spark-x').addEventListener('click',()=>$('discovery').close());
 $('map-x').addEventListener('click',()=>$('map').close());
 $('reset-level').addEventListener('click',()=>{$('map').close();resetLevel()});
 $('reset-test').addEventListener('click',()=>{
- if(!confirm('Reset Word Trails progress and Trail Coins? Other game modes and Insight Tokens are unaffected.'))return;
- save=DEFAULT();store();showLevel(0);cue('touch');
+ if(!confirm('Reset Word Trails progress? Your Insight Tokens, purchases and other games stay unchanged.'))return;
+ const legacyCoins=save.coins;save=DEFAULT();if(SHARED_WALLET)save.coins=legacyCoins;store();showLevel(0);cue('touch');
 });
 window.addEventListener('keydown',e=>{
  if(e.key==='Enter'&&!($('finish').open||$('map').open||$('discovery').open)){submit()}
@@ -791,5 +852,6 @@ window.addEventListener('bu-wt-audio-change',()=>{
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)music?.pause();else if(unlockedSound&&(window.BUWTPolish?window.BUWTPolish.musicEnabled():save.sound))music?.play().catch(()=>{})});
 window.addEventListener('pagehide',()=>music?.pause());
+window.addEventListener('bu-live-insight-change',ui);
 showLevel(index,true);
 })();
