@@ -17,14 +17,17 @@
   the historical TEST review record, not a runtime integration switch.
 - [x] Correct discovery popup to say +1 Insight Token in the native shared mode;
   its accounting already awarded 1. No reward values change.
-- [ ] Complete local and CI checks; exact evidence will be recorded in draft PR.
+- [x] Add focused browser/content/save checks. Exact execution results, remaining
+  failures and workflow links are maintained in draft PR #24.
 - [ ] Independent ChatGPT review; no Codex merge/deployment.
 
 ## Tests and preservation boundary
 
 The new scope gate reverses only the explicitly appended registration, seal,
 chapter, completed-50 unlock, dynamic end labels and corrected reward label, then
-compares the *entire engine* against the LIVE checkpoint. Wallet policy/save
+compares the *entire engine* against the LIVE checkpoint. Only generated,
+untracked `work/` artifacts are excluded; tracked changes still require an
+explicit allowed file. Wallet policy/save
 coordinator and loader edits are also restricted to their exact bounds/cache
 changes. All other protected files and imported source hashes must match.
 Existing release guards now expect the approved 55-level count/cache chain;
@@ -34,7 +37,7 @@ browser/model checks still run alongside new expansion cases.
 `qa_live_word_trails55_browser.cjs`: Chromium and WebKit 320/430; actual native
 50→51→55 progression, every crossword/hidden discovery, bonus satchels,
 wrong answers, free/paid/duplicate hints, restart, refresh/resume, seal and
-replay without duplicate credit, completed-55 LIVE v2 export/restore, and
+replay without duplicate credit, completed-55 LIVE v1/v2 export/restore, and
 pre-expansion completed-50 v2 restore/unlock. All answer letters use real touch
 taps; swipe uses Chromium CDP touch and WebKit mouse pointer drag (not claimed
 as native WebKit touch swiping). Negative native Points, owned wheels, old
