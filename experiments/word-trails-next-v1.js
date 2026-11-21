@@ -324,7 +324,7 @@ function renderNextSealProgress(){
   'UP NEXT · '+seal.title+' · '+seal.done+'/5 levels toward your next seal';
 }
 let found=new Set(),bonuses=new Set(),hinted=new Set(),chosen=[],letters=[],combo=0;
-let dragging=false,dragActive=false,start=null,pointer=null,suppressClickUntil=0;
+let dragging=false,dragActive=false,start=null,pointer=null;
 let timer=null,locked=false,completionShown=false;
 let music=null,ctx=null,unlockedSound=false,dailyOverlayActive=false;
 const wheel=$('wheel'),board=$('board'),preview=$('preview');
@@ -489,8 +489,9 @@ function drawWheel(){
   const b=document.createElement('button');b.type='button';b.className='wheel-letter';b.dataset.letterIndex=i;
   b.textContent=letters[i];b.setAttribute('aria-label','Letter '+letters[i]);
   b.style.left=pos[i].x+'px';b.style.top=pos[i].y+'px';
-  b.addEventListener('click',()=>{
-   if(performance.now()<suppressClickUntil||locked)return;
+  b.addEventListener('click',e=>{
+   // Physical taps are handled once on pointerup. Keep keyboard/AT activation.
+   if(e.detail!==0||locked)return;
    cue(chosen.includes(i)?'undo':'touch');tap(i);
   });wheel.appendChild(b);
  }
@@ -797,15 +798,10 @@ function levelMap(){
 }
 wheel.addEventListener('pointerdown',e=>{
  if(locked)return;const b=e.target.closest('.wheel-letter');if(!b)return;
- // The click guard blocks only the synthetic click AFTER the last swipe.
- // A separate new finger press must be allowed immediately, even within 200ms.
- suppressClickUntil=0;
  window.BUWTWheelNative?.begin?.(e);
  dragging=true;dragActive=false;pointer=e.pointerId;
  start={x:e.clientX,y:e.clientY,index:Number(b.dataset.letterIndex)};
- // Capture the pressed letter, not its non-clickable wheel parent. Chromium
- // can otherwise retarget a stationary touch's pointerup away from the button
- // and omit its compatibility click. Moves/up still bubble to the wheel.
+ // Keep events on the pressed button; move/up still bubble to the wheel.
  try{b.setPointerCapture(e.pointerId)}catch(_){}
 });
 wheel.addEventListener('pointermove',e=>{
@@ -824,8 +820,14 @@ wheel.addEventListener('pointermove',e=>{
 function release(e){
  if(!dragging||e.pointerId!==pointer)return;
  window.BUWTWheelNative?.end?.(e);
- const was=dragActive;dragging=false;dragActive=false;pointer=null;start=null;
- if(was){suppressClickUntil=performance.now()+200;submit()}
+ const was=dragActive,tapped=start.index;dragging=false;dragActive=false;pointer=null;start=null;
+ if(was){submit();return;}
+ // Chromium may omit the compatibility click after a swipe. The real pointer
+ // release is authoritative; a later compatibility click must not toggle twice.
+ const end=document.elementFromPoint(e.clientX,e.clientY)?.closest('.wheel-letter');
+ if(!locked&&end&&wheel.contains(end)&&Number(end.dataset.letterIndex)===tapped){
+  cue(chosen.includes(tapped)?'undo':'touch');tap(tapped);
+ }
 }
 wheel.addEventListener('pointerup',release);
 wheel.addEventListener('pointercancel',e=>{if(e.pointerId===pointer){window.BUWTWheelNative?.cancel?.();dragging=false;dragActive=false;pointer=null;start=null;clear()}});

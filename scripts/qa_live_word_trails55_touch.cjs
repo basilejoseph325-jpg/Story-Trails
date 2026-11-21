@@ -4,7 +4,7 @@
 const {chromium}=require('playwright'),fs=require('node:fs'),cp=require('node:child_process'),assert=require('node:assert/strict');
 const {ROOT,fixture,context,ready,launch,data,state}=require('./qa_live_shared_wallet_browser.cjs');
 const baseline=process.env.TOUCH_BASELINE==='1',ref='2fca84b756aec59808ea294f0a696d7080cd5fb4';
-const observers=`window.__touchTrace=[];window.__touchState=()=>({dragging,dragActive,pointer,locked,suppression:suppressClickUntil-performance.now(),chosen:[...chosen],preview:preview.textContent});
+const observers=`window.__touchTrace=[];window.__touchState=()=>({dragging,dragActive,pointer,locked,suppression:typeof suppressClickUntil==='undefined'?null:suppressClickUntil-performance.now(),chosen:[...chosen],preview:preview.textContent});
 for(const type of ['pointerdown','pointermove','pointerup','pointercancel','gotpointercapture','lostpointercapture','click'])for(const capture of [true,false])document.addEventListener(type,e=>{window.__touchTrace.push({type,capture,id:e.pointerId,pointerType:e.pointerType,target:e.target.id||e.target.className,letter:e.target.closest?.('.wheel-letter')?.textContent,hit:document.elementFromPoint(e.clientX,e.clientY)?.closest?.('.wheel-letter')?.textContent,detail:e.detail,state:window.__touchState()});},capture);
 `;
 async function point(f,letter){const i=(await f.locator('.wheel-letter').allTextContents()).indexOf(letter);assert(i>=0);const r=await f.locator('.wheel-letter').nth(i).boundingBox();return {x:r.x+r.width/2,y:r.y+r.height/2};}

@@ -73,10 +73,17 @@ capture on the wheel retargeted pointerup to the non-clickable wheel. No click
 reached B, so selection stayed empty. Old routing was confirmed at 430px too;
 other old taps still emitted a compatibility click, explaining intermittent CI.
 
-The fix captures the original letter button instead. Moves/up still bubble to
-the existing wheel handlers, hit-testing/SFX/visuals stay unchanged, and swipe
-compatibility clicks remain suppressed. The next independent tap resets the
-guard as before. No wallet/save/reward code changes in this follow-up.
+The capture-only experiment (50654f6) was insufficient. Its new CI trace showed
+pointerup targeting B correctly, but still no compatibility click, no selection,
+no lock and no active suppression. This proves click delivery itself is optional
+after the swipe, so changing capture alone cannot fix every missed tap.
+
+The final runtime fix selects stationary taps directly on the real pointerup,
+only when released on the original letter. Drag release still submits once.
+Physical compatibility clicks are ignored to prevent duplicate toggles; detail-0
+keyboard/assistive activation remains supported. Letter capture keeps events on
+the button. The obsolete 200ms clock gate is removed; no new finger press waits
+for a timer. Hit testing, skin, SFX and all wallet/save/reward code remain intact.
 
 `qa_live_word_trails55_touch.cjs` observes native event targets and internal
 selection/drag/guard state without synthesizing clicks. Chromium uses real CDP
@@ -87,6 +94,6 @@ Run with `TOUCH_BASELINE=1` to record old routing from reviewed commit 2fca84b;
 old compatibility-click delivery is timing-dependent, not claimed to miss on
 every attempt. JSON traces are CI artifacts. The unmodified full-game suite
 now has **no post-swipe delay workaround** and retains strict prefix assertions.
-Only the exact capture change is allowed by the whole-engine scope guard.
+Only the exact pointerup/capture/click changes are allowed by the whole-engine scope guard.
 Release-loader cache versions advance specifically for the fixed engine.
 Final exact-head regression results are recorded on PR #24. No merge/deploy.
