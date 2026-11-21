@@ -9,10 +9,11 @@
 
   const preview = { status: 'loading', chapterId: CHAPTER_ID, discoveries: 0 };
   // Cancel only this chapter's pending reads when its document is leaving.
-  const loadingController=new AbortController();let leaving=false;
+  const loadingController=new AbortController();let leaving=!!window.BUStoryReleaseLoad?.leaving||window.__bu388SkipCheckpoint===true;
   const cancelLoading=()=>{leaving=true;preview.status='canceled';loadingController.abort();};
   window.addEventListener('beforeunload',cancelLoading,{once:true});
   window.addEventListener('pagehide',cancelLoading,{once:true});
+  window.addEventListener('bu-story-cancel-loading',cancelLoading,{once:true});
   if(window.BUStoryGenesis13Test)return;
   window.BUStoryGenesis13Test = preview;
   const scenePaths=Object.freeze(Object.fromEntries(Array.from({length:12},(_,i)=>{
@@ -343,6 +344,7 @@
   }
 
   function start() {
+    if(leaving){preview.status='canceled';return;}
     load().catch(error => {
       if(leaving&&error.name==='AbortError'){preview.status='canceled';return;}
       preview.status = 'failed';

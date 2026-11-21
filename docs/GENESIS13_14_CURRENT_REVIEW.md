@@ -97,3 +97,19 @@ Only this lifecycle change differs in the two approved episode adapters; all
 content/art/source and puzzle/hint/reward logic stays unchanged. A delayed-manifest
 real navigation test covers both chapters and browsers. No error assertions are
 removed from the original wallet suite.
+
+The first cancellation pass also exposed the serial-loader handoff: a later
+chapter script can begin after the preceding page has started leaving. The
+ordered loader now marks departure synchronously and stops its waits/script
+injection; late child scripts check that marker before starting a fetch. Exact
+loader and adapter guards are pinned by the scope fixture. Delayed script, content
+and manifest navigation tests cover the handoff; the original zero-page-error
+wallet regression is retained unchanged.
+
+The loader additionally respects the existing LIVE writer-ready promise and
+`__bu388SkipCheckpoint` frozen-page marker. A chapter-local cancellation event
+stops pending reads when the existing restore overlay appears. This is the
+LIVE counterpart of the already-tested TEST recovery readiness gate, not a
+transplant of TEST's storage fence. The backup/wallet files remain byte-identical.
+The delayed-content test also performs a valid synthetic LIVE restore before
+reloading, retaining the original wallet suite's zero-error assertion.

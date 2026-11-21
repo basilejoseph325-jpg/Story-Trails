@@ -221,18 +221,29 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 /* Genesis Episodes 13/14 — selective release candidate. Preserve every LIVE
  * loader entry above; this append adds no TEST bootstrap or save coordinator. */
 (()=>{'use strict';
+ let leaving=false;
+ const frozen=()=>window.__bu388SkipCheckpoint===true;
+ const cancel=()=>{leaving=true;window.BUStoryReleaseLoad={...(window.BUStoryReleaseLoad||{}),status:'canceled',leaving:true};window.dispatchEvent(new Event('bu-story-cancel-loading'));observer.disconnect();};
+ const observer=new MutationObserver(()=>{if(frozen())cancel();});
+ observer.observe(document,{childList:true,subtree:true});
+ window.addEventListener('beforeunload',cancel,{once:true});
+ window.addEventListener('pagehide',cancel,{once:true});
  const deadline=Date.now()+60000;
  const wait=ready=>new Promise((resolve,reject)=>{
-  function check(){if(ready())return resolve();if(Date.now()>deadline)return reject(Error('Story registration timed out'));setTimeout(check,60);}check();
+  function check(){if(frozen()&&!leaving)cancel();if(leaving)return reject(new DOMException('Document is leaving','AbortError'));if(ready())return resolve();if(Date.now()>deadline)return reject(Error('Story registration timed out'));setTimeout(check,60);}check();
  });
  const script=(id,src)=>new Promise((resolve,reject)=>{
+  if(frozen()&&!leaving)cancel();
+  if(leaving)return reject(new DOMException('Document is leaving','AbortError'));
   const tag=document.createElement('script');tag.id=id;tag.async=false;tag.src=src;
   tag.onload=resolve;tag.onerror=()=>reject(Error('Story release script unavailable: '+src));document.head.append(tag);
  });
  async function load(){
-  if(window.BUStoryReleaseLoad)return;
+  if(leaving||window.BUStoryReleaseLoad)return;
   window.BUStoryReleaseLoad={status:'loading'};
   try{
+   if(window.BULiveWalletSession&&!await window.BULiveWalletSession.ready){cancel();return;}
+   if(frozen()){cancel();return;}
    await wait(()=>!!window.BUStoryGenesis12Test);
    await script('bu-story-release-compat','story-adventure-release-compat.js?v=genesis13-14-current-v1');
    await script('bu-story-genesis13-release-loader','story-adventure-episode13-release.js?v=genesis13-14-current-v1');
@@ -241,8 +252,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    await script('bu-story-genesis14-release-loader','story-adventure-episode14-release.js?v=genesis13-14-current-v1');
    await wait(()=>['ready','failed'].includes(window.BUStoryGenesis14Test?.status));
    if(window.BUStoryGenesis14Test.status!=='ready')throw Error(window.BUStoryGenesis14Test.error);
-   window.BUStoryReleaseLoad.status='ready';
-  }catch(error){window.BUStoryReleaseLoad={status:'failed',error:error.message};console.error('Genesis release chapters unavailable',error);}
+   window.BUStoryReleaseLoad.status='ready';observer.disconnect();
+  }catch(error){if(leaving)return;window.BUStoryReleaseLoad={status:'failed',error:error.message};console.error('Genesis release chapters unavailable',error);}
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else load();
 })();
