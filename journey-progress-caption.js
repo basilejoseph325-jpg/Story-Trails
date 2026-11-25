@@ -56,7 +56,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    No Visual Lab TEST banner, no change to Daily Discovery or other modes. */
 (()=>{if(document.getElementById('bu-story-chapter-complete-v2-css'))return;const l=document.createElement('link');l.id='bu-story-chapter-complete-v2-css';l.rel='stylesheet';l.href='story-chapter-complete-v2-test.css?v=20261105-live-v11-approved';document.head.appendChild(l)})();
 (()=>{if(document.getElementById('bu-story-finale-stage-v11-css'))return;const l=document.createElement('link');l.id='bu-story-finale-stage-v11-css';l.rel='stylesheet';l.href='story-finale-structural-parity-v11.css?v=20261105-live-paired-v11b';document.head.appendChild(l)})();
-(()=>{if(document.getElementById('bu-story-chapter-complete-v2-js'))return;const s=document.createElement('script');s.id='bu-story-chapter-complete-v2-js';s.src='story-chapter-complete-v2-test.js?v=20261105-live-paired-v11b';s.defer=true;document.head.appendChild(s)})();
+(()=>{if(document.getElementById('bu-story-chapter-complete-v2-js'))return;const s=document.createElement('script');s.id='bu-story-chapter-complete-v2-js';s.src='story-chapter-complete-v2-test.js?v=genesis13-14-current-v1';s.defer=true;document.head.appendChild(s)})();
 
 
 /* LIVE owner-approved Behind the Name: bronze/enamel answer screen and
@@ -216,4 +216,44 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  script.src='story-adventure-episode12-integration-test.js?v=20261115-episode12-live-v1';
  script.onerror=()=>console.warn('[Genesis12] LIVE chapter script failed to load');
  document.head.appendChild(script);
+})();
+
+/* Genesis Episodes 13/14 — selective release candidate. Preserve every LIVE
+ * loader entry above; this append adds no TEST bootstrap or save coordinator. */
+(()=>{'use strict';
+ let leaving=false;
+ const frozen=()=>window.__bu388SkipCheckpoint===true;
+ const cancel=()=>{leaving=true;window.BUStoryReleaseLoad={...(window.BUStoryReleaseLoad||{}),status:'canceled',leaving:true};window.dispatchEvent(new Event('bu-story-cancel-loading'));observer.disconnect();};
+ const observer=new MutationObserver(()=>{if(frozen())cancel();});
+ observer.observe(document,{childList:true,subtree:true});
+ window.addEventListener('beforeunload',cancel,{once:true});
+ window.addEventListener('pagehide',cancel,{once:true});
+ const deadline=Date.now()+60000;
+ const wait=ready=>new Promise((resolve,reject)=>{
+  function check(){if(frozen()&&!leaving)cancel();if(leaving)return reject(new DOMException('Document is leaving','AbortError'));if(ready())return resolve();if(Date.now()>deadline)return reject(Error('Story registration timed out'));setTimeout(check,60);}check();
+ });
+ const script=(id,src)=>new Promise((resolve,reject)=>{
+  if(frozen()&&!leaving)cancel();
+  if(leaving)return reject(new DOMException('Document is leaving','AbortError'));
+  const tag=document.createElement('script');tag.id=id;tag.async=false;tag.src=src;
+  tag.onload=resolve;tag.onerror=()=>reject(Error('Story release script unavailable: '+src));document.head.append(tag);
+ });
+ async function load(){
+  if(leaving||window.BUStoryReleaseLoad)return;
+  window.BUStoryReleaseLoad={status:'loading'};
+  try{
+   if(window.BULiveWalletSession&&!await window.BULiveWalletSession.ready){cancel();return;}
+   if(frozen()){cancel();return;}
+   await wait(()=>!!window.BUStoryGenesis12Test);
+   await script('bu-story-release-compat','story-adventure-release-compat.js?v=genesis13-14-current-v1');
+   await script('bu-story-genesis13-release-loader','story-adventure-episode13-release.js?v=genesis13-14-current-v1');
+   await wait(()=>['ready','failed'].includes(window.BUStoryGenesis13Test?.status));
+   if(window.BUStoryGenesis13Test.status!=='ready')throw Error(window.BUStoryGenesis13Test.error);
+   await script('bu-story-genesis14-release-loader','story-adventure-episode14-release.js?v=genesis13-14-current-v1');
+   await wait(()=>['ready','failed'].includes(window.BUStoryGenesis14Test?.status));
+   if(window.BUStoryGenesis14Test.status!=='ready')throw Error(window.BUStoryGenesis14Test.error);
+   window.BUStoryReleaseLoad.status='ready';observer.disconnect();
+  }catch(error){if(leaving)return;window.BUStoryReleaseLoad={status:'failed',error:error.message};console.error('Genesis release chapters unavailable',error);}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else load();
 })();

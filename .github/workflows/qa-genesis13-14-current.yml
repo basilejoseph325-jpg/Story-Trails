@@ -1,0 +1,97 @@
+name: Genesis 13–14 on current LIVE 55 (no deployment)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'story-adventure-*'
+      - 'story-chapter-complete-v2-test.js'
+      - 'journey-progress-caption.js'
+      - 'scripts/qa_genesis13_14_current*'
+      - 'scripts/qa_release_*'
+      - '.github/workflows/qa-genesis13-14-current.yml'
+permissions: {contents: read}
+jobs:
+  approved-source:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: node scripts/qa_genesis13_14_current_scope.cjs
+      - run: |
+          python3 -m venv work/images
+          work/images/bin/pip install Pillow
+          work/images/bin/python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          paths=[*Path('story-adventure-art/genesis13').glob('*.webp'),*Path('story-adventure-art/genesis14').glob('*.webp')]
+          assert len(paths)==24
+          for p in paths:
+              with Image.open(p) as image:
+                  image.load()
+                  assert image.size==(640,360),p
+          print('PASS_ALL24_APPROVED_ART_DECODE')
+          PY
+  native-story:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: {engine: [chromium, webkit]}
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      STORY_ENGINES: '${{ matrix.engine }}'
+      STORY_URL: http://127.0.0.1:8923/index.html
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: npm install --prefix work --no-audit --no-fund playwright@1.65.1
+      - run: ./work/node_modules/.bin/playwright install --with-deps ${{ matrix.engine }}
+      - run: |
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8923 --bind 127.0.0.1 > work/http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8923/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - run: node scripts/qa_genesis13_14_navigation.cjs
+      - run: node scripts/qa_genesis13_14_current_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: current-genesis-${{ matrix.engine }}
+          path: work/genesis-current/
+  complete-story-regression:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 35
+    env:
+      NODE_PATH: '${{ github.workspace }}/work/node_modules'
+      STORY_URL: http://127.0.0.1:8923/index.html
+      LIVE_BASELINE_URL: http://127.0.0.1:8930/index.html
+      BU_WT_NATIVE_PARITY_URL: http://127.0.0.1:8923/index.html
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: npm install --prefix work --no-audit --no-fund puppeteer-core@25.17.0
+      - run: |
+          mkdir -p work/baseline
+          git archive f914a311a1913704ce4a6c0cb5e3149b3704939f | tar -x -C work/baseline
+          echo "CHROME_BIN=$(command -v google-chrome || command -v chromium)" >> "$GITHUB_ENV"
+          python3 -m http.server 8923 --bind 127.0.0.1 > work/http.log 2>&1 &
+          python3 -m http.server 8930 --bind 127.0.0.1 --directory work/baseline > work/baseline-http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8923/index.html -o /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - run: |
+          node scripts/qa_release_genesis13.cjs
+          node scripts/qa_release_genesis14.cjs
+          node scripts/qa_release_story_regression.cjs
+          node scripts/qa_release_preservation.cjs
+          node scripts/qa_release_word_trails_audio.cjs
